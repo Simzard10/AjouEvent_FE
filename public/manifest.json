@@ -3,24 +3,54 @@
   "name": "Ajou-Event-App",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "icons/favicon-196x196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon.ico",
       "sizes": "32x32 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "star-solid",
-      "type": "image/svg",
-      "sizes": "20x20"
+      "src": "google.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     },
     {
-      "src": "star-regular",
-      "type": "image/svg",
-      "sizes": "20x20"
+      "src": "mdi_bell.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     },
     {
-      "src": "mdi_bell",
-      "type": "image/svg",
-      "sizes": "38x38"
+      "src": "star-regular.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "star-solid.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",
