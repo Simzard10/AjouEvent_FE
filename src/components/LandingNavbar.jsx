@@ -83,7 +83,7 @@ export default function LandingNavbar() {
       <BtnContainer>
         <AlarmImg
           alt="알람"
-          src={`${process.env.PUBLIC_URL}/img/mdi_bell.svg`}
+          src={`${process.env.PUBLIC_URL}/icons/mdi_bell.svg`}
           onClick={handleAlarmClick}
         ></AlarmImg>
         <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
