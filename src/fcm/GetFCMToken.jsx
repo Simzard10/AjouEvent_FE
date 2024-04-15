@@ -12,7 +12,6 @@ const GetFCMToken = async () => {
     if (currentToken) {
       console.log("Current Token:", currentToken);
       localStorage.setItem("fcmToken", currentToken);
-      alert("fcmToken in localStorge : " + currentToken);
     } else {
       console.log(
         "No registration token available. Request permission to generate one."
