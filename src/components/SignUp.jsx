@@ -176,7 +176,7 @@ const SignUp = () => {
   return (
     <>
       <Container>
-        <Heading>가입하기</Heading>
+        <Heading>김형민</Heading>
         <Separator></Separator>
         <Form onSubmit={handleSignUp}>
           <div className="input__block">
