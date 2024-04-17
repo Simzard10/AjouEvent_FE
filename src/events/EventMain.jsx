@@ -9,6 +9,7 @@ const FlexContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
+  overflow: auto;
 `;
 
 const EventMain = () => {
@@ -25,7 +26,7 @@ const EventMain = () => {
         } else {
           // response = await ProductSearchApi(keyword);
         }
-        setEvents(response.data);
+        setEvents(response.data.reverse()); // Reversing the order of events
         setLoading(false); // 데이터 로딩 완료 후 상태 업데이트
       } catch (error) {
         console.error("Error fetching events:", error);

@@ -23,6 +23,12 @@ const Heading = styled.h1`
   margin: 0;
 `;
 
+const HeadingWapper = styled.div`
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto 0;
+`;
+
 const Form = styled.form`
   width: 100%;
   max-width: 680px;
@@ -176,7 +182,9 @@ const SignUp = () => {
   return (
     <>
       <Container>
-        <Heading>가입하기</Heading>
+        <HeadingWapper>
+          <Heading>가입하기</Heading>
+        </HeadingWapper>
         <Separator></Separator>
         <Form onSubmit={handleSignUp}>
           <div className="input__block">
