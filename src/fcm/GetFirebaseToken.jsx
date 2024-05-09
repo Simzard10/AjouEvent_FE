@@ -3,7 +3,7 @@
 // import axios from "axios";
 // import { firebaseApp } from "./firebase";
 // import { getMessaging, getToken } from "firebase/messaging";
-// import LandingNavbar from "../components/LandingNavbar";
+// import TopBar from "../components/TopBar";
 
 // const GetFirebaseToken = () => {
 //   useEffect(() => {
@@ -67,7 +67,7 @@
 
 //   return (
 //     <div>
-//       <LandingNavbar></LandingNavbar>
+//       <TopBar></TopBar>
 //       <div style={{ marginTop: "100px" }}>
 //         <button onClick={sendTokenToServer}>send token</button>
 //       </div>

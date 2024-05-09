@@ -11,8 +11,7 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { firebaseApp } from "../fcm/firebase";
-import { getMessaging, getToken } from "firebase/messaging";
+import useStore from "../store/useStore";
 import GetUserPermission from "../fcm/GetUserPermission";
 
 const Container = styled.div`
@@ -188,6 +187,7 @@ const BottomSignUpWapper = styled.div`
 `;
 const SignIn = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { id, name, major, setId, setName, setMajor } = useStore();
   const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -252,6 +252,13 @@ const SignIn = () => {
 
       // 응답 로그
       console.log("응답:", response.data);
+      localStorage.setItem("id", response.data.id);
+      localStorage.setItem("name", response.data.name);
+      localStorage.setItem("major", response.data.major);
+      setId(response.data.id);
+      setName(response.data.name);
+      setMajor(response.data.major);
+
       alert("로그인이 완료되었습니다!");
       navigate("/");
     } catch (error) {

@@ -6,7 +6,7 @@ import GetUserPermission from "../fcm/GetUserPermission";
 const NavbarContainer = styled.div`
   z-index: 5;
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   display: flex;
@@ -18,41 +18,13 @@ const NavbarContainer = styled.div`
   background-color: rgb(0, 102, 179);
 `;
 
-const LogoContainer = styled(Link)`
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  width: 50%;
-  height: 100%;
-  height: inherit;
-  background-color: inherit;
-  text-decoration: none;
-`;
-
 const BtnContainer = styled.div`
   display: flex;
-  justify-content: right;
+  justify-content: center;
   align-items: center;
-  width: 50%;
-  height: 100%;
+  width: 100%;
   height: inherit;
   background-color: inherit;
-`;
-
-const LogoText = styled.span`
-  align-items: center;
-  width: 12rem;
-  height: 1.5rem;
-  font-weight: 700;
-  font-size: 0.9rem;
-  line-height: 1.5rem;
-  color: white;
-  margin-left: 1rem;
-`;
-
-const AlarmImg = styled.img`
-  width: 4vw;
-  height: 4vh;
 `;
 
 const StyledLink = styled(Link)`
@@ -71,23 +43,22 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   margin: 0 1rem 0 1rem;
 `;
-export default function LandingNavbar() {
-  const handleAlarmClick = () => {
-    GetUserPermission();
-  };
+
+export default function BottomNavbar() {
   return (
     <NavbarContainer>
-      <LogoContainer to="/">
-        <LogoText>아주대 공지사항 알림</LogoText>
-      </LogoContainer>
       <BtnContainer>
-        <AlarmImg
-          alt="알람"
-          src={`${process.env.PUBLIC_URL}/icons/mdi_bell.svg`}
-          onClick={handleAlarmClick}
-        ></AlarmImg>
-        <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
-          로그인하기
+        <StyledLink bgcolor={"white"} color={"black"} to="/">
+          홈
+        </StyledLink>
+        <StyledLink bgcolor={"white"} color={"black"} to="/events">
+          이벤트페이지
+        </StyledLink>
+        <StyledLink bgcolor={"white"} color={"black"} to="/">
+          찜한 페이지
+        </StyledLink>
+        <StyledLink bgcolor={"white"} color={"black"} to="/">
+          마이페이지
         </StyledLink>
       </BtnContainer>
     </NavbarContainer>

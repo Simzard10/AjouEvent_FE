@@ -1,8 +1,8 @@
 import React from "react";
-import LandingNavbar from "../components/LandingNavbar";
+import TopBar from "../components/TopBar";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import EventMain from "../events/EventMain";
+import BottomNavbar from "../components/BottomNavbar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -16,8 +16,9 @@ const AppContaioner = styled.div`
 export default function EventPage() {
   return (
     <AppContaioner>
-      <LandingNavbar></LandingNavbar>
+      <TopBar></TopBar>
       <EventMain></EventMain>
+      <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );
 }
