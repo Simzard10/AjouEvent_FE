@@ -1,10 +1,10 @@
-// src/App.js
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignInPage from "./pages/SignInPage";
 import EventPage from "./pages/EventPage";
 import SignUpPage from "./pages/SignUpPage";
 import MainPage from "./pages/MainPage";
+import EventDetailPage from "./pages/EventDetailPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -22,6 +22,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/events",
     element: <EventPage />,
+  },
+  {
+    path: "/event/:id",
+    element: <EventDetailPage />,
   },
 ]);
 

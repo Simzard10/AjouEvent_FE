@@ -42,7 +42,7 @@ const Image = styled.img`
   margin-bottom: 10px;
 `;
 
-const EventDetailPage = () => {
+const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
 
@@ -82,4 +82,4 @@ const EventDetailPage = () => {
   );
 };
 
-export default EventDetailPage;
+export default EventDetail;

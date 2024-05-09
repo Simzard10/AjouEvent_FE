@@ -192,13 +192,15 @@ const SignIn = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const handleGoogleButtonClicked = () => {
-    navigate("/oauth2/authorization/google");
+    window.location.href =
+      "https://ajou-event.shop/oauth2/authorization/google?redirect_uri=http://localhost:8080/login/oauth2/code/google";
   };
 
-  useEffect(() => {
-    GetUserPermission();
-  }, []);
+  // useEffect(() => {
+  //   GetUserPermission();
+  // }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();

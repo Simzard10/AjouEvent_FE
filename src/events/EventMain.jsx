@@ -2,7 +2,6 @@ import styled from "styled-components";
 import EventCard from "./EventCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 const FlexContainer = styled.div`
   padding-top: 80px;
@@ -15,19 +14,19 @@ const FlexContainer = styled.div`
 
 const EventMain = () => {
   const [events, setEvents] = useState([]);
-  const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1); // 초기 페이지는 1
+  const pageSize = 10; // 페이지 당 이벤트 수
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response;
-        if (keyword === "") {
-          response = await axios.get("https://ajou-event.shop/api/event/all");
-        } else {
-          // response = await ProductSearchApi(keyword);
-        }
-        setEvents(response.data.reverse());
+        setLoading(true);
+        const response = await axios.get(
+          `https://ajou-event.shop/api/event/all?page=${page}&size=${pageSize}`
+        );
+        const newEvents = response.data.content;
+        setEvents((prevEvents) => [...prevEvents, ...newEvents]);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -36,9 +35,24 @@ const EventMain = () => {
     };
 
     fetchData();
-  }, [keyword]);
+  }, [page]);
 
-  if (loading) {
+  // 스크롤을 감지하고, 맨 아래로 스크롤되면 페이지를 증가시킴
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+      document.documentElement.offsetHeight
+    )
+      return;
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (loading && events.length === 0) {
     return <p>Loading...</p>;
   }
 
@@ -49,14 +63,15 @@ const EventMain = () => {
   return (
     <FlexContainer>
       {events.map((event) => (
-        <Link key={event.eventId} to={`/event/${event.eventId}`}>
-          <EventCard
-            title={event.title}
-            imgUrl={event.imgUrl}
-            star={event.star}
-          />
-        </Link>
+        <EventCard
+          key={event.eventId}
+          id={event.eventId}
+          title={event.title}
+          imgUrl={event.imgUrl}
+          star={event.star}
+        />
       ))}
+      {loading && <p>Loading more...</p>}
     </FlexContainer>
   );
 };
