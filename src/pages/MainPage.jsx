@@ -23,7 +23,6 @@ export default function MainPage() {
 
   useEffect(() => {
     async function requestPermission() {
-      console.log("권한 요청 중...");
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         console.log("알림 권한이 허용됨");

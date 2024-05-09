@@ -5,12 +5,10 @@ const GetFCMToken = async () => {
   try {
     const messaging = getMessaging(firebaseApp);
     const currentToken = await getToken(messaging, {
-      vapidKey:
-        "BFZ7YxE9EWYjsUoDXz6RUqS20dncoD_ZpOpvqywQpTSWuLqaDsW2_ttCFo7ZUmvETmohzwubLRUsbbQ4hj61tvA",
+      vapidKey: process.env.REACT_APP_VAPID_KEY,
     });
 
     if (currentToken) {
-      console.log("Current Token:", currentToken);
       localStorage.setItem("fcmToken", currentToken);
     } else {
       console.log(

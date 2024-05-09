@@ -170,7 +170,7 @@ const StyledCheckBox = styled.input`
   appearance: none;
   cursor: pointer;
   &:checked {
-    background: #701edb;
+    background: rgb(0, 102, 179);
   }
 `;
 
@@ -193,33 +193,10 @@ const SignIn = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
   const handleGoogleButtonClicked = () => {
-    alert("기능개발중입니다.");
+    navigate("/oauth2/authorization/google");
   };
 
   useEffect(() => {
-    // const checkAndSendToken = async () => {
-    //   try {
-    //     console.log("Checking notification permission...");
-    //     const permission = await Notification.requestPermission();
-    //     if (permission === "granted") {
-    //       console.log(
-    //         "Notification permission granted. Ready to send token..."
-    //       );
-    //       await sendTokenToServer();
-    //     } else {
-    //       console.log(
-    //         "Notification permission not granted. Requesting permission..."
-    //       );
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       "Failed to check or request notification permission:",
-    //       error
-    //     );
-    //   }
-    // };
-
-    // checkAndSendToken();
     GetUserPermission();
   }, []);
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import GetUserPermission from "../fcm/GetUserPermission";
@@ -77,7 +77,25 @@ export default function TopBar() {
     GetUserPermission();
   };
 
-  const isLoggedIn = localStorage.getItem("id") !== "";
+  const [isSignIn, setIsSignIn] = useState(false);
+
+  useEffect(() => {
+    const id = localStorage.getItem("id");
+    if (id) {
+      setIsSignIn(true);
+    } else {
+      setIsSignIn(false);
+    }
+  }, []);
+
+  const handleLogoutBtnClick = () => {
+    alert("로그아웃 했습니다.");
+    setIsSignIn(false);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("id");
+    localStorage.removeItem("name");
+    localStorage.removeItem("major");
+  };
 
   return (
     <TopBarContainer>
@@ -90,13 +108,18 @@ export default function TopBar() {
           src={`${process.env.PUBLIC_URL}/icons/mdi_bell.svg`}
           onClick={handleAlarmClick}
         />
-        {isLoggedIn ? (
-          <StyledLink bgcolor={"white"} color={"black"} to="/">
-            로그아웃 하기
+        {isSignIn ? (
+          <StyledLink
+            onClick={handleLogoutBtnClick}
+            bgcolor={"white"}
+            color={"black"}
+            to="/"
+          >
+            로그아웃
           </StyledLink>
         ) : (
           <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
-            로그인하기
+            로그인
           </StyledLink>
         )}
       </BtnContainer>
