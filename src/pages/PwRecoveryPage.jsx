@@ -1,5 +1,5 @@
 import React from "react";
-import LandingNavbar from "../components/LandingNavbar";
+import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import PwRecovery from "../components/PwRecovery";
 
@@ -16,7 +16,7 @@ const AppContaioner = styled.div`
 export default function PwRecoveryPage() {
   return (
     <AppContaioner>
-      <LandingNavbar></LandingNavbar>
+      <TopBar></TopBar>
       <PwRecovery></PwRecovery>
     </AppContaioner>
   );

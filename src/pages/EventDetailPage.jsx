@@ -1,8 +1,8 @@
 import React from "react";
-import SignIn from "../components/SignIn";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
+import TopBar from "../components/TopBar";
 import BottomNavbar from "../components/BottomNavbar";
+import EventDetail from "../events/EventDetail";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -14,11 +14,11 @@ const AppContaioner = styled.div`
   overflow-y: hidden;
 `;
 
-export default function SignInPage() {
+export default function EventDetailPage() {
   return (
     <AppContaioner>
       <TopBar></TopBar>
-      <SignIn></SignIn>
+      <EventDetail></EventDetail>
       <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );

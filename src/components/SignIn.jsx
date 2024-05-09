@@ -11,8 +11,7 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { firebaseApp } from "../fcm/firebase";
-import { getMessaging, getToken } from "firebase/messaging";
+import useStore from "../store/useStore";
 import GetUserPermission from "../fcm/GetUserPermission";
 
 const Container = styled.div`
@@ -171,7 +170,7 @@ const StyledCheckBox = styled.input`
   appearance: none;
   cursor: pointer;
   &:checked {
-    background: #701edb;
+    background: rgb(0, 102, 179);
   }
 `;
 
@@ -188,38 +187,16 @@ const BottomSignUpWapper = styled.div`
 `;
 const SignIn = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { id, name, major, setId, setName, setMajor } = useStore();
   const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
   const handleGoogleButtonClicked = () => {
-    alert("기능개발중입니다.");
+    navigate("/oauth2/authorization/google");
   };
 
   useEffect(() => {
-    // const checkAndSendToken = async () => {
-    //   try {
-    //     console.log("Checking notification permission...");
-    //     const permission = await Notification.requestPermission();
-    //     if (permission === "granted") {
-    //       console.log(
-    //         "Notification permission granted. Ready to send token..."
-    //       );
-    //       await sendTokenToServer();
-    //     } else {
-    //       console.log(
-    //         "Notification permission not granted. Requesting permission..."
-    //       );
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       "Failed to check or request notification permission:",
-    //       error
-    //     );
-    //   }
-    // };
-
-    // checkAndSendToken();
     GetUserPermission();
   }, []);
 
@@ -252,6 +229,13 @@ const SignIn = () => {
 
       // 응답 로그
       console.log("응답:", response.data);
+      localStorage.setItem("id", response.data.id);
+      localStorage.setItem("name", response.data.name);
+      localStorage.setItem("major", response.data.major);
+      setId(response.data.id);
+      setName(response.data.name);
+      setMajor(response.data.major);
+
       alert("로그인이 완료되었습니다!");
       navigate("/");
     } catch (error) {

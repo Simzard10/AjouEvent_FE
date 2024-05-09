@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import LandingNavbar from "../components/LandingNavbar";
+import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import GetFCMToken from "../fcm/GetFCMToken";
+import BottomNavbar from "../components/BottomNavbar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -22,7 +23,6 @@ export default function MainPage() {
 
   useEffect(() => {
     async function requestPermission() {
-      console.log("권한 요청 중...");
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         console.log("알림 권한이 허용됨");
@@ -40,9 +40,10 @@ export default function MainPage() {
 
   return (
     <AppContaioner>
-      <LandingNavbar></LandingNavbar>
+      <TopBar></TopBar>
       <p>임시 메인페이지</p>
       <button onClick={handleBtnClick}> 이벤트 조회페이지로 이동</button>
+      <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );
 }

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import EventCard from "./EventCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const FlexContainer = styled.div`
   padding-top: 80px;
@@ -15,7 +16,7 @@ const FlexContainer = styled.div`
 const EventMain = () => {
   const [events, setEvents] = useState([]);
   const [keyword, setKeyword] = useState("");
-  const [loading, setLoading] = useState(true); // 추가: 데이터 로딩 상태
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,23 +27,21 @@ const EventMain = () => {
         } else {
           // response = await ProductSearchApi(keyword);
         }
-        setEvents(response.data.reverse()); // Reversing the order of events
-        setLoading(false); // 데이터 로딩 완료 후 상태 업데이트
+        setEvents(response.data.reverse());
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching events:", error);
-        setLoading(false); // 에러 발생 시에도 로딩 상태 업데이트
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [keyword]);
 
-  // 데이터 로딩 중이면 로딩 표시
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  // 데이터가 없으면 빈 화면 표시
   if (events.length === 0) {
     return <p>No events found.</p>;
   }
@@ -50,13 +49,13 @@ const EventMain = () => {
   return (
     <FlexContainer>
       {events.map((event) => (
-        <EventCard
-          key={event.eventId}
-          id={event.eventId}
-          title={event.title}
-          imgUrl={event.imgUrl}
-          star={event.star}
-        />
+        <Link key={event.eventId} to={`/event/${event.eventId}`}>
+          <EventCard
+            title={event.title}
+            imgUrl={event.imgUrl}
+            star={event.star}
+          />
+        </Link>
       ))}
     </FlexContainer>
   );
