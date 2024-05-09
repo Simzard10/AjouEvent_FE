@@ -70,9 +70,10 @@ const EventDetail = () => {
           <Writer>작성자: {event.writer}</Writer>
           <Subject>주제: {event.subject}</Subject>
           <ImageContainer>
-            {event.imgUrls.map((url, index) => (
-              <Image key={index} src={url} alt={`Image ${index + 1}`} />
-            ))}
+            {event.imgUrls &&
+              event.imgUrls.map((url, index) => (
+                <Image key={index} src={url} alt={`Image ${index + 1}`} />
+              ))}
           </ImageContainer>
         </>
       ) : (
