@@ -5,7 +5,7 @@ import FilledStarIcon from "../icons/FilledStarIcon";
 import { Link } from "react-router-dom";
 
 const CardContainer = styled(Link)`
-  width: calc(50% - 1rem);
+  width: calc(48% - 1rem);
   height: 12rem;
   text-decoration: none;
   margin: 10px;

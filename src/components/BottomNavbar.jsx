@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import GetUserPermission from "../fcm/GetUserPermission";
 
 const NavbarContainer = styled.div`
   z-index: 5;

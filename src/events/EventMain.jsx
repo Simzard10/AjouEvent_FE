@@ -38,12 +38,24 @@ const EventMain = () => {
   }, [page]);
 
   // 스크롤을 감지하고, 맨 아래로 스크롤되면 페이지를 증가시킴
+  // 스크롤을 감지하고, 맨 아래로 스크롤되면 페이지를 증가시킴
   const handleScroll = () => {
+    console.log("Scrolled!"); // 스크롤 이벤트가 제대로 감지되는지 확인
+
     if (
       window.innerHeight + document.documentElement.scrollTop !==
       document.documentElement.offsetHeight
     )
       return;
+
+    // 현재 스크롤 위치와 브라우저 창의 높이를 더한 값이 문서의 총 높이와 같으면 마지막까지 스크롤된 것으로 간주
+    if (
+      document.documentElement.scrollTop + window.innerHeight ===
+      document.documentElement.offsetHeight
+    ) {
+      console.log("Reached bottom of the page!"); // 페이지의 맨 아래까지 스크롤되었을 때 확인
+    }
+
     setPage((prevPage) => prevPage + 1);
   };
 
