@@ -13,4 +13,5 @@ npm i --save @fortawesome/react-fontawesome@latest
 
 npm i zustand
 
-npm install dotenv
+npm install dotenv (.env)
+npm install react-intersection-observer --save (무한스크롤)
