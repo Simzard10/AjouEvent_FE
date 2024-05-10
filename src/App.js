@@ -20,7 +20,7 @@ const ROUTER = createBrowserRouter([
     element: <SignUpPage />,
   },
   {
-    path: "/events",
+    path: "/event",
     element: <EventPage />,
   },
   {

@@ -52,11 +52,19 @@ const EventMain = () => {
   }, [inView]);
 
   if (loading && events.length === 0) {
-    return <p>Loading...</p>;
+    return (
+      <FlexContainer>
+        <p>Loading...</p>
+      </FlexContainer>
+    );
   }
 
   if (events.length === 0) {
-    return <p>No events found.</p>;
+    return (
+      <FlexContainer>
+        <p>No events found.</p>
+      </FlexContainer>
+    );
   }
 
   return (
@@ -71,7 +79,6 @@ const EventMain = () => {
         />
       ))}
       <Observer ref={ref}>Observer</Observer>
-      {loading && <p>Loading...</p>}
     </FlexContainer>
   );
 };

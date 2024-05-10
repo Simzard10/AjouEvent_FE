@@ -18,7 +18,7 @@ const AppContaioner = styled.div`
 export default function MainPage() {
   const navigate = useNavigate();
   const handleBtnClick = async () => {
-    navigate("/events");
+    navigate("/event");
   };
 
   useEffect(() => {
