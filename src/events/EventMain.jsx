@@ -2,6 +2,7 @@ import styled from "styled-components";
 import EventCard from "./EventCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useInView } from "react-intersection-observer";
 
 const FlexContainer = styled.div`
   padding-top: 80px;
@@ -12,57 +13,43 @@ const FlexContainer = styled.div`
   overflow: auto;
 `;
 
+const Observer = styled.div`
+  height: 3rem;
+  width: 100%;
+`;
+
 const EventMain = () => {
   const [events, setEvents] = useState([]);
+  const [ref, inView] = useInView();
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1); // 초기 페이지는 1
+  const [page, setPage] = useState(0); // 초기 페이지는 0
   const pageSize = 10; // 페이지 당 이벤트 수
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://ajou-event.shop/api/event/all?page=${page}&size=${pageSize}`
-        );
-        const newEvents = response.data.content;
-        setEvents((prevEvents) => [...prevEvents, ...newEvents]);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page]);
-
-  // 스크롤을 감지하고, 맨 아래로 스크롤되면 페이지를 증가시킴
-  // 스크롤을 감지하고, 맨 아래로 스크롤되면 페이지를 증가시킴
-  const handleScroll = () => {
-    console.log("Scrolled!"); // 스크롤 이벤트가 제대로 감지되는지 확인
-
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-      document.documentElement.offsetHeight
-    )
-      return;
-
-    // 현재 스크롤 위치와 브라우저 창의 높이를 더한 값이 문서의 총 높이와 같으면 마지막까지 스크롤된 것으로 간주
-    if (
-      document.documentElement.scrollTop + window.innerHeight ===
-      document.documentElement.offsetHeight
-    ) {
-      console.log("Reached bottom of the page!"); // 페이지의 맨 아래까지 스크롤되었을 때 확인
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `https://ajou-event.shop/api/event/all?page=${page}&size=${pageSize}`
+      );
+      const newEvents = response.data.content;
+      console.log("NewData:" + newEvents);
+      setEvents((prevEvents) => [...prevEvents, ...newEvents]);
+      setLoading(false);
+      console.log("Loading:" + loading);
+      setPage((prevPage) => prevPage + 1);
+      console.log("Page:" + page);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      setLoading(false);
     }
-
-    setPage((prevPage) => prevPage + 1);
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (inView) {
+      console.log("스크롤");
+      fetchData();
+    }
+  }, [inView]);
 
   if (loading && events.length === 0) {
     return <p>Loading...</p>;
@@ -83,7 +70,8 @@ const EventMain = () => {
           star={event.star}
         />
       ))}
-      {loading && <p>Loading more...</p>}
+      <Observer ref={ref}>Observer</Observer>
+      {loading && <p>Loading...</p>}
     </FlexContainer>
   );
 };

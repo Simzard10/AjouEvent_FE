@@ -38,6 +38,7 @@ const ImageWapper = styled.div`
 const TitleText = styled.div`
   font-size: 1rem;
   font-weight: bold;
+  text-decoration: none;
   white-space: nowrap; /* 텍스트가 넘치면 한 줄로 표시 */
   overflow: hidden; /* 넘치는 부분은 숨김 */
   text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
