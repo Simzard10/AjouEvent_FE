@@ -136,9 +136,20 @@ const Separator = styled.div`
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const validateForm = (name, major, email, password, phone) => {
+    const errors = {};
+    if (!name) errors.name = "* 이름을 입력해주세요.";
+    if (!major) errors.major = "* 학과를 입력해주세요.";
+    if (!email) errors.email = "* 이메일을 입력해주세요.";
+    if (!password) errors.password = "* 비밀번호를 입력해주세요.";
+    if (!phone) errors.phone = "* 전화번호를 입력해주세요.";
+    return errors;
   };
 
   const handleSignUp = async (e) => {
@@ -150,8 +161,13 @@ const SignUp = () => {
     const password = e.target.elements.password.value;
     const phone = e.target.elements.phone.value;
 
+    const errors = validateForm(name, major, email, password, phone);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     try {
-      // 서버에 회원가입 요청 보내기
       const response = await axios.post(
         "https://ajou-event.shop/users/register",
         {
@@ -163,12 +179,10 @@ const SignUp = () => {
         }
       );
 
-      // 응답 로그
       console.log("응답:", response.data);
       alert("회원가입이 완료되었습니다!");
       navigate("/signIn");
     } catch (error) {
-      // 에러를 처리
       if (error.response) {
         console.error("응답 에러:", error.response.data);
       } else if (error.request) {
@@ -197,6 +211,7 @@ const SignUp = () => {
               name="name"
             />
           </div>
+          {formErrors.name && <Error>{formErrors.name}</Error>}
           <div className="input__block">
             <p>학과</p>
             <input
@@ -207,16 +222,18 @@ const SignUp = () => {
               name="major"
             />
           </div>
+          {formErrors.major && <Error>{formErrors.major}</Error>}
           <div className="input__block">
             <p>이메일</p>
             <input
               type="email"
-              placeholder="5 ~ 12자"
+              placeholder="이메일"
               className="input"
               id="email"
-              name="userName"
+              name="email"
             />
           </div>
+          {formErrors.email && <Error>{formErrors.email}</Error>}
           <div className="input__block">
             <p>비밀번호</p>
             <div className="pw-input__block">
@@ -248,6 +265,7 @@ const SignUp = () => {
               </span>
             </div>
           </div>
+          {formErrors.password && <Error>{formErrors.password}</Error>}
           <div className="input__block">
             <p>전화번호</p>
             <input
@@ -258,6 +276,7 @@ const SignUp = () => {
               name="phone"
             />
           </div>
+          {formErrors.phone && <Error>{formErrors.phone}</Error>}
           <button type="submit" className="signin__btn">
             가입하기
           </button>
@@ -266,5 +285,14 @@ const SignUp = () => {
     </>
   );
 };
+
+const Error = styled.div`
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  color: red;
+  padding-left: 40px;
+  font-size: 0.5em;
+`;
 
 export default SignUp;

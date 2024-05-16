@@ -2,8 +2,8 @@ import * as React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 
-const sizeOptions = ["소규모", "중규모", "대규모"];
-const historyOptions = ["1년 이하", "1-3년", "3년 이상"];
+const organiztionOptions = ["단과대", "동아리", "학생회"];
+const detailOptions = ["1년 이하", "1-3년", "3년 이상"];
 
 function FilterOption({
   label,
@@ -41,15 +41,15 @@ function SearchDropBox() {
     <Container>
       <FilterRow>
         <FilterOption
-          label="카페 규모"
-          options={sizeOptions}
+          label="단체"
+          options={organiztionOptions}
           selectedValue={selectedSize}
           setSelectedValue={setSelectedSize}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/e9566b1578aea7dfd042515fc7174a5222b2c94f022d10de0bf5f1f4a44f8bf2?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
         <FilterOption
-          label="업력"
-          options={historyOptions}
+          label="상세"
+          options={detailOptions}
           selectedValue={selectedHistory}
           setSelectedValue={setSelectedHistory}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/9316045d2a3d77a8384125accfe4d605dfbbba2237b9dcf5c74d5f74feb0de83?apiKey=75213697ab8e4fbfb70997e546d69efb&"
