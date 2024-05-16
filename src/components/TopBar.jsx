@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GetUserPermission from "../fcm/GetUserPermission";
 
 const TopBarContainer = styled.div`
@@ -40,6 +40,7 @@ const BtnContainer = styled.div`
 `;
 
 const LogoText = styled.span`
+  font-family: "Spoqa Han Sans Neo", "sans-serif";
   align-items: center;
   width: 12rem;
   height: 1.5rem;
@@ -73,6 +74,7 @@ const StyledLink = styled(Link)`
 `;
 
 export default function TopBar() {
+  const navigate = useNavigate();
   const handleAlarmClick = () => {
     GetUserPermission();
   };
@@ -95,6 +97,7 @@ export default function TopBar() {
     localStorage.removeItem("id");
     localStorage.removeItem("name");
     localStorage.removeItem("major");
+    navigate("/signIn");
   };
 
   return (

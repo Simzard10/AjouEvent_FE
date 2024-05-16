@@ -50,7 +50,7 @@ export default function BottomNavbar() {
         <StyledLink bgcolor={"white"} color={"black"} to="/">
           홈
         </StyledLink>
-        <StyledLink bgcolor={"white"} color={"black"} to="/events">
+        <StyledLink bgcolor={"white"} color={"black"} to="/event">
           이벤트페이지
         </StyledLink>
         <StyledLink bgcolor={"white"} color={"black"} to="/">

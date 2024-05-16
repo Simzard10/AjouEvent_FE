@@ -3,7 +3,6 @@ import SignIn from "../components/SignIn";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import BottomNavbar from "../components/BottomNavbar";
-
 const AppContaioner = styled.div`
   display: flex;
   flex-direction: column;
