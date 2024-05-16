@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import GetFCMToken from "../fcm/GetFCMToken";
 import BottomNavbar from "../components/BottomNavbar";
+import axios from "axios";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -37,6 +38,36 @@ export default function MainPage() {
     }
     requestPermission();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let accessToken = localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+          navigate("/signIn");
+          return;
+        }
+
+        const response = await axios.get("https://ajou-event.shop/api/users", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.status === 200) {
+          console.log("login success");
+        } else {
+          navigate("/signIn");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        navigate("/signIn");
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   return (
     <AppContaioner>
