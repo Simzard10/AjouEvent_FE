@@ -1,9 +1,7 @@
-import { initializeApp } from "firebase/app";
-import {
-  getMessaging,
-  onMessage,
-  onBackgroundMessage,
-} from "firebase/messaging";
+importScripts("https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.17.1/firebase-messaging.js"
+);
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,8 +13,8 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 
 const showNotification = (data) => {
   const resultData = data.notification;
@@ -69,15 +67,7 @@ const handlePushEvent = (e) => {
   showNotification(data);
 };
 
-onMessage(messaging, (e) => {
-  console.log("Foreground message received. ", e);
-  handlePushEvent(e);
-});
-
-onBackgroundMessage(messaging, (e) => {
-  console.log("Background message received. ", e);
-  handlePushEvent(e);
-});
+messaging.onBackgroundMessage(handlePushEvent);
 
 self.addEventListener("push", handlePushEvent);
 
