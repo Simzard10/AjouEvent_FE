@@ -13,7 +13,6 @@ const LoginSuccess = () => {
       const authorizationCode = params.get("code");
 
       if (authorizationCode) {
-        console.log("authorizationCode:" + authorizationCode);
         const fcmToken = localStorage.getItem("fcmToken");
 
         const loginData = {
@@ -22,9 +21,6 @@ const LoginSuccess = () => {
         };
 
         try {
-          console.log(
-            `AC & FCM post API call to ${process.env.REACT_APP_BE_URL}/api/users/oauth`
-          );
           const response = await axios.post(
             `${process.env.REACT_APP_BE_URL}/api/users/oauth`,
             loginData
