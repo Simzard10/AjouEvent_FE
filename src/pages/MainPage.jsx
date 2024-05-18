@@ -49,11 +49,14 @@ export default function MainPage() {
           return;
         }
 
-        const response = await axios.get("https://ajou-event.shop/api/users", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         if (response.status === 200) {
           console.log("login success");

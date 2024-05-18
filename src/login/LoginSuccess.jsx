@@ -23,7 +23,7 @@ const LoginSuccess = () => {
 
         try {
           const response = await axios.post(
-            "https://ajou-event.shop/api/users/oauth",
+            `${process.env.REACT_APP_BE_URL}/api/users/oauth`,
             loginData
           );
 

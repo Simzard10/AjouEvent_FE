@@ -1,4 +1,11 @@
 // firebase-messaging-sw.js
+import { firebaseApp } from "../src/fcm/firebase";
+import {
+  getMessaging,
+  onMessage,
+  onBackgroundMessage,
+} from "firebase/messaging";
+
 self.addEventListener("install", function (e) {
   console.log("fcm sw install..");
   self.skipWaiting();
@@ -17,9 +24,8 @@ self.addEventListener("push", function (e) {
   const resultData = e.data.json().notification;
   const resultURL = e.data.json().data.click_action;
   self.addEventListener("notificationclick", function (event) {
-    console.log("notification click");
-    event.notification.close();
     event.waitUntil(clients.openWindow(resultURL));
+    event.notification.close();
   });
 
   if (!resultData || !resultData.title || !resultData.body) {
@@ -32,6 +38,28 @@ self.addEventListener("push", function (e) {
     body: resultData.body,
     icon: resultData.image,
     tag: resultData.tag,
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+const messaging = getMessaging(firebaseApp);
+
+onMessage(messaging, (payload) => {
+  console.log("Message received. ", payload);
+  // ...
+});
+
+onBackgroundMessage(messaging, (payload) => {
+  console.log(
+    "[firebase-messaging-sw.js] Received background message ",
+    payload
+  );
+  // Customize notification here
+  const notificationTitle = "Background Message Title";
+  const notificationOptions = {
+    body: "Background Message body.",
+    icon: "/firebase-logo.png",
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
