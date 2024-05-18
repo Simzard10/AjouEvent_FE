@@ -26,7 +26,7 @@ const EventMain = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://ajou-event.shop/api/event/all?page=${page}&size=${pageSize}`
+        `${process.env.REACT_APP_BE_URL}/api/event/all?page=${page}&size=${pageSize}`
       );
       const newEvents = response.data.result;
 

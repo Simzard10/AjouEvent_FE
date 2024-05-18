@@ -50,7 +50,7 @@ const EventDetail = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `https://ajou-event.shop/api/event/detail/${id}`
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         );
         setEvent(response.data);
       } catch (error) {

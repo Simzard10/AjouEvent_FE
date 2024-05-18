@@ -169,7 +169,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "https://ajou-event.shop/users/register",
+        `${process.env.REACT_APP_BE_URL}/users/register`,
         {
           name,
           major,
