@@ -1,20 +1,32 @@
-importScripts("https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js");
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.17.1/firebase-messaging.js"
+  "https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"
+);
+importScripts(
+  "https://www.gstatic.com/firebasejs/10.10.0/firebase-messaging-compat.js"
 );
 
+// const firebaseConfig = {
+//   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+//   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+//   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+//   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: process.env.REACT_APP_FIREBASE_APP_ID,
+//   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+// };
+
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyBSU70NFh3USzDmx8SsRon2UUZ2aBfFQMI",
+  authDomain: "ajou-event.firebaseapp.com",
+  projectId: "ajou-event",
+  storageBucket: "ajou-event.appspot.com",
+  messagingSenderId: "605779034389",
+  appId: "1:605779034389:web:d3f7dd041db696dffba91c",
+  measurementId: "G-1XHZ65LFSE",
 };
 
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging(firebaseApp);
 
 const showNotification = (data) => {
   const resultData = data.notification;
@@ -57,17 +69,25 @@ const showNotification = (data) => {
   });
 };
 
-const handlePushEvent = (e) => {
-  console.log("Push event received. ", e);
-  if (!e.data || !e.data.json()) {
+const handlePushEvent = (payload) => {
+  console.log("Push event received. ", payload);
+  if (!payload.data || !payload.data.json()) {
     console.error("Push event does not contain valid JSON data.");
     return;
   }
-  const data = e.data.json();
+  const data = payload.data.json();
   showNotification(data);
 };
 
-messaging.onBackgroundMessage(handlePushEvent);
+messaging.onMessage((payload) => {
+  console.log("Foreground message received. ", payload);
+  handlePushEvent(payload);
+});
+
+messaging.onBackgroundMessage((payload) => {
+  console.log("Background message received. ", payload);
+  handlePushEvent(payload);
+});
 
 self.addEventListener("push", handlePushEvent);
 
