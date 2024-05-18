@@ -1,10 +1,10 @@
 // firebase-messaging-sw.js
-import { firebaseApp } from "../src/fcm/firebase";
-import {
-  getMessaging,
-  onMessage,
-  onBackgroundMessage,
-} from "firebase/messaging";
+// import { firebaseApp } from "../src/fcm/firebase";
+// import {
+//   getMessaging,
+//   onMessage,
+//   onBackgroundMessage,
+// } from "firebase/messaging";
 
 self.addEventListener("install", function (e) {
   console.log("fcm sw install..");
@@ -23,10 +23,6 @@ self.addEventListener("push", function (e) {
 
   const resultData = e.data.json().notification;
   const resultURL = e.data.json().data.click_action;
-  self.addEventListener("notificationclick", function (event) {
-    event.waitUntil(clients.openWindow(resultURL));
-    event.notification.close();
-  });
 
   if (!resultData || !resultData.title || !resultData.body) {
     console.error("Notification data is incomplete.");
@@ -38,28 +34,57 @@ self.addEventListener("push", function (e) {
     body: resultData.body,
     icon: resultData.image,
     tag: resultData.tag,
+    data: { click_action: resultURL }, // Add click_action URL to notification data
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-const messaging = getMessaging(firebaseApp);
+self.addEventListener("notificationclick", function (event) {
+  const resultURL =
+    event.notification.data && event.notification.data.click_action;
 
-onMessage(messaging, (payload) => {
-  console.log("Message received. ", payload);
-});
+  if (!resultURL) {
+    console.error("Notification click action URL is missing.");
+    return;
+  }
 
-onBackgroundMessage(messaging, (payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then(function (clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+          var client = clientList[i];
+          if (client.url === resultURL && "focus" in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(resultURL);
+        }
+      })
   );
-  // Customize notification here
-  const notificationTitle = "Background Message Title";
-  const notificationOptions = {
-    body: "Background Message body.",
-    icon: "/firebase-logo.png",
-  };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  event.notification.close();
 });
+
+// const messaging = getMessaging(firebaseApp);
+
+// onMessage(messaging, (payload) => {
+//   console.log("Message received. ", payload);
+// });
+
+// onBackgroundMessage(messaging, (payload) => {
+//   console.log(
+//     "[firebase-messaging-sw.js] Received background message ",
+//     payload
+//   );
+//   // Customize notification here
+//   const notificationTitle = "Background Message Title";
+//   const notificationOptions = {
+//     body: "Background Message body.",
+//     icon: "/firebase-logo.png",
+//   };
+
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
