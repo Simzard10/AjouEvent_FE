@@ -22,6 +22,9 @@ const LoginSuccess = () => {
         };
 
         try {
+          console.log(
+            `AC & FCM post API call to ${process.env.REACT_APP_BE_URL}/api/users/oauth`
+          );
           const response = await axios.post(
             `${process.env.REACT_APP_BE_URL}/api/users/oauth`,
             loginData
