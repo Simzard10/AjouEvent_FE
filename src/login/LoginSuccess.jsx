@@ -1,38 +1,75 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const LoginSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const accessToken = params.get("accessToken");
-    const refreshToken = params.get("refreshToken");
-    const id = params.get("id");
-    const email = params.get("email");
-    const name = params.get("name");
-    const major = params.get("major");
+    const handleLogin = async () => {
+      const params = new URLSearchParams(location.search);
+      const authorizationCode = params.get("code");
 
-    if (accessToken && refreshToken && id && email && name && major) {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("id", id);
-      localStorage.setItem("email", email);
-      localStorage.setItem("name", name);
-      localStorage.setItem("major", major);
+      if (authorizationCode) {
+        console.log("authorizationCode:" + authorizationCode);
+        const fcmToken = localStorage.getItem("fcmToken");
 
-      navigate("/");
-    } else {
-      console.error("Missing URL parameters");
-      navigate("/signIn");
-    }
+        const loginData = {
+          authorizationCode: authorizationCode,
+          fcmToken: fcmToken,
+        };
+
+        try {
+          const response = await axios.post(
+            "https://ajou-event.shop/api/users/oauth",
+            loginData
+          );
+
+          if (response.status === 200) {
+            const { id, accessToken, refreshToken, email, name, major } =
+              response.data;
+
+            localStorage.setItem("id", id);
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("email", email);
+            localStorage.setItem("name", name);
+            localStorage.setItem("major", major);
+
+            alert("로그인이 완료되었습니다!");
+            navigate("/");
+          }
+        } catch (error) {
+          if (error.response) {
+            if (error.response.status === 404) {
+              alert("회원가입되지 않은 사용자입니다.");
+              navigate("/signUp");
+            } else {
+              console.error("응답 에러:", error.response.data);
+              navigate("/");
+            }
+          } else if (error.request) {
+            console.error("응답 없음:", error.request);
+            navigate("/");
+          } else {
+            console.error("요청 설정 에러:", error.message);
+            alert(error.message);
+            navigate("/");
+          }
+        }
+      } else {
+        console.error("Missing URL parameters");
+        navigate("/signIn");
+      }
+    };
+
+    handleLogin();
   }, [location, navigate]);
 
   return (
     <div>
-      <h1>Login Success</h1>
       <p>Redirecting...</p>
     </div>
   );
