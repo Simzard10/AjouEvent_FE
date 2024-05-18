@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -11,8 +11,7 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import useStore from "../store/useStore";
-import GetUserPermission from "../fcm/GetUserPermission";
+// import useStore from "../store/useStore";
 
 const Container = styled.div`
   z-index: 1;
@@ -187,20 +186,15 @@ const BottomSignUpWapper = styled.div`
 `;
 const SignIn = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { id, name, major, setId, setName, setMajor } = useStore();
+  // const { id, name, major, setId, setName, setMajor } = useStore();
   const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const handleGoogleButtonClicked = () => {
-    window.location.href =
-      "https://ajou-event.shop/oauth2/authorization/google?redirect_uri=http://localhost:8080/login/oauth2/code/google";
+    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}&redirect_uri=http://localhost:3000/loginSuccess&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar`;
   };
-
-  // useEffect(() => {
-  //   GetUserPermission();
-  // }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -234,9 +228,9 @@ const SignIn = () => {
       localStorage.setItem("id", response.data.id);
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("major", response.data.major);
-      setId(response.data.id);
-      setName(response.data.name);
-      setMajor(response.data.major);
+      // setId(response.data.id);
+      // setName(response.data.name);
+      // setMajor(response.data.major);
 
       alert("로그인이 완료되었습니다!");
       navigate("/");
