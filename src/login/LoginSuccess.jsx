@@ -42,29 +42,29 @@ const LoginSuccess = () => {
             localStorage.setItem("major", major);
 
             alert("로그인이 완료되었습니다!");
-            navigate("/");
+            // navigate("/");
           }
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
               alert("회원가입되지 않은 사용자입니다.");
-              navigate("/signUp");
+              // navigate("/signUp");
             } else {
               console.error("응답 에러:", error.response.data);
-              navigate("/");
+              // navigate("/");
             }
           } else if (error.request) {
             console.error("응답 없음:", error.request);
-            navigate("/");
+            // navigate("/");
           } else {
             console.error("요청 설정 에러:", error.message);
             alert(error.message);
-            navigate("/");
+            // navigate("/");
           }
         }
       } else {
         console.error("Missing URL parameters");
-        navigate("/signIn");
+        // navigate("/signIn");
       }
     };
 
