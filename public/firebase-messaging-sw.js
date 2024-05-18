@@ -1,6 +1,6 @@
 // firebase-messaging-sw.js
+import { initializeApp } from "firebase/app";
 import {
-  initializeApp,
   getMessaging,
   onMessage,
   onBackgroundMessage,
