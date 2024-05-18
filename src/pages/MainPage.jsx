@@ -39,38 +39,38 @@ export default function MainPage() {
     requestPermission();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let accessToken = localStorage.getItem("accessToken");
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       let accessToken = localStorage.getItem("accessToken");
 
-        if (!accessToken) {
-          navigate("/signIn");
-          return;
-        }
+  //       if (!accessToken) {
+  //         navigate("/signIn");
+  //         return;
+  //       }
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/users`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_BE_URL}/api/users`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${accessToken}`,
+  //           },
+  //         }
+  //       );
 
-        if (response.status === 200) {
-          console.log("login success");
-        } else {
-          navigate("/signIn");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        navigate("/signIn");
-      }
-    };
+  //       if (response.status === 200) {
+  //         console.log("login success");
+  //       } else {
+  //         navigate("/signIn");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       navigate("/signIn");
+  //     }
+  //   };
 
-    fetchData();
-  }, [navigate]);
+  //   fetchData();
+  // }, [navigate]);
 
   return (
     <AppContaioner>
