@@ -40,7 +40,7 @@ const BtnContainer = styled.div`
 `;
 
 const LogoText = styled.span`
-  font-family: "Spoqa Han Sans Neo", "sans-serif";
+  font-family: "Spoqa Han Sans Neo";
   align-items: center;
   width: 12rem;
   height: 1.5rem;

@@ -31,17 +31,29 @@ const InputBox = styled.input`
   background-color: #fff;
   border: none;
   outline: none;
+  font-family: "Spoqa Han Sans Neo";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.98px;
 `;
 
-const SearchBar = ({ keyword, setKeyword }) => {
+const IconWapper = styled.div`
+  cursor: pointer;
+`;
+
+const SearchBar = (props) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = () => {
-    // 예시로 console.log를 사용했지만, 실제로는 검색 API 호출 등의 로직을 추가하면 됩니다.
-    console.log(`Searching "${keyword}" on ${keyword} page`);
+  const handleSearchClick = () => {
+    props.setKeyword(searchTerm);
+  };
 
-    // 검색어 부모 컴포넌트에 검색어 전달
-    setKeyword(searchTerm);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchClick();
+    }
   };
 
   return (
@@ -51,9 +63,12 @@ const SearchBar = ({ keyword, setKeyword }) => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="검색어를 입력해 주세요"
         />
-        <SearchIcon onClick={handleSearch}></SearchIcon>
+        <IconWapper onClick={handleSearchClick}>
+          <SearchIcon />
+        </IconWapper>
       </InputContentContainer>
     </Container>
   );

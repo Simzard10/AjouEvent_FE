@@ -3,6 +3,62 @@ import EventCard from "./EventCard";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 
+const departmentCodes = {
+  AI모빌리티공학과: "AIMOBILITYENGINEERING",
+  "아주대학교-일반": "AJOUNORMAL",
+  "아주대학교-장학": "AJOUSCHOLARSHIP",
+  인공지능융합학과: "APPLIEDARTIFICIALINTELLIGENCE",
+  응용화학생명공학과: "APPLIEDCHEMISTRYBIOLOGICALENGINEERING",
+  건축학과: "ARCHITECTURE",
+  생명과학과: "BIOLOGICALSCIENCE",
+  경영대학: "BUSINESS",
+  경영학과: "BUSINESSADMINISTRATION",
+  화학공학과: "CHEMICALENGINEERING",
+  화학과: "CHEMISTRY",
+  건설시스템공학과: "CIVILSYSTEMSENGINEERING",
+  소프트웨어융합대학: "COMPUTINGINFORMATICS",
+  문화콘텐츠학과: "CULTURECONTENTS",
+  사이버보안학과: "CYBERSECURITY",
+  다산학부대학: "DASAN",
+  디지털미디어학과: "DIGITALMEDIA",
+  경제학과: "ECONOMICS",
+  전자공학과: "ELECTRICALCOMPUTERENGINEERING",
+  공과대학: "ENGINEERING",
+  영어영문학과: "ENGLISHLANGUAGELITERATURE",
+  환경안전공학과: "ENVIRONMENTALSAFETYENGINEERING",
+  금융공학과: "FINANCIALENGINEERING",
+  불어불문학과: "FRENCHLANGUAGELITERATURE",
+  글로벌경영학과: "GLOBALBUSINESS",
+  대학원: "GRADUATE",
+  사학과: "HISTORY",
+  인문대학: "HUMANITIES",
+  산업공학과: "INDUSTRIALENGINEERING",
+  정보통신대학: "INFORMATIONTECHNOLOGY",
+  융합시스템공학과: "INTEGRATIVESYSTEMSENGINEERING",
+  지능형반도체공학과: "INTELLIGENCESEMICONDUCTORENGINEERING",
+  국제학부대학: "INTERNATIONAL",
+  국어국문학과: "KOREANLANGUAGELITERATURE",
+  경영인텔리전스학과: "MANAGEMENTINTELLIGENCE",
+  첨단신소재공학과: "MATERIALSSCIENCEENGINEERING",
+  수학과: "MATHMATICS",
+  기계공학과: "MECHANICALENGINEERING",
+  의과대학: "MEDICINE",
+  국방디지털융합학과: "MILITARYDIGITALCONVERGENCE",
+  자연과학대학: "NATURALSCIENCE",
+  간호대학: "NURSING",
+  약학대학: "PHARMACY",
+  물리학과: "PHYSICS",
+  정치외교학과: "POLITICALSCIENCEDIPLOMACY",
+  심리학과: "PSYCHOLOGY",
+  행정학과: "PUBLICADMINISTRATION",
+  사회과학대학: "SOCIALSCIENCE",
+  사회학과: "SOCIOLOGY",
+  소프트웨어학과: "SOFTWARE",
+  스포츠레저학과: "SPORTSLEISURESTUDIES",
+  교통시스템공학과: "TRANSPORTATIONSYSTEMSENGINEERING",
+  테스트: "TEST",
+};
+
 const FlexContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -10,7 +66,18 @@ const FlexContainer = styled.div`
   width: 100%;
 `;
 
-const EventMain = ({ events, setEvents }) => {
+const ErrorMessage = styled.p`
+  margin-left: 20px;
+  font-family: "Spoqa Han Sans Neo";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.98px;
+`;
+
+const EventMain = ({ keyword, type }) => {
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -24,11 +91,10 @@ const EventMain = ({ events, setEvents }) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/all?page=${page}&size=${pageSize}`
+        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 
-      // Check if there are no more new events to fetch
       if (newEvents.length === 0) {
         setHasMore(false);
       } else {
@@ -46,12 +112,9 @@ const EventMain = ({ events, setEvents }) => {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, setEvents]);
+  }, [loading, hasMore, page, type, keyword]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  // Handle infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -73,10 +136,40 @@ const EventMain = ({ events, setEvents }) => {
     };
   }, [loading, hasMore, fetchData]);
 
+  // Handle type and keyword changes
+  useEffect(() => {
+    const fetchNewData = async () => {
+      setLoading(true);
+      setEvents([]);
+      setPage(0);
+      setHasMore(true);
+
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
+        );
+        const newEvents = response.data.result;
+
+        if (newEvents.length === 0) {
+          setHasMore(false);
+        } else {
+          setEvents(newEvents);
+          setPage(1);
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNewData();
+  }, [type, keyword]);
+
   if (loading && events.length === 0) {
     return (
       <FlexContainer>
-        <p>Loading...</p>
+        <ErrorMessage>Loading...</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -84,7 +177,7 @@ const EventMain = ({ events, setEvents }) => {
   if (events.length === 0) {
     return (
       <FlexContainer>
-        <p>No events found.</p>
+        <ErrorMessage>No events found...</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -94,7 +187,7 @@ const EventMain = ({ events, setEvents }) => {
       <FlexContainer>
         {events.map((event, index) => (
           <EventCard
-            key={`${event.eventId}-${index}`} // 고유 키 생성
+            key={`${event.eventId}-${index}`}
             id={event.eventId}
             title={event.title}
             imgUrl={event.imgUrl}
