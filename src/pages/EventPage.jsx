@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
 import BottomNavbar from "../components/BottomNavbar";
 import SearchDropBox from "../events/SearchDropBox";
+import SearchBar from "../components/SearchBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -22,12 +23,14 @@ const MainContentContaioner = styled.div`
 `;
 
 export default function EventPage() {
+  const [events, setEvents] = useState([]);
   return (
     <AppContaioner>
       <TopBar></TopBar>
       <MainContentContaioner>
-        <SearchDropBox></SearchDropBox>
-        <EventMain></EventMain>
+        <SearchDropBox setEvents={setEvents}></SearchDropBox>
+        <SearchBar setEvents={setEvents}></SearchBar>
+        <EventMain events={events} setEvents={setEvents}></EventMain>
       </MainContentContaioner>
       <BottomNavbar></BottomNavbar>
     </AppContaioner>
