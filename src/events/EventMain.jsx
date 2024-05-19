@@ -90,6 +90,9 @@ const EventMain = ({ keyword, type }) => {
 
     setLoading(true);
     try {
+      console.log(
+        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
+      );
       const response = await axios.get(
         `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
       );

@@ -24,7 +24,7 @@ const MainContentContaioner = styled.div`
 
 export default function EventPage() {
   const [keyword, setKeyword] = useState("");
-  const [type, setType] = useState("아주대학교-일반");
+  const [type, setType] = useState("");
 
   return (
     <AppContaioner>
