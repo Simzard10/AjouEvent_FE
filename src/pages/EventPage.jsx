@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
@@ -23,14 +23,16 @@ const MainContentContaioner = styled.div`
 `;
 
 export default function EventPage() {
-  const [events, setEvents] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [type, setType] = useState("아주대학교-일반");
+
   return (
     <AppContaioner>
       <TopBar></TopBar>
       <MainContentContaioner>
-        <SearchDropBox setEvents={setEvents}></SearchDropBox>
-        <SearchBar setEvents={setEvents}></SearchBar>
-        <EventMain events={events} setEvents={setEvents}></EventMain>
+        <SearchDropBox type={type} setType={setType}></SearchDropBox>
+        <SearchBar keyword={keyword} setKeyword={setKeyword}></SearchBar>
+        <EventMain keyword={keyword} type={type}></EventMain>
       </MainContentContaioner>
       <BottomNavbar></BottomNavbar>
     </AppContaioner>

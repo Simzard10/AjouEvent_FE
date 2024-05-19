@@ -212,7 +212,7 @@ const SignIn = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BE_URL}/users/login`,
+        `${process.env.REACT_APP_BE_URL}/api/users/login`,
         userData
       );
 
