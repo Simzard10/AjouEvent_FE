@@ -174,6 +174,7 @@ const EventDetail = () => {
       let accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
         `https://ajou-event.shop/api/event/like/${id}`,
+        {}, // The request body, which is empty in this case
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
