@@ -58,8 +58,14 @@ const EventCard = ({ id, title, imgUrl, star }) => {
   const handleStarClick = async (e) => {
     e.stopPropagation();
     try {
+      let accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
-        `https://ajou-event.shop/api/event/like/${id}`
+        `https://ajou-event.shop/api/event/like/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log(response.data.successContent);
     } catch (error) {
@@ -72,8 +78,8 @@ const EventCard = ({ id, title, imgUrl, star }) => {
       <Image src={imgUrl} alt={title} />
       <DetailsContainer>
         <TitleText>{title}</TitleText>
-        <SubDetailContainer>
-          <ImageWapper onClick={handleStarClick}>
+        <SubDetailContainer onClick={handleStarClick}>
+          <ImageWapper>
             {star ? (
               <FilledStarIcon></FilledStarIcon>
             ) : (

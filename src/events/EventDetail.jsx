@@ -108,6 +108,19 @@ const ContentContaioner = styled.div`
   overflow: hidden;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
@@ -158,8 +171,14 @@ const EventDetail = () => {
 
   const handleStarClick = async () => {
     try {
+      let accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
-        `https://ajou-event.shop/api/event/like/${id}`
+        `https://ajou-event.shop/api/event/like/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log(response.data.successContent);
     } catch (error) {
@@ -171,6 +190,9 @@ const EventDetail = () => {
     <Container>
       {event ? (
         <>
+          <BackButton onClick={() => window.history.back()}>
+            뒤로가기
+          </BackButton>
           <SliderContainer>
             <Arrow direction="left" onClick={prevSlide}>
               &lt;
