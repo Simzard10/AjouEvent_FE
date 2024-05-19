@@ -1,11 +1,3 @@
-// firebase-messaging-sw.js
-// import { firebaseApp } from "../src/fcm/firebase";
-// import {
-//   getMessaging,
-//   onMessage,
-//   onBackgroundMessage,
-// } from "firebase/messaging";
-
 self.addEventListener("install", function (e) {
   console.log("fcm sw install..");
   self.skipWaiting();
@@ -25,7 +17,11 @@ self.addEventListener("push", function (e) {
   const resultURL = e.data.json().data.click_action;
 
   if (!resultData || !resultData.title || !resultData.body) {
-    console.error("Notification data is incomplete.");
+    const notificationTitle = "Notification data is incomplete.";
+    const notificationOptions = {
+      body: "Notification data is incomplete.",
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
     return;
   }
 
@@ -34,7 +30,7 @@ self.addEventListener("push", function (e) {
     body: resultData.body,
     icon: resultData.image,
     tag: resultData.tag,
-    data: { click_action: resultURL }, // Add click_action URL to notification data
+    data: { click_action: resultURL },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -45,7 +41,11 @@ self.addEventListener("notificationclick", function (event) {
     event.notification.data && event.notification.data.click_action;
 
   if (!resultURL) {
-    console.error("Notification click action URL is missing.");
+    const notificationTitle = "URL is missing.";
+    const notificationOptions = {
+      body: "Notification click action URL is missing.",
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
     return;
   }
 
@@ -67,24 +67,3 @@ self.addEventListener("notificationclick", function (event) {
 
   event.notification.close();
 });
-
-// const messaging = getMessaging(firebaseApp);
-
-// onMessage(messaging, (payload) => {
-//   console.log("Message received. ", payload);
-// });
-
-// onBackgroundMessage(messaging, (payload) => {
-//   console.log(
-//     "[firebase-messaging-sw.js] Received background message ",
-//     payload
-//   );
-//   // Customize notification here
-//   const notificationTitle = "Background Message Title";
-//   const notificationOptions = {
-//     body: "Background Message body.",
-//     icon: "/firebase-logo.png",
-//   };
-
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });

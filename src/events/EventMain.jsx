@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import EventCard from "./EventCard";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 
 const FlexContainer = styled.div`
@@ -8,11 +8,9 @@ const FlexContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
-  padding: 20px 0 20px 0;
 `;
 
-const EventMain = () => {
-  const [events, setEvents] = useState([]);
+const EventMain = ({ events, setEvents }) => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +18,7 @@ const EventMain = () => {
 
   const bottomRef = useRef(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
@@ -48,11 +46,11 @@ const EventMain = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, hasMore, page, setEvents]);
 
   useEffect(() => {
     fetchData();
-  }, []); // Initial data fetch
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -73,7 +71,7 @@ const EventMain = () => {
         observer.unobserve(bottomRef.current);
       }
     };
-  }, [loading, hasMore]);
+  }, [loading, hasMore, fetchData]);
 
   if (loading && events.length === 0) {
     return (

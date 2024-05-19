@@ -65,7 +65,7 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   padding: 20px;
-  max-width: 370px;
+  width: 100%;
   gap: 16px;
   font-size: 14px;
   color: #1b1e26;

@@ -1,33 +1,62 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import styled from "styled-components";
+import SearchIcon from "../icons/SearchIcon";
 
-const SearchBar = ({ currentPage, setKeyword }) => {
-  const [searchTerm, setSearchTerm] = useState('')
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+`;
+
+const InputContentContainer = styled.div`
+  display: flex;
+  width: 90%;
+  height: 36px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid rgba(229, 232, 235, 1);
+  border-radius: 50px;
+`;
+
+const InputBox = styled.input`
+  display: flex;
+  width: 84%;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+  border: none;
+  outline: none;
+`;
+
+const SearchBar = ({ keyword, setKeyword }) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
     // 예시로 console.log를 사용했지만, 실제로는 검색 API 호출 등의 로직을 추가하면 됩니다.
-    console.log(`Searching "${searchTerm}" on ${currentPage} page`)
+    console.log(`Searching "${keyword}" on ${keyword} page`);
 
     // 검색어 부모 컴포넌트에 검색어 전달
-    setKeyword(searchTerm)
-  }
+    setKeyword(searchTerm);
+  };
 
   return (
-    <div className="flex justify-center mt-8 text-base font-light">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder={`Search on ${currentPage}`}
-        className="border border-gray-300 px-4 w-[50%] py-2 mr-2 rounded-l-md focus:outline-none"
-      />
-      <button
-        onClick={handleSearch}
-        className="px-4 py-2 text-white bg-blue-500 rounded-r-md focus:outline-none"
-      >
-        Search
-      </button>
-    </div>
-  )
-}
+    <Container>
+      <InputContentContainer>
+        <InputBox
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="검색어를 입력해 주세요"
+        />
+        <SearchIcon onClick={handleSearch}></SearchIcon>
+      </InputContentContainer>
+    </Container>
+  );
+};
 
-export default SearchBar
+export default SearchBar;
