@@ -123,7 +123,7 @@ function SearchDropBox() {
         setType("");
         break;
       default:
-        setDetailOptions([]);
+        setDetailOptions(아주대공지사항);
         setType("");
         break;
     }

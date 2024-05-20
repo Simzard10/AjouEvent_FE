@@ -15,11 +15,11 @@ const AppContaioner = styled.div`
   overflow-x: hidden;
 `;
 
-export default function SavedEventPage() {
+export default function MyPage() {
   return (
     <AppContaioner>
       <TopBar></TopBar>
-      <p>SavedEventPage</p>
+      <p>MyPage</p>
       <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );

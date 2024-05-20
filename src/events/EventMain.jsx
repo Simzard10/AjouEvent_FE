@@ -98,9 +98,6 @@ const EventMain = () => {
 
     setLoading(true);
     try {
-      console.log(
-        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
-      );
       const response = await axios.get(
         `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
       );
@@ -160,12 +157,10 @@ const EventMain = () => {
       setHasMore(true);
 
       try {
-        console.log("type:" + type);
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
         const newEvents = response.data.result;
-        console.log(newEvents);
 
         if (newEvents.length === 0) {
           setHasMore(false);
