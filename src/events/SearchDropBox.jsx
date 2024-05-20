@@ -127,7 +127,7 @@ function SearchDropBox() {
         setType("");
         break;
     }
-  }, [optionListSelect]);
+  }, [optionListSelect, setType]);
 
   return (
     <Container>
