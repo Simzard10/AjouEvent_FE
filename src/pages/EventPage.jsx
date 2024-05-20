@@ -4,6 +4,7 @@ import styled from "styled-components";
 import EventMain from "../events/EventMain";
 import BottomNavbar from "../components/BottomNavbar";
 import SearchDropBox from "../events/SearchDropBox";
+import SearchBar from "../components/SearchBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ const AppContaioner = styled.div`
 const MainContentContaioner = styled.div`
   display: flex;
   width: 100vw;
+  overflow-x: hidden;
   align-items: center;
   flex-direction: column;
   padding: 80px 0 80px 0;
@@ -27,6 +29,7 @@ export default function EventPage() {
       <TopBar></TopBar>
       <MainContentContaioner>
         <SearchDropBox></SearchDropBox>
+        <SearchBar></SearchBar>
         <EventMain></EventMain>
       </MainContentContaioner>
       <BottomNavbar></BottomNavbar>

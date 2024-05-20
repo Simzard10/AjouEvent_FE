@@ -3,6 +3,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const CardContainer = styled(Link)`
   width: calc(48% - 1rem);
@@ -33,15 +34,17 @@ const ImageWapper = styled.div`
   width: 20px;
   height: 20px;
   object-fit: cover;
+  cursor: pointer;
 `;
 
 const TitleText = styled.div`
-  font-size: 1rem;
+  height: 20px;
+  font-size: 0.7rem;
   font-weight: bold;
   text-decoration: none;
-  white-space: nowrap; /* 텍스트가 넘치면 한 줄로 표시 */
-  overflow: hidden; /* 넘치는 부분은 숨김 */
-  text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const SubDetailContainer = styled.div`
@@ -52,12 +55,30 @@ const SubDetailContainer = styled.div`
 `;
 
 const EventCard = ({ id, title, imgUrl, star }) => {
+  const handleStarClick = async (e) => {
+    e.stopPropagation();
+    try {
+      let accessToken = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `https://ajou-event.shop/api/event/like/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response.data.successContent);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
   return (
     <CardContainer to={`/event/${id}`}>
       <Image src={imgUrl} alt={title} />
       <DetailsContainer>
         <TitleText>{title}</TitleText>
-        <SubDetailContainer>
+        <SubDetailContainer onClick={handleStarClick}>
           <ImageWapper>
             {star ? (
               <FilledStarIcon></FilledStarIcon>

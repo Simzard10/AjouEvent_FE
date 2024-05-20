@@ -1,9 +1,72 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import useStore from "../store/useStore";
 
-const organiztionOptions = ["단과대", "동아리", "학생회"];
-const detailOptions = ["1년 이하", "1-3년", "3년 이상"];
+const typeOptions = [
+  "아주대 공지사항",
+  "학과 공지사항",
+  "단과대 공지사항",
+  "기타",
+];
+
+const 아주대공지사항 = ["아주대학교-일반", "아주대학교-장학"];
+
+const 학과공지사항 = [
+  "AI모빌리티공학과",
+  "인공지능융합학과",
+  "응용화학생명공학과",
+  "건축학과",
+  "생명과학과",
+  "경영학과",
+  "화학공학과",
+  "화학과",
+  "건설시스템공학과",
+  "문화콘텐츠학과",
+  "사이버보안학과",
+  "디지털미디어학과",
+  "경제학과",
+  "전자공학과",
+  "영어영문학과",
+  "환경안전공학과",
+  "금융공학과",
+  "불어불문학과",
+  "글로벌경영학과",
+  "사학과",
+  "산업공학과",
+  "융합시스템공학과",
+  "지능형반도체공학과",
+  "국어국문학과",
+  "경영인텔리전스학과",
+  "첨단신소재공학과",
+  "수학과",
+  "기계공학과",
+  "국방디지털융합학과",
+  "물리학과",
+  "정치외교학과",
+  "심리학과",
+  "행정학과",
+  "사회학과",
+  "소프트웨어학과",
+  "스포츠레저학과",
+  "교통시스템공학과",
+];
+
+const 단과대공지사항 = [
+  "경영대학",
+  "소프트웨어융합대학",
+  "다산학부대학",
+  "공과대학",
+  "인문대학",
+  "정보통신대학",
+  "국제학부대학",
+  "의과대학",
+  "자연과학대학",
+  "간호대학",
+  "약학대학",
+  "사회과학대학",
+];
+
+const 기타 = ["대학원"];
 
 function FilterOption({
   label,
@@ -34,24 +97,53 @@ function FilterOption({
 }
 
 function SearchDropBox() {
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedHistory, setSelectedHistory] = useState("");
+  const [optionListSelect, setOptionListSelect] = useState("");
+  const [detailOptions, setDetailOptions] = useState([""]);
+  const { type, setType } = useStore((state) => ({
+    type: state.type,
+    setType: state.setType,
+  }));
+
+  useEffect(() => {
+    switch (optionListSelect) {
+      case "아주대 공지사항":
+        setDetailOptions(아주대공지사항);
+        setType("");
+        break;
+      case "학과 공지사항":
+        setDetailOptions(학과공지사항);
+        setType("");
+        break;
+      case "단과대 공지사항":
+        setDetailOptions(단과대공지사항);
+        setType("");
+        break;
+      case "기타":
+        setDetailOptions(기타);
+        setType("");
+        break;
+      default:
+        setDetailOptions([]);
+        setType("");
+        break;
+    }
+  }, [optionListSelect, setType]);
 
   return (
     <Container>
       <FilterRow>
         <FilterOption
           label="단체"
-          options={organiztionOptions}
-          selectedValue={selectedSize}
-          setSelectedValue={setSelectedSize}
+          options={typeOptions}
+          selectedValue={optionListSelect}
+          setSelectedValue={setOptionListSelect}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/e9566b1578aea7dfd042515fc7174a5222b2c94f022d10de0bf5f1f4a44f8bf2?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
         <FilterOption
           label="상세"
           options={detailOptions}
-          selectedValue={selectedHistory}
-          setSelectedValue={setSelectedHistory}
+          selectedValue={type}
+          setSelectedValue={setType}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/9316045d2a3d77a8384125accfe4d605dfbbba2237b9dcf5c74d5f74feb0de83?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
       </FilterRow>
@@ -65,8 +157,7 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   padding: 20px;
-  max-width: 370px;
-  gap: 16px;
+  width: 100%;
   font-size: 14px;
   color: #1b1e26;
   font-weight: 500;
@@ -116,7 +207,7 @@ const Select = styled.select`
   outline: none;
   border: none;
   background: transparent;
-  padding-right: 32px;
+  padding-right: 10px;
 `;
 const Option = styled.option`
   font-family: "Spoqa Han Sans Neo";

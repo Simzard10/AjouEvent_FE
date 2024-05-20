@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { initializeApp } from "firebase/app";
 import {
   getMessaging,
@@ -21,24 +22,51 @@ const messaging = getMessaging(firebaseApp);
 const showNotification = (data) => {
   const resultData = data.notification;
   const resultURL = data.data.click_action;
+=======
+self.addEventListener("install", function (e) {
+  console.log("fcm sw install..");
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", function (e) {
+  console.log("fcm sw activate..");
+});
+
+self.addEventListener("push", function (e) {
+  if (!e.data || !e.data.json()) {
+    console.error("Push event does not contain valid JSON data.");
+    return;
+  }
+
+  const resultData = e.data.json().notification;
+  const resultURL = e.data.json().data.click_action;
+>>>>>>> 3cf5b5aa979896752d7cab412d94281eeeb9645b
 
   if (!resultData || !resultData.title || !resultData.body) {
-    console.error("Notification data is incomplete.");
+    const notificationTitle = "Notification data is incomplete.";
+    const notificationOptions = {
+      body: "Notification data is incomplete.",
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
     return;
   }
 
   const notificationTitle = resultData.title;
   const notificationOptions = {
-    body: resultData.body,
+    body: resultData.body.split("\\n").join("\n"),
     icon: resultData.image,
     tag: resultData.tag,
+    data: { click_action: resultURL },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
 
-  self.addEventListener("notificationclick", function (event) {
-    event.notification.close(); // Close the notification
+self.addEventListener("notificationclick", function (event) {
+  const resultURL =
+    event.notification.data && event.notification.data.click_action;
 
+<<<<<<< HEAD
     event.waitUntil(
       clients
         .matchAll({ type: "window", includeUncontrolled: true })
@@ -88,4 +116,32 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("activate", (e) => {
   console.log("Service worker activated.");
+=======
+  if (!resultURL) {
+    const notificationTitle = "URL is missing.";
+    const notificationOptions = {
+      body: "Notification click action URL is missing.",
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
+    return;
+  }
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then(function (clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+          var client = clientList[i];
+          if (client.url === resultURL && "focus" in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(resultURL);
+        }
+      })
+  );
+
+  event.notification.close();
+>>>>>>> 3cf5b5aa979896752d7cab412d94281eeeb9645b
 });
