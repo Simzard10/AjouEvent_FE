@@ -23,16 +23,13 @@ const MainContentContaioner = styled.div`
 `;
 
 export default function EventPage() {
-  const [keyword, setKeyword] = useState("");
-  const [type, setType] = useState("");
-
   return (
     <AppContaioner>
       <TopBar></TopBar>
       <MainContentContaioner>
-        <SearchDropBox type={type} setType={setType}></SearchDropBox>
-        <SearchBar keyword={keyword} setKeyword={setKeyword}></SearchBar>
-        <EventMain keyword={keyword} type={type}></EventMain>
+        <SearchDropBox></SearchDropBox>
+        <SearchBar></SearchBar>
+        <EventMain></EventMain>
       </MainContentContaioner>
       <BottomNavbar></BottomNavbar>
     </AppContaioner>

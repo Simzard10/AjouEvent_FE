@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import useStore from "../store/useStore";
 
 const typeOptions = [
   "아주대 공지사항",
@@ -95,31 +96,35 @@ function FilterOption({
   );
 }
 
-function SearchDropBox(props) {
+function SearchDropBox() {
   const [optionListSelect, setOptionListSelect] = useState("");
   const [detailOptions, setDetailOptions] = useState([""]);
+  const { type, setType } = useStore((state) => ({
+    type: state.type,
+    setType: state.setType,
+  }));
 
   useEffect(() => {
     switch (optionListSelect) {
       case "아주대 공지사항":
         setDetailOptions(아주대공지사항);
-        props.setType("");
+        setType("");
         break;
       case "학과 공지사항":
         setDetailOptions(학과공지사항);
-        props.setType("");
+        setType("");
         break;
       case "단과대 공지사항":
         setDetailOptions(단과대공지사항);
-        props.setType("");
+        setType("");
         break;
       case "기타":
         setDetailOptions(기타);
-        props.setType("");
+        setType("");
         break;
       default:
         setDetailOptions([]);
-        props.setType("");
+        setType("");
         break;
     }
   }, [optionListSelect]);
@@ -134,12 +139,11 @@ function SearchDropBox(props) {
           setSelectedValue={setOptionListSelect}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/e9566b1578aea7dfd042515fc7174a5222b2c94f022d10de0bf5f1f4a44f8bf2?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
-
         <FilterOption
           label="상세"
           options={detailOptions}
-          selectedValue={props.type}
-          setSelectedValue={props.setType}
+          selectedValue={type}
+          setSelectedValue={setType}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/9316045d2a3d77a8384125accfe4d605dfbbba2237b9dcf5c74d5f74feb0de83?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
       </FilterRow>

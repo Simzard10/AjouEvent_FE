@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "../icons/SearchIcon";
+import useStore from "../store/useStore";
 
 const Container = styled.div`
   display: flex;
@@ -43,11 +44,14 @@ const IconWapper = styled.div`
   cursor: pointer;
 `;
 
-const SearchBar = (props) => {
+const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { setKeyword } = useStore((state) => ({
+    setKeyword: state.setKeyword,
+  }));
 
   const handleSearchClick = () => {
-    props.setKeyword(searchTerm);
+    setKeyword(searchTerm);
   };
 
   const handleKeyDown = (e) => {

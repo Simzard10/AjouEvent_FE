@@ -2,6 +2,7 @@ import styled from "styled-components";
 import EventCard from "./EventCard";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
+import useStore from "../store/useStore";
 
 const departmentCodes = {
   AI모빌리티공학과: "AIMOBILITYENGINEERING",
@@ -76,11 +77,18 @@ const ErrorMessage = styled.p`
   letter-spacing: -0.98px;
 `;
 
-const EventMain = ({ keyword, type }) => {
+const EventMain = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const { keyword, setKeyword, type, setType } = useStore((state) => ({
+    keyword: state.keyword,
+    setKeyword: state.setKeyword,
+    type: state.type,
+    setType: state.setType,
+  }));
+
   const pageSize = 10;
 
   const bottomRef = useRef(null);
@@ -141,23 +149,29 @@ const EventMain = ({ keyword, type }) => {
 
   // Handle type and keyword changes
   useEffect(() => {
-    const fetchNewData = async () => {
+    const fetchInitData = async () => {
+      if (!type || !keyword) {
+        setType("아주대학교-일반");
+        setKeyword("");
+      }
       setLoading(true);
       setEvents([]);
       setPage(0);
       setHasMore(true);
 
       try {
+        console.log("type:" + type);
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
         const newEvents = response.data.result;
+        console.log(newEvents);
 
         if (newEvents.length === 0) {
           setHasMore(false);
         } else {
           setEvents(newEvents);
-          setPage(1);
+          setPage((prevPage) => prevPage + 1);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -166,7 +180,7 @@ const EventMain = ({ keyword, type }) => {
       }
     };
 
-    fetchNewData();
+    fetchInitData();
   }, [type, keyword]);
 
   if (loading && events.length === 0) {
