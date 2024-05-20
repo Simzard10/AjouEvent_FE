@@ -169,7 +169,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BE_URL}/users/register`,
+        `${process.env.REACT_APP_BE_URL}/api/users/register`,
         {
           name,
           major,
