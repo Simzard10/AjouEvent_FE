@@ -5,15 +5,23 @@ const useStore = create((set) => ({
   id: "",
   name: "",
   major: "",
+  keyword: "",
+  type: "아주대학교-일반",
 
   setId: (id) => {
-    set({ id: id });
+    set({ id });
   },
   setName: (name) => {
-    set({ name: name });
+    set({ name });
   },
   setMajor: (major) => {
-    set({ major: major });
+    set({ major });
+  },
+  setKeyword: (keyword) => {
+    set({ keyword });
+  },
+  setType: (type) => {
+    set({ type });
   },
 }));
 
