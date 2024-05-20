@@ -27,7 +27,7 @@ self.addEventListener("push", function (e) {
 
   const notificationTitle = resultData.title;
   const notificationOptions = {
-    body: resultData.body,
+    body: resultData.body.split("\\n").join("\n"),
     icon: resultData.image,
     tag: resultData.tag,
     data: { click_action: resultURL },
