@@ -10,6 +10,8 @@ const AppContaioner = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
+  width: 100vw;
+  overflow-x: hidden;
 `;
 
 export default function SignUpPage() {

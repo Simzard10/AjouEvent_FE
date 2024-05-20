@@ -12,6 +12,8 @@ const AppContaioner = styled.div`
   background-color: #ffffff;
   height: 100vh;
   overflow-y: hidden;
+  width: 100vw;
+  overflow-x: hidden;
 `;
 
 export default function EventDetailPage() {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
@@ -17,6 +17,7 @@ const AppContaioner = styled.div`
 const MainContentContaioner = styled.div`
   display: flex;
   width: 100vw;
+  overflow-x: hidden;
   align-items: center;
   flex-direction: column;
   padding: 80px 0 80px 0;
