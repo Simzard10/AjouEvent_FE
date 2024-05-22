@@ -139,3 +139,24 @@ export function unregister() {
       });
   }
 }
+
+// 설치 준비되었나 확인
+export async function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register(
+        "/service-worker.js"
+      );
+      console.log("Service Worker registered with scope:", registration.scope);
+
+      await navigator.serviceWorker.ready;
+      console.log("Service Worker is ready");
+      return registration;
+    } catch (error) {
+      console.error("Service Worker registration failed:", error);
+      throw error;
+    }
+  } else {
+    throw new Error("Service Worker not supported in this browser");
+  }
+}
