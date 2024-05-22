@@ -133,7 +133,6 @@ const EventDetail = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         );
-        console.log(response.data.url);
         let sliceContent = response.data.content.split("\\n");
         setContent(sliceContent);
         setEvent(response.data);

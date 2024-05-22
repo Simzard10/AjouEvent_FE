@@ -179,7 +179,6 @@ const SignUp = () => {
         }
       );
 
-      console.log("응답:", response.data);
       alert("회원가입이 완료되었습니다!");
       navigate("/signIn");
     } catch (error) {

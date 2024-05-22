@@ -6,6 +6,8 @@ import SignUpPage from "./pages/SignUpPage";
 import MainPage from "./pages/MainPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./login/LoginSuccess";
+import MyPage from "./pages/MyPage";
+import SavedEventPage from "./pages/SavedEventPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ const ROUTER = createBrowserRouter([
   {
     path: "/event/:id",
     element: <EventDetailPage />,
+  },
+  {
+    path: "/mypage",
+    element: <MyPage />,
+  },
+  {
+    path: "/saved",
+    element: <SavedEventPage />,
   },
   {
     path: "/loginSuccess",

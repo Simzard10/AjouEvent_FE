@@ -46,16 +46,16 @@ export default function BottomNavbar() {
   return (
     <NavbarContainer>
       <BtnContainer>
-        <StyledLink bgcolor={"white"} color={"black"} to="/">
-          홈
-        </StyledLink>
         <StyledLink bgcolor={"white"} color={"black"} to="/event">
           이벤트페이지
         </StyledLink>
         <StyledLink bgcolor={"white"} color={"black"} to="/">
+          홈
+        </StyledLink>
+        <StyledLink bgcolor={"white"} color={"black"} to="/saved">
           찜한 페이지
         </StyledLink>
-        <StyledLink bgcolor={"white"} color={"black"} to="/">
+        <StyledLink bgcolor={"white"} color={"black"} to="/mypage">
           마이페이지
         </StyledLink>
       </BtnContainer>
