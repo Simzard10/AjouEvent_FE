@@ -147,16 +147,19 @@ const EventMain = () => {
   // Handle type and keyword changes
   useEffect(() => {
     const fetchInitData = async () => {
-      if (!type || !keyword) {
-        setType("아주대학교-일반");
-        setKeyword("");
-      }
+      // if (!type || !keyword) {
+      //   setType("아주대학교-일반");
+      //   setKeyword("");
+      // }
       setLoading(true);
       setEvents([]);
       setPage(0);
       setHasMore(true);
 
       try {
+        console.log(
+          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
+        );
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
         );

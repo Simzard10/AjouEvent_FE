@@ -6,7 +6,7 @@ const useStore = create((set) => ({
   name: "",
   major: "",
   keyword: "",
-  type: "아주대학교-일반",
+  type: "",
 
   setId: (id) => {
     set({ id });

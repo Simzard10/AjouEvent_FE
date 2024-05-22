@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignInPage from "./pages/SignInPage";
 import EventPage from "./pages/EventPage";
 import SignUpPage from "./pages/SignUpPage";
-import MainPage from "./pages/MainPage";
+import SubscribePage from "./pages/SubscribePage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./login/LoginSuccess";
 import MyPage from "./pages/MyPage";
@@ -12,7 +12,11 @@ import SavedEventPage from "./pages/SavedEventPage";
 const ROUTER = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
+    element: <EventPage />,
+  },
+  {
+    path: "/:id",
+    element: <EventDetailPage />,
   },
   {
     path: "/signIn",
@@ -21,14 +25,6 @@ const ROUTER = createBrowserRouter([
   {
     path: "/signUp",
     element: <SignUpPage />,
-  },
-  {
-    path: "/event",
-    element: <EventPage />,
-  },
-  {
-    path: "/event/:id",
-    element: <EventDetailPage />,
   },
   {
     path: "/mypage",

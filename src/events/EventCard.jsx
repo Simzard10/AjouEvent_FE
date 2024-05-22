@@ -74,7 +74,7 @@ const EventCard = ({ id, title, imgUrl, star }) => {
   };
 
   return (
-    <CardContainer to={`/event/${id}`}>
+    <CardContainer to={`/${id}`}>
       <Image src={imgUrl} alt={title} />
       <DetailsContainer>
         <TitleText>{title}</TitleText>
