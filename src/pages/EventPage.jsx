@@ -6,6 +6,7 @@ import BottomNavbar from "../components/BottomNavbar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetFCMToken from "../fcm/GetFCMToken";
+import { registerServiceWorker } from "../serviceWorkerRegistration";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -24,32 +25,35 @@ const MainContentContaioner = styled.div`
   padding: 80px 0 80px 0;
 `;
 
+async function requestPermissionAndGetToken() {
+  const permission = await Notification.requestPermission();
+  if (permission === "granted") {
+    console.log("알림 권한이 허용됨");
+    try {
+      await registerServiceWorker();
+      await GetFCMToken();
+    } catch (error) {
+      console.error("토큰을 가져오는 도중 오류가 발생했습니다:", error);
+    }
+  } else {
+    console.log("알림 권한 허용 안됨");
+  }
+}
+
 export default function EventPage() {
   useEffect(() => {
-    async function requestPermission() {
-      const permission = await Notification.requestPermission();
-      if (permission === "granted") {
-        console.log("알림 권한이 허용됨");
-        try {
-          await GetFCMToken();
-        } catch (error) {
-          console.error("토큰을 가져오는 도중 오류가 발생했습니다:", error);
-        }
-      } else {
-        console.log("알림 권한 허용 안됨");
-      }
-    }
-    requestPermission();
+    requestPermissionAndGetToken();
   }, []);
+
   return (
     <AppContaioner>
-      <TopBar></TopBar>
+      <TopBar />
       <MainContentContaioner>
-        <SearchDropBox></SearchDropBox>
-        <SearchBar></SearchBar>
-        <EventMain></EventMain>
+        <SearchDropBox />
+        <SearchBar />
+        <EventMain />
       </MainContentContaioner>
-      <BottomNavbar></BottomNavbar>
+      <BottomNavbar />
     </AppContaioner>
   );
 }
