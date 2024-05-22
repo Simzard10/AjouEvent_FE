@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import useStore from "../store/useStore";
 
-const typeOptions = [
+const option1List = [
   "아주대 공지사항",
   "학과 공지사항",
   "단과대 공지사항",
@@ -80,9 +80,11 @@ function FilterOption({
       <FilterOptionContent icon={icon}>
         <Select
           value={selectedValue}
-          onChange={(e) => setSelectedValue(e.target.value)}
+          onChange={(e) => {
+            setSelectedValue(e.target.value);
+          }}
         >
-          <Option value="" disabled defaultValue="">
+          <Option value="" disabled>
             {label} 선택
           </Option>
           {options.map((option, index) => (
@@ -97,53 +99,59 @@ function FilterOption({
 }
 
 function SearchDropBox() {
-  const [optionListSelect, setOptionListSelect] = useState("");
-  const [detailOptions, setDetailOptions] = useState([""]);
+  const [option1, setOption1] = useState("");
+  const [option2List, setOption2List] = useState([]);
+  const [option2, setOption2] = useState("아주대학교-일반");
+
   const { type, setType } = useStore((state) => ({
     type: state.type,
     setType: state.setType,
   }));
 
   useEffect(() => {
-    switch (optionListSelect) {
+    switch (option1) {
       case "아주대 공지사항":
-        setDetailOptions(아주대공지사항);
-        setType("");
+        setOption2List(아주대공지사항);
+        setOption2("");
         break;
       case "학과 공지사항":
-        setDetailOptions(학과공지사항);
-        setType("");
+        setOption2List(학과공지사항);
+        setOption2("");
         break;
       case "단과대 공지사항":
-        setDetailOptions(단과대공지사항);
-        setType("");
+        setOption2List(단과대공지사항);
+        setOption2("");
         break;
       case "기타":
-        setDetailOptions(기타);
-        setType("");
+        setOption2List(기타);
+        setOption2("");
         break;
       default:
-        setDetailOptions(아주대공지사항);
-        setType("");
+        setOption2List([]);
+        setOption2("");
         break;
     }
-  }, [optionListSelect, setType]);
+  }, [option1]);
+
+  useEffect(() => {
+    setType(option2);
+  }, [option2, setType]);
 
   return (
     <Container>
       <FilterRow>
         <FilterOption
           label="단체"
-          options={typeOptions}
-          selectedValue={optionListSelect}
-          setSelectedValue={setOptionListSelect}
+          options={option1List}
+          selectedValue={option1}
+          setSelectedValue={setOption1}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/e9566b1578aea7dfd042515fc7174a5222b2c94f022d10de0bf5f1f4a44f8bf2?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
         <FilterOption
           label="상세"
-          options={detailOptions}
-          selectedValue={type}
-          setSelectedValue={setType}
+          options={option2List}
+          selectedValue={option2}
+          setSelectedValue={setOption2}
           icon="https://cdn.builder.io/api/v1/image/assets/TEMP/9316045d2a3d77a8384125accfe4d605dfbbba2237b9dcf5c74d5f74feb0de83?apiKey=75213697ab8e4fbfb70997e546d69efb&"
         />
       </FilterRow>
@@ -209,6 +217,7 @@ const Select = styled.select`
   background: transparent;
   padding-right: 10px;
 `;
+
 const Option = styled.option`
   font-family: "Spoqa Han Sans Neo";
   font-size: 14px;
