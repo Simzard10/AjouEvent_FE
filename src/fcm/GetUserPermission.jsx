@@ -9,7 +9,12 @@ const GetUserPermission = async () => {
       console.log("Notification permission granted. Ready to send token...");
       await registerServiceWorker();
       await GetFCMToken();
-      location.reload();
+      let isFCMToken = localStorage.getItem("fcmToken");
+      if (isFCMToken) {
+        return;
+      } else {
+        window.location.reload();
+      }
     } else {
       console.log(
         "Notification permission not granted. Requesting permission..."
