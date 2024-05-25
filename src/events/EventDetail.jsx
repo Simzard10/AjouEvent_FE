@@ -171,16 +171,33 @@ const EventDetail = () => {
   const handleStarClick = async () => {
     try {
       let accessToken = localStorage.getItem("accessToken");
-      const response = await axios.post(
-        `https://ajou-event.shop/api/event/like/${id}`,
-        {}, // The request body, which is empty in this case
-        {
+      if (event.star) {
+        await axios.delete(`https://ajou-event.shop/api/event/like/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
-      );
-      console.log(response.data.successContent);
+        });
+        setEvent((prevEvent) => ({
+          ...prevEvent,
+          star: false,
+          likesCount: prevEvent.likesCount - 1,
+        }));
+      } else {
+        await axios.post(
+          `https://ajou-event.shop/api/event/like/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setEvent((prevEvent) => ({
+          ...prevEvent,
+          star: true,
+          likesCount: prevEvent.likesCount + 1,
+        }));
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
     }
@@ -212,11 +229,7 @@ const EventDetail = () => {
             <Title>{event.title}</Title>
             <DetailContaioner>
               <ImageWapper onClick={handleStarClick}>
-                {event.star ? (
-                  <FilledStarIcon></FilledStarIcon>
-                ) : (
-                  <EmptyStarIcon></EmptyStarIcon>
-                )}
+                {event.star ? <FilledStarIcon /> : <EmptyStarIcon />}
               </ImageWapper>
               <LikeCount>{event.likesCount}</LikeCount>
             </DetailContaioner>
