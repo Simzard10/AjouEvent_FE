@@ -48,14 +48,37 @@ const TitleText = styled.div`
   text-overflow: ellipsis;
 `;
 
+const SubjectText = styled.p`
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 0;
+  color: rgb(0, 102, 179);
+`;
+
+const LikeCountText = styled.p`
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 0;
+`;
+
 const SubDetailContainer = styled.div`
   display: flex;
   width: 100%;
-  justify-content: end;
-  margin: 4px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 `;
 
-const EventCard = ({ id, title, imgUrl, star }) => {
+const LikeContainer = styled.div`
+  display: flex;
+  width: 30px;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
   const [cardStar, setCardStar] = useState(star);
   const navigate = useNavigate();
 
@@ -97,13 +120,17 @@ const EventCard = ({ id, title, imgUrl, star }) => {
       <DetailsContainer>
         <TitleText>{title}</TitleText>
         <SubDetailContainer>
-          <ImageWapper onClick={handleStarClick}>
-            {cardStar ? (
-              <FilledStarIcon></FilledStarIcon>
-            ) : (
-              <EmptyStarIcon></EmptyStarIcon>
-            )}
-          </ImageWapper>
+          <SubjectText>{subject}</SubjectText>
+          <LikeContainer>
+            <ImageWapper onClick={handleStarClick}>
+              {cardStar ? (
+                <FilledStarIcon></FilledStarIcon>
+              ) : (
+                <EmptyStarIcon></EmptyStarIcon>
+              )}
+            </ImageWapper>
+            <LikeCountText>{likesCount}</LikeCountText>
+          </LikeContainer>
         </SubDetailContainer>
       </DetailsContainer>
     </CardContainer>
