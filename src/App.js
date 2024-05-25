@@ -8,6 +8,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./login/LoginSuccess";
 import MyPage from "./pages/MyPage";
 import SavedEventPage from "./pages/SavedEventPage";
+import EventUpload from "./events/EventUpload";
 
 const ROUTER = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/loginSuccess",
     element: <LoginSuccess />,
+  },
+  {
+    path: "/subscribe",
+    element: <SubscribePage />,
   },
 ]);
 

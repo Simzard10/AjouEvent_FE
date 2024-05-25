@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useState } from "react";
 
-const CardContainer = styled(Link)`
+const CardContainer = styled.div`
   width: calc(48% - 1rem);
   height: 12rem;
   text-decoration: none;
@@ -55,32 +56,49 @@ const SubDetailContainer = styled.div`
 `;
 
 const EventCard = ({ id, title, imgUrl, star }) => {
+  const [cardStar, setCardStar] = useState(star);
+  const navigate = useNavigate();
+
   const handleStarClick = async (e) => {
     e.stopPropagation();
+
     try {
       let accessToken = localStorage.getItem("accessToken");
-      const response = await axios.post(
-        `https://ajou-event.shop/api/event/like/${id}`,
-        {
+      if (cardStar) {
+        await axios.delete(`https://ajou-event.shop/api/event/like/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
-      );
-      console.log(response.data.successContent);
+        });
+        setCardStar(!cardStar);
+      } else {
+        await axios.post(
+          `https://ajou-event.shop/api/event/like/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setCardStar(!cardStar);
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/${id}`);
+  };
   return (
-    <CardContainer to={`/${id}`}>
+    <CardContainer onClick={handleCardClick}>
       <Image src={imgUrl} alt={title} />
       <DetailsContainer>
         <TitleText>{title}</TitleText>
-        <SubDetailContainer onClick={handleStarClick}>
-          <ImageWapper>
-            {star ? (
+        <SubDetailContainer>
+          <ImageWapper onClick={handleStarClick}>
+            {cardStar ? (
               <FilledStarIcon></FilledStarIcon>
             ) : (
               <EmptyStarIcon></EmptyStarIcon>
