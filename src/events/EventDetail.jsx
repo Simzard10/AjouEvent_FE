@@ -170,6 +170,7 @@ const EventDetail = () => {
 
   const handleStarClick = async () => {
     try {
+      console.log("event.star" + event.star);
       let accessToken = localStorage.getItem("accessToken");
       if (event.star) {
         await axios.delete(`https://ajou-event.shop/api/event/like/${id}`, {
