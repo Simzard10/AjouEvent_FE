@@ -220,7 +220,9 @@ const EventMain = () => {
             key={`${event.eventId}-${index}`}
             id={event.eventId}
             title={event.title}
+            subject={event.subject}
             imgUrl={event.imgUrl}
+            likesCount={event.likesCount}
             star={event.star}
           />
         ))}
