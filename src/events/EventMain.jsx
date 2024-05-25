@@ -147,7 +147,7 @@ const EventMain = () => {
   // Handle type and keyword changes
   useEffect(() => {
     const fetchInitData = async () => {
-      // if (!type || !keyword) {
+      // if (type === "" || keyword === "") {
       //   setType("아주대학교-일반");
       //   setKeyword("");
       // }
@@ -160,6 +160,10 @@ const EventMain = () => {
         console.log(
           `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
+        // 비동기적으로 type 설정되어서 departmentCodes[type] 가 undefined 뜰 때 오류나길래 예외처리함.
+        if (!departmentCodes[type]) {
+          return;
+        }
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
