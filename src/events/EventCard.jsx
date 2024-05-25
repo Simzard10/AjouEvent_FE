@@ -80,7 +80,7 @@ const LikeContainer = styled.div`
 
 const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
   const [cardStar, setCardStar] = useState(star);
-  const [likesCount, setLikesCount] = useState(likesCount);
+  const [likes, setLikes] = useState(likesCount);
   const navigate = useNavigate();
 
   const handleStarClick = async (e) => {
@@ -95,7 +95,7 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
           },
         });
         setCardStar(!cardStar);
-        setLikesCount(likesCount - 1);
+        setLikes(likes - 1);
       } else {
         await axios.post(
           `https://ajou-event.shop/api/event/like/${id}`,
@@ -107,7 +107,7 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
           }
         );
         setCardStar(!cardStar);
-        setLikesCount(likesCount + 1);
+        setLikes(likes + 1);
       }
     } catch (error) {
       console.error("Error toggling like:", error);
