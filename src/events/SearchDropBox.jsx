@@ -99,9 +99,9 @@ function FilterOption({
 }
 
 function SearchDropBox() {
-  const [option1, setOption1] = useState("");
+  const [option1, setOption1] = useState("아주대 공지사항");
   const [option2List, setOption2List] = useState([]);
-  const [option2, setOption2] = useState("아주대학교-일반");
+  const [option2, setOption2] = useState("");
 
   const { type, setType } = useStore((state) => ({
     type: state.type,
@@ -112,7 +112,7 @@ function SearchDropBox() {
     switch (option1) {
       case "아주대 공지사항":
         setOption2List(아주대공지사항);
-        setOption2("");
+        setOption2("아주대학교-일반");
         break;
       case "학과 공지사항":
         setOption2List(학과공지사항);
@@ -127,14 +127,15 @@ function SearchDropBox() {
         setOption2("");
         break;
       default:
-        setOption2List([]);
-        setOption2("");
+        setOption2List(아주대공지사항);
+        setOption2("아주대학교-일반");
         break;
     }
   }, [option1]);
 
   useEffect(() => {
     setType(option2);
+    console.log("type changed to " + option2);
   }, [option2, setType]);
 
   return (
