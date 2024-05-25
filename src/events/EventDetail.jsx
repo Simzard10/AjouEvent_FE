@@ -126,12 +126,18 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [content, setContent] = useState([]);
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
         let sliceContent = response.data.content.split("\\n");
         setContent(sliceContent);

@@ -88,6 +88,7 @@ const EventMain = () => {
     type: state.type,
     setType: state.setType,
   }));
+  const accessToken = localStorage.getItem("accessToken");
 
   const pageSize = 10;
 
@@ -99,7 +100,12 @@ const EventMain = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`
+        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       const newEvents = response.data.result;
 
@@ -165,7 +171,12 @@ const EventMain = () => {
           return;
         }
         const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
+          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
         const newEvents = response.data.result;
 

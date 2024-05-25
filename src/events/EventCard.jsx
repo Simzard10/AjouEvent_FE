@@ -55,30 +55,12 @@ const SubDetailContainer = styled.div`
 `;
 
 const EventCard = ({ id, title, imgUrl, star }) => {
-  const handleStarClick = async (e) => {
-    e.stopPropagation();
-    try {
-      let accessToken = localStorage.getItem("accessToken");
-      const response = await axios.post(
-        `https://ajou-event.shop/api/event/like/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log(response.data.successContent);
-    } catch (error) {
-      console.error("Error toggling like:", error);
-    }
-  };
-
   return (
     <CardContainer to={`/${id}`}>
       <Image src={imgUrl} alt={title} />
       <DetailsContainer>
         <TitleText>{title}</TitleText>
-        <SubDetailContainer onClick={handleStarClick}>
+        <SubDetailContainer>
           <ImageWapper>
             {star ? (
               <FilledStarIcon></FilledStarIcon>
