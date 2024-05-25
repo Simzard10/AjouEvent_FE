@@ -97,7 +97,6 @@ export default function TopBar() {
     localStorage.removeItem("id");
     localStorage.removeItem("name");
     localStorage.removeItem("major");
-    navigate("/signIn");
   };
 
   return (
@@ -116,7 +115,7 @@ export default function TopBar() {
             onClick={handleLogoutBtnClick}
             bgcolor={"white"}
             color={"black"}
-            to="/"
+            to="/signIn"
           >
             로그아웃
           </StyledLink>

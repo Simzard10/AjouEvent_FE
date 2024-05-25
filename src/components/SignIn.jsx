@@ -349,7 +349,13 @@ const SignIn = () => {
         </button>
       </Form>
       <div style={{ display: "flex" }}>
-        <SignUpStyledLink to="/" style={{ marginLeft: "20px" }}>
+        <SignUpStyledLink
+          to="/signIn"
+          style={{ marginLeft: "20px" }}
+          onClick={() => {
+            alert("기능개발중입니다.");
+          }}
+        >
           비밀번호를 잊어버리셨나요?
         </SignUpStyledLink>
       </div>
