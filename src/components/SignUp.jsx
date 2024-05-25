@@ -134,6 +134,15 @@ const Separator = styled.div`
   }
 `;
 
+const Error = styled.div`
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  color: red;
+  padding-left: 40px;
+  font-size: 0.5em;
+`;
+
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formErrors, setFormErrors] = useState({});
@@ -144,9 +153,14 @@ const SignUp = () => {
 
   const validateForm = (name, major, email, password, phone) => {
     const errors = {};
+    const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
     if (!name) errors.name = "* 이름을 입력해주세요.";
     if (!major) errors.major = "* 학과를 입력해주세요.";
-    if (!email) errors.email = "* 이메일을 입력해주세요.";
+    if (!email) {
+      errors.email = "* 아주 G-mail을 입력해주세요.";
+    } else if (!emailPattern.test(email)) {
+      errors.email = "* 아주 G-mail 형식에 맞지 않습니다.";
+    }
     if (!password) errors.password = "* 비밀번호를 입력해주세요.";
     if (!phone) errors.phone = "* 전화번호를 입력해주세요.";
     return errors;
@@ -226,7 +240,7 @@ const SignUp = () => {
             <p>이메일</p>
             <input
               type="email"
-              placeholder="이메일"
+              placeholder="아주 G-mail"
               className="input"
               id="email"
               name="email"
@@ -284,14 +298,5 @@ const SignUp = () => {
     </>
   );
 };
-
-const Error = styled.div`
-  display: flex;
-  justify-content: start;
-  width: 100%;
-  color: red;
-  padding-left: 40px;
-  font-size: 0.5em;
-`;
 
 export default SignUp;
