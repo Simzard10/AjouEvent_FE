@@ -153,6 +153,7 @@ const EventMain = () => {
   // Handle type and keyword changes
   useEffect(() => {
     const fetchInitData = async () => {
+      if (loading || !hasMore) return;
       // if (type === "" || keyword === "") {
       //   setType("아주대학교-일반");
       //   setKeyword("");
