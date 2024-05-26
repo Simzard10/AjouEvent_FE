@@ -99,6 +99,9 @@ const EventSaved = () => {
 
     setLoading(true);
     try {
+      console.log(
+        `first api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+      );
       const response = await axios.get(
         `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
         {
@@ -108,6 +111,7 @@ const EventSaved = () => {
         }
       );
       const newEvents = response.data.result;
+      console.log("first api call newEvents: " + newEvents);
 
       if (newEvents.length === 0) {
         setHasMore(false);
@@ -162,7 +166,7 @@ const EventSaved = () => {
 
       try {
         console.log(
-          `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+          `second api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`
         );
         // 비동기적으로 type 설정되어서 departmentCodes[type] 가 undefined 뜰 때 오류나길래 예외처리함.
         if (!departmentCodes[type]) {
@@ -177,6 +181,7 @@ const EventSaved = () => {
           }
         );
         const newEvents = response.data.result;
+        console.log("second api call newEvents: " + newEvents);
 
         if (newEvents.length === 0) {
           setHasMore(false);
