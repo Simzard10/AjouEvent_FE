@@ -183,7 +183,14 @@ const EventMain = () => {
         if (newEvents.length === 0) {
           setHasMore(false);
         } else {
-          setEvents(newEvents);
+          // setEvents(newEvents);
+          setEvents((prevEvents) => {
+            const eventIds = new Set(prevEvents.map((event) => event.eventId));
+            const filteredEvents = newEvents.filter(
+              (event) => !eventIds.has(event.eventId)
+            );
+            return [...prevEvents, ...filteredEvents];
+          });
           setPage((prevPage) => prevPage + 1);
         }
       } catch (error) {

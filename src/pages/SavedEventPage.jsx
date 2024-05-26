@@ -9,6 +9,14 @@ import GetUserPermission from "../fcm/GetUserPermission";
 
 const AppContaioner = styled.div`
   display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100vh;
+`;
+
+const Contaioner = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -41,7 +49,9 @@ export default function SavedEventPage() {
           <EventSaved />
         </MainContentContaioner>
       ) : (
-        <p>로그인이 필요한 서비스 입니다</p>
+        <Contaioner>
+          <p>로그인이 필요한 서비스입니다</p>
+        </Contaioner>
       )}
       <BottomNavbar />
     </AppContaioner>
