@@ -172,7 +172,7 @@ const Container = styled.div`
   font-weight: 500;
   text-align: center;
   letter-spacing: -0.98px;
-  box-shadow: 0 0 6px black;
+  box-shadow: 0 4px 10px #e5e5e5;
 `;
 
 const FilterRow = styled.div`

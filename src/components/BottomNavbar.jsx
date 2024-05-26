@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import NavButton from "./NavButton";
 
 const NavbarContainer = styled.div`
   z-index: 5;
@@ -25,39 +26,14 @@ const BtnContainer = styled.div`
   background-color: inherit;
 `;
 
-const StyledLink = styled(Link)`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.bgcolor};
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.5rem;
-  border: 0;
-  width: 5rem;
-  height: 1.4rem;
-  color: ${(props) => props.color};
-  font-size: 0.8rem;
-  text-decoration: none;
-  margin: 0 1rem 0 1rem;
-`;
-
 export default function BottomNavbar() {
   return (
     <NavbarContainer>
       <BtnContainer>
-        <StyledLink bgcolor={"white"} color={"black"} to="/subscribe">
-          구독페이지
-        </StyledLink>
-        <StyledLink bgcolor={"white"} color={"black"} to="/">
-          홈
-        </StyledLink>
-        <StyledLink bgcolor={"white"} color={"black"} to="/saved">
-          찜한 페이지
-        </StyledLink>
-        <StyledLink bgcolor={"white"} color={"black"} to="/mypage">
-          마이페이지
-        </StyledLink>
+        <NavButton selected={false} link={"/subscribe"} icon={"Subscribe"} />
+        <NavButton selected={true} link={"/"} icon={"Home"} />
+        <NavButton selected={false} link={"/saved"} icon={"Bookmark"} />
+        <NavButton selected={false} link={"/mypage"} icon={"Mypage"} />
       </BtnContainer>
     </NavbarContainer>
   );

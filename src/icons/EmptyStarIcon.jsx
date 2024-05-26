@@ -1,7 +1,7 @@
 function EmptyStarIcon() {
   return (
     <img
-      src={`${process.env.PUBLIC_URL}/icons/star-regular.svg`}
+      src={`${process.env.PUBLIC_URL}/icons/EmptyBookmarkIcon.svg`}
       alt="emptyStarIcon"
     />
   );
