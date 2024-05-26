@@ -12,7 +12,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `https://ajou-event.shop/api/file/multiple-presigned-urls?prefix=${title}&fileCount=${images.length}`,
+        `${process.env.REACT_APP_BE_URL}/api/file/multiple-presigned-urls?prefix=${title}&fileCount=${images.length}`,
         {
           method: "POST",
         }
