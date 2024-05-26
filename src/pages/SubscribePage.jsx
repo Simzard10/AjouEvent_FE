@@ -1,33 +1,43 @@
 import React, { useEffect } from "react";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import GetFCMToken from "../fcm/GetFCMToken";
+import EventMain from "../events/EventMain";
 import BottomNavbar from "../components/BottomNavbar";
+import SearchDropBox from "../events/SearchDropBox";
+import SearchBar from "../components/SearchBar";
+import GetUserPermission from "../fcm/GetUserPermission";
+import SubscribeBar from "../components/SubscribeBar";
 
 const AppContaioner = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background-color: #ffffff;
   height: 100vh;
-  overflow-y: hidden;
-  width: 100vw;
-  overflow-x: hidden;
 `;
 
-export default function MainPage() {
-  const navigate = useNavigate();
-  const handleBtnClick = async () => {
-    navigate("/event");
-  };
+const MainContentContaioner = styled.div`
+  display: flex;
+  width: 100vw;
+  overflow-x: hidden;
+  align-items: center;
+  flex-direction: column;
+  padding: 80px 0 80px 0;
+`;
+
+export default function SubscribePage() {
+  useEffect(() => {
+    GetUserPermission();
+  }, []);
 
   return (
     <AppContaioner>
-      <TopBar></TopBar>
-      <p>임시 구독 페이지</p>
-      <BottomNavbar></BottomNavbar>
+      <TopBar />
+      <MainContentContaioner>
+        <SubscribeBar />
+        <EventMain />
+      </MainContentContaioner>
+      <BottomNavbar />
     </AppContaioner>
   );
 }
