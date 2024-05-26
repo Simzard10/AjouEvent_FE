@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import NavButton from "./NavButton";
 
 const NavbarContainer = styled.div`
@@ -27,13 +27,28 @@ const BtnContainer = styled.div`
 `;
 
 export default function BottomNavbar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <NavbarContainer>
       <BtnContainer>
-        <NavButton selected={false} link={"/subscribe"} icon={"Subscribe"} />
-        <NavButton selected={true} link={"/"} icon={"Home"} />
-        <NavButton selected={false} link={"/saved"} icon={"Bookmark"} />
-        <NavButton selected={false} link={"/mypage"} icon={"Mypage"} />
+        <NavButton
+          selected={currentPath === "/subscribe"}
+          link={"/subscribe"}
+          icon={"Subscribe"}
+        />
+        <NavButton selected={currentPath === "/"} link={"/"} icon={"Home"} />
+        <NavButton
+          selected={currentPath === "/saved"}
+          link={"/saved"}
+          icon={"Bookmark"}
+        />
+        <NavButton
+          selected={currentPath === "/mypage"}
+          link={"/mypage"}
+          icon={"Mypage"}
+        />
       </BtnContainer>
     </NavbarContainer>
   );

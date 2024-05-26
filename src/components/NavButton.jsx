@@ -23,7 +23,7 @@ function NavButton(props) {
           />
         </StyledLink>
       ) : (
-        <StyledLink to="/subscribe">
+        <StyledLink to={`${props.link}`}>
           <img
             src={`${process.env.PUBLIC_URL}/icons/Nav${props.icon}Off.svg`}
             alt={`${props.icon}`}
