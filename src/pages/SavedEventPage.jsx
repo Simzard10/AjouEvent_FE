@@ -10,6 +10,7 @@ import GetUserPermission from "../fcm/GetUserPermission";
 const AppContaioner = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
   background-color: #ffffff;
   height: 100vh;
@@ -28,15 +29,20 @@ export default function SavedEventPage() {
   useEffect(() => {
     GetUserPermission();
   }, []);
+  let accessToken = localStorage.getItem("accessToken");
 
   return (
     <AppContaioner>
       <TopBar />
-      <MainContentContaioner>
-        <SearchDropBox />
-        <SearchBar />
-        <EventSaved />
-      </MainContentContaioner>
+      {accessToken ? (
+        <MainContentContaioner>
+          <SearchDropBox />
+          <SearchBar />
+          <EventSaved />
+        </MainContentContaioner>
+      ) : (
+        <p>로그인이 필요한 서비스 입니다</p>
+      )}
       <BottomNavbar />
     </AppContaioner>
   );

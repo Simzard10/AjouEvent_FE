@@ -16,10 +16,11 @@ const AppContaioner = styled.div`
 `;
 
 export default function MyPage() {
+  let accessToken = localStorage.getItem("accessToken");
   return (
     <AppContaioner>
       <TopBar></TopBar>
-      <p>MyPage</p>
+      {accessToken ? <p>MyPage</p> : <p>로그인이 필요한 서비스입니다.</p>}
       <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );
