@@ -4,7 +4,7 @@ import styled from "styled-components";
 import TopBar from "../components/TopBar";
 import BottomNavbar from "../components/BottomNavbar";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +32,8 @@ const Button = styled.button`
   padding: 10px 20px;
   cursor: pointer;
 `;
-const ButtonContaioner = styled.div`
+
+const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -70,6 +71,8 @@ const ModalTitle = styled.h1`
 const Input = styled.input`
   height: 2rem;
   padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const InputTitle = styled.p`
@@ -77,15 +80,13 @@ const InputTitle = styled.p`
   font-family: "Montserrat", sans-serif;
 `;
 
-// const dummyData = {
-//   name: "윤석찬",
-//   major: "소프트웨어학과",
-//   email: "ysc0731@ajou.ac.kr",
-//   phone: "010-2546-6084",
-// };
+const ErrorText = styled.p`
+  color: red;
+  font-size: 0.875rem;
+  margin: 0;
+`;
 
 const MyPage = () => {
-  // const [user, setUser] = useState(dummyData);
   const [user, setUser] = useState({});
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -95,8 +96,8 @@ const MyPage = () => {
     email: "",
     phone: "",
   });
+  const [errors, setErrors] = useState({});
   const accessToken = localStorage.getItem("accessToken");
-  // const accessToken = true;
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -127,7 +128,26 @@ const MyPage = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!editForm.name.trim()) newErrors.name = "이름을 입력해주세요.";
+    if (!editForm.major.trim()) newErrors.major = "전공을 입력해주세요.";
+    if (!editForm.email.trim()) {
+      newErrors.email = "이메일을 입력해주세요.";
+    } else if (!/^[a-zA-Z0-9._%+-]+@ajou\.ac\.kr$/.test(editForm.email)) {
+      newErrors.email = "유효한 아주대학교 이메일을 입력해주세요.";
+    }
+    if (!editForm.phone.trim()) {
+      newErrors.phone = "전화번호를 입력해주세요.";
+    } else if (!/^010-\d{4}-\d{4}$/.test(editForm.phone)) {
+      newErrors.phone = "전화번호 형식이 유효하지 않습니다. (010-0000-0000)";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleEditSubmit = async () => {
+    if (!validateForm()) return;
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_BE_URL}/api/users`,
@@ -166,8 +186,8 @@ const MyPage = () => {
   };
 
   return (
-    <AppContaioner>
-      <TopBar></TopBar>
+    <AppContainer>
+      <TopBar />
       {accessToken ? (
         <Container>
           <UserInfo>
@@ -177,17 +197,18 @@ const MyPage = () => {
             <p>이메일: {user.email}</p>
             <p>전화번호: {user.phone}</p>
           </UserInfo>
-          <ButtonContaioner>
+          <ButtonContainer>
             <Button
               onClick={() => {
                 setEditForm(user);
+                setErrors({});
                 setEditModalOpen(true);
               }}
             >
               정보수정
             </Button>
             <Button onClick={() => setDeleteModalOpen(true)}>회원탈퇴</Button>
-          </ButtonContaioner>
+          </ButtonContainer>
 
           {editModalOpen && (
             <ModalBackground>
@@ -201,6 +222,7 @@ const MyPage = () => {
                   onChange={handleEditChange}
                   placeholder="이름"
                 />
+                {errors.name && <ErrorText>{errors.name}</ErrorText>}
                 <InputTitle>전공</InputTitle>
                 <Input
                   type="text"
@@ -209,6 +231,7 @@ const MyPage = () => {
                   onChange={handleEditChange}
                   placeholder="전공"
                 />
+                {errors.major && <ErrorText>{errors.major}</ErrorText>}
                 <InputTitle>이메일</InputTitle>
                 <Input
                   type="email"
@@ -217,6 +240,7 @@ const MyPage = () => {
                   onChange={handleEditChange}
                   placeholder="이메일"
                 />
+                {errors.email && <ErrorText>{errors.email}</ErrorText>}
                 <InputTitle>전화번호</InputTitle>
                 <Input
                   type="text"
@@ -225,10 +249,11 @@ const MyPage = () => {
                   onChange={handleEditChange}
                   placeholder="전화번호"
                 />
-                <ButtonContaioner>
+                {errors.phone && <ErrorText>{errors.phone}</ErrorText>}
+                <ButtonContainer>
                   <Button onClick={handleEditSubmit}>수정완료</Button>
                   <Button onClick={() => setEditModalOpen(false)}>닫기</Button>
-                </ButtonContaioner>
+                </ButtonContainer>
               </Modal>
             </ModalBackground>
           )}
@@ -247,8 +272,8 @@ const MyPage = () => {
       ) : (
         <p>로그인이 필요한 서비스입니다.</p>
       )}
-      <BottomNavbar></BottomNavbar>
-    </AppContaioner>
+      <BottomNavbar />
+    </AppContainer>
   );
 };
 
