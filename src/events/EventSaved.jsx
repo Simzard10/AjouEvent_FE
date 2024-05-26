@@ -153,6 +153,8 @@ const EventSaved = () => {
   // Handle type and keyword changes
   useEffect(() => {
     const fetchInitData = async () => {
+      if (loading || !hasMore) return;
+
       setLoading(true);
       setEvents([]);
       setPage(0);
