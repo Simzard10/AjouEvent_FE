@@ -10,7 +10,7 @@ import MyPage from "./pages/MyPage";
 import SavedEventPage from "./pages/SavedEventPage";
 import EventUpload from "./events/EventUpload";
 
-//Google
+//Google Analytics
 import ReactGA from "react-ga";
 
 const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID; // 환경 변수에 저장된 추적ID 가져오기
