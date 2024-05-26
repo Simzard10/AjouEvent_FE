@@ -270,7 +270,7 @@ const MyPage = () => {
           )}
         </Container>
       ) : (
-        <p>로그인이 필요한 서비스입니다.</p>
+        <p>로그인이 필요한 서비스입니다</p>
       )}
       <BottomNavbar />
     </AppContainer>

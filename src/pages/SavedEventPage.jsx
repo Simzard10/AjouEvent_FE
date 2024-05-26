@@ -28,7 +28,7 @@ const MainContentContaioner = styled.div`
   display: flex;
   width: 100vw;
   overflow-x: hidden;
-  align-items: center;
+  justify-content: center;
   flex-direction: column;
   padding: 80px 0 80px 0;
 `;
