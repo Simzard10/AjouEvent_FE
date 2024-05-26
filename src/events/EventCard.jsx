@@ -89,16 +89,19 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
     try {
       let accessToken = localStorage.getItem("accessToken");
       if (cardStar) {
-        await axios.delete(`https://ajou-event.shop/api/event/like/${id}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await axios.delete(
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setCardStar(!cardStar);
         setLikes(likes - 1);
       } else {
         await axios.post(
-          `https://ajou-event.shop/api/event/like/${id}`,
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
           {},
           {
             headers: {

@@ -179,11 +179,14 @@ const EventDetail = () => {
       console.log("event.star" + event.star);
       let accessToken = localStorage.getItem("accessToken");
       if (event.star) {
-        await axios.delete(`https://ajou-event.shop/api/event/like/${id}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await axios.delete(
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setEvent((prevEvent) => ({
           ...prevEvent,
           star: false,
@@ -191,7 +194,7 @@ const EventDetail = () => {
         }));
       } else {
         await axios.post(
-          `https://ajou-event.shop/api/event/like/${id}`,
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
           {},
           {
             headers: {
