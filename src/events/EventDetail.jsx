@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
+import Modal from "../components/Modal";
 
 const Container = styled.div`
   width: 100vw;
@@ -121,11 +122,17 @@ const BackButton = styled.button`
   z-index: 10;
 `;
 
+const CalendarButton = styled.button`
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [content, setContent] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -242,6 +249,9 @@ const EventDetail = () => {
                 {event.star ? <FilledStarIcon /> : <EmptyStarIcon />}
               </ImageWapper>
               <LikeCount>{event.likesCount}</LikeCount>
+              <CalendarButton onClick={() => setIsModalOpen(true)}>
+                캘린더 버튼
+              </CalendarButton>
             </DetailContaioner>
 
             <Content>
@@ -253,6 +263,13 @@ const EventDetail = () => {
           </ContentContaioner>
 
           <LinkButton onClick={handleRedirect}>바로가기</LinkButton>
+          {isModalOpen && (
+            <Modal
+              setIsModalOpen={setIsModalOpen}
+              title={event.title}
+              content={content}
+            />
+          )}
         </>
       ) : (
         <p>Loading...</p>
