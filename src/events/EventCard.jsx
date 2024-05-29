@@ -135,7 +135,7 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
                 <EmptyStarIcon></EmptyStarIcon>
               )}
             </ImageWapper>
-            <LikeCountText>{likesCount}</LikeCountText>
+            <LikeCountText>{likes}</LikeCountText>
           </LikeContainer>
         </SubDetailContainer>
       </DetailsContainer>
