@@ -62,6 +62,7 @@ const departmentCodes = {
 
 const FlexContainer = styled.div`
   display: flex;
+  height: calc(100%-154px);
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
