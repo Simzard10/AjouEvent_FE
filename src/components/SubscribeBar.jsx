@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { EtoKCodes } from "../departmentCodes";
 
 const Container = styled.div`
   display: flex;
@@ -12,45 +14,58 @@ const Container = styled.div`
 const MenuBarContainer = styled.div`
   width: 100%;
   display: flex;
-  height: 60px;
   overflow-x: auto;
   white-space: nowrap;
-  background: #f0f0f0;
+  background: #ffffff;
+  padding: 16px 10px 10px 10px;
+`;
+
+const MenuItemContainer = styled.div`
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
   &::-webkit-scrollbar {
     display: none;
   }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const MenuItem = styled.div`
-  display: inline-flex;
+  display: flex;
+  height: fit-content;
+  padding: 8px 12px;
+  margin: 0 4px;
+  justify-content: center;
   align-items: center;
-  padding: 6px 12px;
-  margin: 12px;
-  background: #e0e0e0;
-  border-radius: 25px;
-  position: relative;
-  white-space: nowrap;
-`;
-
-const CloseButton = styled.button`
-  margin-left: 12px;
-  padding: 0;
-  background: none;
-  border: none;
+  gap: 4px;
+  border-radius: 600px;
+  border: 2px solid #f7f7f7;
+  background-color: #ffffff;
   cursor: pointer;
 `;
 
-const ViewAllButton = styled.button`
-  margin-left: auto;
-  padding: 10px;
-  color: rgb(0, 102, 179);
-  background-color: #f0f0f0;
-  border: none;
+const ViewAllButton = styled.div`
+  display: flex;
+  height: fit-content;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 600px;
+  border: 2px solid #f7f7f7;
+  background-color: #ffffff;
   cursor: pointer;
-  position: sticky;
-  right: 0;
+  p {
+    margin: 0;
+  }
+`;
+
+const ViewAllIcon = styled.img`
+  width: 18px;
+  aspect-ratio: 1;
+  object-fit: cover;
 `;
 
 const ModalOverlay = styled.div`
@@ -70,25 +85,36 @@ const ModalContent = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 20px;
   border-radius: 10px;
+  overflow-y: auto;
+  padding: 24px;
   z-index: 1001;
-  width: 80%;
-  max-width: 600px;
+  width: 90%;
+  height: 80%;
+`;
+
+const ModalHeaderIcon = styled.img`
+  aspect-ratio: 1;
+  width: 20px;
+  object-fit: contain;
+  object-position: center;
+`;
+
+const ModalHeaderTitle = styled.h1`
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.2px;
 `;
 
 const ModalHeader = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ModalCloseButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
+  padding: 0 0 16px 0;
+  gap: 8px;
 `;
 
 const MenuItemInModal = styled.div`
@@ -100,51 +126,145 @@ const MenuItemInModal = styled.div`
 `;
 
 const SubscribeBar = () => {
-  const [menuItems, setMenuItems] = useState([
-    "소프트웨어학과",
-    "소프트웨어융합대학",
-    "아주대학교-일반",
-    "아주대학교-장학",
-  ]);
+  const [menuItems, setMenuItems] = useState([]);
+  const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  const handleRemoveItem = (index) => {
-    setMenuItems(menuItems.filter((_, i) => i !== index));
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          "https://ajou-event.shop/api/topic/subscriptionsStatus",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const datas = response.data;
+        setMenuItems(datas);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  useEffect(() => {
+    const fetchSubscribeItems = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          "https://ajou-event.shop/api/topic/subscriptions",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const topics = response.data.topics;
+        setSubscribeItems(topics);
+      } catch (error) {
+        console.error("Error fetching subscribe items:", error);
+      }
+    };
+
+    fetchSubscribeItems();
+  }, [menuItems]);
+
+  const handleSubscribe = async (topic) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      await axios.post(
+        "https://ajou-event.shop/api/topic/subscribe",
+        { topic },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      alert(`${EtoKCodes[topic]} 구독 완료`);
+
+      setMenuItems((prevMenuItems) =>
+        prevMenuItems.map((item) =>
+          item.topic === topic ? { ...item, subscribed: true } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error subscribing to topic:", error);
+    }
+  };
+
+  const handleUnsubscribe = async (topic) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      await axios.post(
+        "https://ajou-event.shop/api/topic/unsubscribe",
+        { topic },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      alert(`${EtoKCodes[topic]} 구독 취소`);
+
+      setMenuItems((prevMenuItems) =>
+        prevMenuItems.map((item) =>
+          item.topic === topic ? { ...item, subscribed: false } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error unsubscribing from topic:", error);
+    }
   };
 
   return (
     <Container>
       <MenuBarContainer>
-        {menuItems.map((item, index) => (
-          <MenuItem key={index}>
-            {item}
-            <CloseButton onClick={() => handleRemoveItem(index)}>x</CloseButton>
-          </MenuItem>
-        ))}
-        <ViewAllButton onClick={() => setShowModal(true)}>전체</ViewAllButton>
+        <ViewAllButton onClick={() => setShowModal(true)}>
+          <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/Menu.svg`} />
+          <p>전체</p>
+        </ViewAllButton>
+        <MenuItemContainer>
+          {subscribeItems.map((item, index) => (
+            <MenuItem key={index}>{item}</MenuItem>
+          ))}
+        </MenuItemContainer>
       </MenuBarContainer>
+
       {showModal && (
-        <ModalOverlay
-          show={showModal.toString()}
-          onClick={() => setShowModal(false)}
-        >
+        <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
-              <h2>전체 구독 메뉴</h2>
-              <ModalCloseButton onClick={() => setShowModal(false)}>
-                x
-              </ModalCloseButton>
+              <ModalHeaderIcon
+                onClick={() => setShowModal(false)}
+                loading="lazy"
+                src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+              />
+              <ModalHeaderTitle>전체 항목</ModalHeaderTitle>
             </ModalHeader>
-            <ul>
-              {menuItems.map((item, index) => (
-                <MenuItemInModal key={index}>
-                  {item}
-                  <CloseButton onClick={() => handleRemoveItem(index)}>
-                    x
-                  </CloseButton>
-                </MenuItemInModal>
-              ))}
-            </ul>
+            {menuItems.map((item, index) => (
+              <MenuItemInModal key={index}>
+                {EtoKCodes[item.topic]}
+                {item.subscribed ? (
+                  <ModalHeaderIcon
+                    onClick={() => handleUnsubscribe(item.topic)}
+                    loading="lazy"
+                    src={`${process.env.PUBLIC_URL}/icons/expand_more.svg`}
+                  />
+                ) : (
+                  <ModalHeaderIcon
+                    onClick={() => handleSubscribe(item.topic)}
+                    loading="lazy"
+                    src={`${process.env.PUBLIC_URL}/icons/bell.svg`}
+                  />
+                )}
+              </MenuItemInModal>
+            ))}
           </ModalContent>
         </ModalOverlay>
       )}
