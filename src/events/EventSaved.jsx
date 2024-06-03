@@ -3,62 +3,7 @@ import EventCard from "./EventCard";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import useStore from "../store/useStore";
-
-const departmentCodes = {
-  AI모빌리티공학과: "AIMobilityEngineering",
-  "아주대학교-일반": "AjouNormal",
-  "아주대학교-장학": "AjouScholarship",
-  인공지능융합학과: "AppliedArtificialIntelligence",
-  응용화학생명공학과: "AppliedChemistryBiologicalEngineering",
-  건축학과: "Architecture",
-  생명과학과: "BiologicalScience",
-  경영대학: "Business",
-  경영학과: "BusinessAdministration",
-  화학공학과: "ChemicalEngineering",
-  화학과: "Chemistry",
-  건설시스템공학과: "CivilSystemsEngineering",
-  소프트웨어융합대학: "ComputingInformatics",
-  문화콘텐츠학과: "CultureContents",
-  사이버보안학과: "CyberSecurity",
-  다산학부대학: "Dasan",
-  디지털미디어학과: "DigitalMedia",
-  경제학과: "Economics",
-  전자공학과: "ElectricalComputerEngineering",
-  공과대학: "Engineering",
-  영어영문학과: "EnglishLanguageLiterature",
-  환경안전공학과: "EnvironmentalSafetyEngineering",
-  금융공학과: "FinancialEngineering",
-  불어불문학과: "FrenchLanguageLiterature",
-  글로벌경영학과: "GlobalBusiness",
-  대학원: "Graduate",
-  사학과: "History",
-  인문대학: "Humanities",
-  산업공학과: "IndustrialEngineering",
-  정보통신대학: "InformationTechnology",
-  융합시스템공학과: "IntegrativeSystemsEngineering",
-  지능형반도체공학과: "IntelligenceSemiconductorEngineering",
-  국제학부대학: "International",
-  국어국문학과: "KoreanLanguageLiterature",
-  경영인텔리전스학과: "ManagementIntelligence",
-  첨단신소재공학과: "MaterialsScienceEngineering",
-  수학과: "Mathmatics",
-  기계공학과: "MechanicalEngineering",
-  의과대학: "Medicine",
-  국방디지털융합학과: "MilitaryDigitalConvergence",
-  자연과학대학: "NaturalScience",
-  간호대학: "Nursing",
-  약학대학: "Pharmacy",
-  물리학과: "Physics",
-  정치외교학과: "PoliticalScienceDiplomacy",
-  심리학과: "Psychology",
-  행정학과: "PublicAdministration",
-  사회과학대학: "SocialScience",
-  사회학과: "Sociology",
-  소프트웨어학과: "Software",
-  스포츠레저학과: "SportsLeisureStudies",
-  교통시스템공학과: "TransportationSystemsEngineering",
-  테스트: "Test",
-};
+import { KtoECodes } from "../departmentCodes";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -106,10 +51,10 @@ const EventSaved = () => {
     setLoading(true);
     try {
       console.log(
-        `first api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+        `first api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${KtoECodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
+        `${process.env.REACT_APP_BE_URL}/api/event/liked?${KtoECodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -172,14 +117,14 @@ const EventSaved = () => {
 
       try {
         console.log(
-          `second api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+          `second api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${KtoECodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
         );
         // 비동기적으로 type 설정되어서 departmentCodes[type] 가 undefined 뜰 때 오류나길래 예외처리함.
-        if (!departmentCodes[optionTwo]) {
+        if (!KtoECodes[optionTwo]) {
           return;
         }
         const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
+          `${process.env.REACT_APP_BE_URL}/api/event/liked?${KtoECodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

@@ -34,7 +34,7 @@ const TabBar = ({ Title }) => {
       <TapIcon
         onClick={() => window.history.back()}
         loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/b5e29c13b056ecb29f4c0babe850109833f94d305068ad5ecbe6d1f48ed85cf9?apiKey=75213697ab8e4fbfb70997e546d69efb&"
+        src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
       />
       <TapTitle>{Title}</TapTitle>
     </TapWrapper>

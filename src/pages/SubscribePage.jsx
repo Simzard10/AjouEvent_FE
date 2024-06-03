@@ -5,6 +5,7 @@ import EventMain from "../events/EventMain";
 import NavigationBar from "../components/NavigationBar";
 import GetUserPermission from "../fcm/GetUserPermission";
 import SubscribeBar from "../components/SubscribeBar";
+import LocationBar from "../components/LocationBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ const MainContentContaioner = styled.div`
   overflow-x: hidden;
   align-items: center;
   flex-direction: column;
-  padding: 80px 0 80px 0;
+  padding: 0 0 80px 0;
 `;
 
 export default function SubscribePage() {
@@ -31,6 +32,7 @@ export default function SubscribePage() {
   return (
     <AppContaioner>
       <MainContentContaioner>
+        <LocationBar location="구독" />
         <SubscribeBar />
         <EventMain />
       </MainContentContaioner>

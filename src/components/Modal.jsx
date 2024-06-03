@@ -23,9 +23,13 @@ const ModalContainer = styled.div`
   border-radius: 8px;
   width: 80%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  h2 {
+    margin: 8px 0 24px 0;
+  }
 `;
 
 const Input = styled.input`
+  font-family: "Pretendard Variable";
   width: auto;
   padding: 10px;
   margin: 10px 0;
@@ -34,6 +38,7 @@ const Input = styled.input`
 `;
 
 const TextArea = styled.textarea`
+  font-family: "Pretendard Variable";
   width: auto;
   padding: 10px;
   margin: 10px 0;
@@ -51,6 +56,7 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   width: 50%;
+  font-family: "Pretendard Variable";
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -59,11 +65,11 @@ const Button = styled.button`
 `;
 
 const CancelButton = styled(Button)`
-  background-color: #ff4d4d;
+  background-color: #b4b4b4;
 `;
 
 const SubmitButton = styled(Button)`
-  background-color: #4da6ff;
+  background-color: #47bcff;
 `;
 
 function Modal({ setIsModalOpen, title, content }) {
@@ -141,8 +147,8 @@ function Modal({ setIsModalOpen, title, content }) {
           onChange={handleEndDateChange}
         />
         <ButtonContainer>
-          <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-          <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+          <CancelButton onClick={handleCancel}>취소</CancelButton>
+          <SubmitButton onClick={handleSubmit}>캘린더에 등록</SubmitButton>
         </ButtonContainer>
       </ModalContainer>
     </ModalBackgroundContainer>
