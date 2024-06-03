@@ -83,12 +83,17 @@ const EventSaved = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const { keyword, setKeyword, type, setType } = useStore((state) => ({
-    keyword: state.keyword,
-    setKeyword: state.setKeyword,
-    type: state.type,
-    setType: state.setType,
-  }));
+  const { keyword, setKeyword, optionTwo, setOptionTwo } = useStore(
+    (state) => ({
+      keyword: state.keyword,
+      setKeyword: state.setKeyword,
+      optionOne: state.optionOne,
+      setOptionOne: state.setOptionOne,
+      optionTwo: state.optionTwo,
+      setOptionTwo: state.setOptionTwo,
+    })
+  );
+
   const accessToken = localStorage.getItem("accessToken");
 
   const pageSize = 10;
@@ -101,10 +106,10 @@ const EventSaved = () => {
     setLoading(true);
     try {
       console.log(
-        `first api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+        `first api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
+        `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -131,7 +136,7 @@ const EventSaved = () => {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, type, keyword]);
+  }, [loading, hasMore, page, optionTwo, keyword]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -167,14 +172,14 @@ const EventSaved = () => {
 
       try {
         console.log(
-          `second api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`
+          `second api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`
         );
         // 비동기적으로 type 설정되어서 departmentCodes[type] 가 undefined 뜰 때 오류나길래 예외처리함.
-        if (!departmentCodes[type]) {
+        if (!departmentCodes[optionTwo]) {
           return;
         }
         const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[type]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
+          `${process.env.REACT_APP_BE_URL}/api/event/liked?${departmentCodes[optionTwo]}&page=${page}&size=${pageSize}&keyword=${keyword}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -205,12 +210,12 @@ const EventSaved = () => {
     };
 
     fetchInitData();
-  }, [type, keyword]);
+  }, [optionTwo, keyword]);
 
   if (loading && events.length === 0) {
     return (
       <FlexContainer>
-        <ErrorMessage>Loading...</ErrorMessage>
+        <ErrorMessage>로딩중...</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -218,7 +223,7 @@ const EventSaved = () => {
   if (events.length === 0) {
     return (
       <FlexContainer>
-        <ErrorMessage>No events found...</ErrorMessage>
+        <ErrorMessage>불러올 이벤트가 없습니다.</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -239,8 +244,8 @@ const EventSaved = () => {
         ))}
       </FlexContainer>
       <div ref={bottomRef} style={{ height: "1px" }}></div>
-      {loading && <p>Loading more events...</p>}
-      {!hasMore && <p>No more events to load.</p>}
+      {loading && <p>로딩중...</p>}
+      {!hasMore && <p>불러올 이벤트가 없습니다.</p>}
     </>
   );
 };

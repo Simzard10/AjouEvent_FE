@@ -13,10 +13,11 @@ const AppContaioner = styled.div`
   width: 100%;
 `;
 
-export default function EventDetailPage() {
+export default function HomePage() {
   return (
     <AppContaioner>
-      <EventDetail></EventDetail>
+      <p>homepage</p>
+      <NavigationBar></NavigationBar>
     </AppContaioner>
   );
 }

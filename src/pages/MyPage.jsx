@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
@@ -83,6 +84,23 @@ const ErrorText = styled.p`
   color: red;
   font-size: 0.875rem;
   margin: 0;
+`;
+
+// 임시 로그아웃 버튼
+const StyledLink = styled(Link)`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.bgcolor};
+  border-radius: 0.5rem;
+  border: 1px solid gray;
+  width: 6rem;
+  height: 1.4rem;
+  color: ${(props) => props.color};
+  font-size: 0.8rem;
+  text-decoration: none;
+  margin: 0 1rem 0 1rem;
 `;
 
 const MyPage = () => {
@@ -184,6 +202,15 @@ const MyPage = () => {
     }
   };
 
+  //임시 로그아웃
+  const handleLogoutBtnClick = () => {
+    alert("로그아웃 했습니다.");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("id");
+    localStorage.removeItem("name");
+    localStorage.removeItem("major");
+  };
+
   return (
     <AppContainer>
       {accessToken ? (
@@ -206,6 +233,14 @@ const MyPage = () => {
               정보수정
             </Button>
             <Button onClick={() => setDeleteModalOpen(true)}>회원탈퇴</Button>
+            <StyledLink
+              onClick={handleLogoutBtnClick}
+              bgcolor={"white"}
+              color={"black"}
+              to="/signIn"
+            >
+              로그아웃
+            </StyledLink>
           </ButtonContainer>
 
           {editModalOpen && (
@@ -268,7 +303,12 @@ const MyPage = () => {
           )}
         </Container>
       ) : (
-        <p>로그인이 필요한 서비스입니다</p>
+        <>
+          <p>로그인이 필요한 서비스입니다</p>
+          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+            로그인
+          </StyledLink>
+        </>
       )}
       <NavigationBar />
     </AppContainer>

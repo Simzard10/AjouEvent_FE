@@ -5,10 +5,10 @@ import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
+import LocationBar from "../components/LocationBar";
 
 const AppContaioner = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
   background-color: #ffffff;
   height: 100vh;
@@ -29,7 +29,7 @@ const MainContentContaioner = styled.div`
   overflow-x: hidden;
   align-items: center;
   flex-direction: column;
-  padding: 80px 0 80px 0;
+  padding: 0 0 80px 0;
 `;
 
 export default function SavedEventPage() {
@@ -42,6 +42,7 @@ export default function SavedEventPage() {
     <AppContaioner>
       {accessToken ? (
         <MainContentContaioner>
+          <LocationBar location="내가 찜한 이벤트"></LocationBar>
           <SearchDropBox />
           <SearchBar />
           <EventSaved />

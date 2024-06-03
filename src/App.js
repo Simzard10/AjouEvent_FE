@@ -8,6 +8,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./login/LoginSuccess";
 import MyPage from "./pages/MyPage";
 import SavedEventPage from "./pages/SavedEventPage";
+import HomePage from "./pages/HomePage";
 import EventUpload from "./events/EventUpload";
 
 //Google Analytics
@@ -20,7 +21,7 @@ ReactGA.pageview(window.location.pathname); // 추적하려는 page 설정
 const ROUTER = createBrowserRouter([
   {
     path: "/",
-    element: <EventPage />,
+    element: <HomePage />,
   },
   {
     path: "/event",

@@ -14,10 +14,10 @@ const Container = styled.div`
 
 const InputContentContainer = styled.div`
   display: flex;
-  width: 90%;
+  width: 100%;
   height: 36px;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background-color: #fff;
   border: 1px solid rgba(229, 232, 235, 1);
@@ -38,9 +38,12 @@ const InputBox = styled.input`
   font-weight: 500;
   line-height: normal;
   letter-spacing: -0.98px;
+  margin-left: 16px;
 `;
 
 const IconWapper = styled.div`
+  margin-right: 16px;
+  padding-top: 4px;
   cursor: pointer;
 `;
 

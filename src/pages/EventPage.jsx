@@ -5,6 +5,7 @@ import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
+import LocationBar from "../components/LocationBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ const MainContentContaioner = styled.div`
   overflow-x: hidden;
   align-items: center;
   flex-direction: column;
-  padding: 80px 0 80px 0;
+  padding: 0 0 80px 0;
 `;
 
 export default function EventPage() {
@@ -31,6 +32,7 @@ export default function EventPage() {
   return (
     <AppContaioner>
       <MainContentContaioner>
+        <LocationBar location="전체 이벤트 검색" />
         <SearchDropBox />
         <SearchBar />
         <EventMain />
