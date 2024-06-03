@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
@@ -31,13 +30,12 @@ export default function EventPage() {
 
   return (
     <AppContaioner>
-      <TopBar />
       <MainContentContaioner>
         <SearchDropBox />
         <SearchBar />
         <EventMain />
       </MainContentContaioner>
-      <BottomNavbar />
+      <NavigationBar />
     </AppContaioner>
   );
 }

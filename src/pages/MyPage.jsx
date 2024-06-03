@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import TopBar from "../components/TopBar";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 
 const AppContainer = styled.div`
   display: flex;
@@ -187,7 +186,6 @@ const MyPage = () => {
 
   return (
     <AppContainer>
-      <TopBar />
       {accessToken ? (
         <Container>
           <UserInfo>
@@ -272,7 +270,7 @@ const MyPage = () => {
       ) : (
         <p>로그인이 필요한 서비스입니다</p>
       )}
-      <BottomNavbar />
+      <NavigationBar />
     </AppContainer>
   );
 };

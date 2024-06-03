@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import TopBar from "../components/TopBar";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 import EventDetail from "../events/EventDetail";
 
 const AppContaioner = styled.div`
@@ -19,9 +18,8 @@ const AppContaioner = styled.div`
 export default function EventDetailPage() {
   return (
     <AppContaioner>
-      <TopBar></TopBar>
       <EventDetail></EventDetail>
-      <BottomNavbar></BottomNavbar>
+      <NavigationBar></NavigationBar>
     </AppContaioner>
   );
 }

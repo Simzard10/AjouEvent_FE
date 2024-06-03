@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventSaved from "../events/EventSaved";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
@@ -41,7 +40,6 @@ export default function SavedEventPage() {
 
   return (
     <AppContaioner>
-      <TopBar />
       {accessToken ? (
         <MainContentContaioner>
           <SearchDropBox />
@@ -53,7 +51,7 @@ export default function SavedEventPage() {
           <p>로그인이 필요한 서비스입니다</p>
         </Contaioner>
       )}
-      <BottomNavbar />
+      <NavigationBar />
     </AppContaioner>
   );
 }

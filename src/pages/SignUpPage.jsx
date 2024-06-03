@@ -1,8 +1,7 @@
 import React from "react";
 import SignUp from "../components/SignUp";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -17,9 +16,8 @@ const AppContaioner = styled.div`
 export default function SignUpPage() {
   return (
     <AppContaioner>
-      <TopBar></TopBar>
       <SignUp></SignUp>
-      <BottomNavbar></BottomNavbar>
+      <NavigationBar></NavigationBar>
     </AppContaioner>
   );
 }
