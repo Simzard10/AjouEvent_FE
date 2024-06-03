@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventSaved from "../events/EventSaved";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../events/SearchDropBox";
 import SearchBar from "../components/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
+import LocationBar from "../components/LocationBar";
 
 const AppContaioner = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
   background-color: #ffffff;
   height: 100vh;
@@ -30,7 +29,7 @@ const MainContentContaioner = styled.div`
   overflow-x: hidden;
   align-items: center;
   flex-direction: column;
-  padding: 80px 0 80px 0;
+  padding: 0 0 80px 0;
 `;
 
 export default function SavedEventPage() {
@@ -41,9 +40,9 @@ export default function SavedEventPage() {
 
   return (
     <AppContaioner>
-      <TopBar />
       {accessToken ? (
         <MainContentContaioner>
+          <LocationBar location="내가 찜한 이벤트"></LocationBar>
           <SearchDropBox />
           <SearchBar />
           <EventSaved />
@@ -53,7 +52,7 @@ export default function SavedEventPage() {
           <p>로그인이 필요한 서비스입니다</p>
         </Contaioner>
       )}
-      <BottomNavbar />
+      <NavigationBar />
     </AppContaioner>
   );
 }

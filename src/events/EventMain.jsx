@@ -82,12 +82,16 @@ const EventMain = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const { keyword, setKeyword, type, setType } = useStore((state) => ({
-    keyword: state.keyword,
-    setKeyword: state.setKeyword,
-    type: state.type,
-    setType: state.setType,
-  }));
+  const { keyword, setKeyword, optionTwo, setOptionTwo } = useStore(
+    (state) => ({
+      keyword: state.keyword,
+      setKeyword: state.setKeyword,
+      optionOne: state.optionOne,
+      setOptionOne: state.setOptionOne,
+      optionTwo: state.optionTwo,
+      setOptionTwo: state.setOptionTwo,
+    })
+  );
   const accessToken = localStorage.getItem("accessToken");
 
   const pageSize = 10;
@@ -100,7 +104,7 @@ const EventMain = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
+        `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[optionTwo]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -126,7 +130,7 @@ const EventMain = () => {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, type, keyword]);
+  }, [loading, hasMore, page, optionTwo, keyword]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -154,10 +158,6 @@ const EventMain = () => {
   useEffect(() => {
     const fetchInitData = async () => {
       if (loading || !hasMore) return;
-      // if (type === "" || keyword === "") {
-      //   setType("아주대학교-일반");
-      //   setKeyword("");
-      // }
       setLoading(true);
       setEvents([]);
       setPage(0);
@@ -165,14 +165,14 @@ const EventMain = () => {
 
       try {
         console.log(
-          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`
+          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[optionTwo]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
         // 비동기적으로 type 설정되어서 departmentCodes[type] 가 undefined 뜰 때 오류나길래 예외처리함.
-        if (!departmentCodes[type]) {
+        if (!departmentCodes[optionTwo]) {
           return;
         }
         const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[type]}?page=0&size=${pageSize}&keyword=${keyword}`,
+          `${process.env.REACT_APP_BE_URL}/api/event/${departmentCodes[optionTwo]}?page=0&size=${pageSize}&keyword=${keyword}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -202,12 +202,12 @@ const EventMain = () => {
     };
 
     fetchInitData();
-  }, [type, keyword]);
+  }, [optionTwo, keyword]);
 
   if (loading && events.length === 0) {
     return (
       <FlexContainer>
-        <ErrorMessage>Loading...</ErrorMessage>
+        <ErrorMessage>로딩중...</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -215,7 +215,7 @@ const EventMain = () => {
   if (events.length === 0) {
     return (
       <FlexContainer>
-        <ErrorMessage>No events found...</ErrorMessage>
+        <ErrorMessage>불러올 이벤트가 없습니다.</ErrorMessage>
       </FlexContainer>
     );
   }
@@ -236,8 +236,8 @@ const EventMain = () => {
         ))}
       </FlexContainer>
       <div ref={bottomRef} style={{ height: "1px" }}></div>
-      {loading && <p>Loading more events...</p>}
-      {!hasMore && <p>No more events to load.</p>}
+      {loading && <p>이벤트 불러 오는 중...</p>}
+      {!hasMore && <p>더 이상 불러올 이벤트가 없습니다.</p>}
     </>
   );
 };

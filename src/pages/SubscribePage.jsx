@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
-import BottomNavbar from "../components/BottomNavbar";
-import SearchDropBox from "../events/SearchDropBox";
-import SearchBar from "../components/SearchBar";
+import NavigationBar from "../components/NavigationBar";
 import GetUserPermission from "../fcm/GetUserPermission";
 import SubscribeBar from "../components/SubscribeBar";
 
@@ -32,12 +30,11 @@ export default function SubscribePage() {
 
   return (
     <AppContaioner>
-      <TopBar />
       <MainContentContaioner>
         <SubscribeBar />
         <EventMain />
       </MainContentContaioner>
-      <BottomNavbar />
+      <NavigationBar />
     </AppContaioner>
   );
 }

@@ -6,7 +6,8 @@ const useStore = create((set) => ({
   name: "",
   major: "",
   keyword: "",
-  type: "",
+  optionOne: "아주대 공지사항",
+  optionTwo: "아주대학교-일반",
 
   setId: (id) => {
     set({ id });
@@ -20,8 +21,11 @@ const useStore = create((set) => ({
   setKeyword: (keyword) => {
     set({ keyword });
   },
-  setType: (type) => {
-    set({ type });
+  setOptionOne: (optionOne) => {
+    set({ optionOne });
+  },
+  setOptionTwo: (optionTwo) => {
+    set({ optionTwo });
   },
 }));
 

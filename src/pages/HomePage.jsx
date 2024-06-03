@@ -1,7 +1,7 @@
 import React from "react";
-import SignUp from "../components/SignUp";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
+import EventDetail from "../events/EventDetail";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -9,14 +9,14 @@ const AppContaioner = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
-  width: 100vw;
-  overflow-x: hidden;
+  height: 100vh;
+  width: 100%;
 `;
 
-export default function SignUpPage() {
+export default function HomePage() {
   return (
     <AppContaioner>
-      <SignUp></SignUp>
+      <p>homepage</p>
       <NavigationBar></NavigationBar>
     </AppContaioner>
   );

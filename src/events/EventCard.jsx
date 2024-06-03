@@ -118,7 +118,7 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
   };
 
   const handleCardClick = () => {
-    navigate(`/${id}`);
+    navigate(`/event/${id}`);
   };
   return (
     <CardContainer onClick={handleCardClick}>

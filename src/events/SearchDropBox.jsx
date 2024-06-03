@@ -99,44 +99,53 @@ function FilterOption({
 }
 
 function SearchDropBox() {
-  const [option1, setOption1] = useState("아주대 공지사항");
-  const [option2List, setOption2List] = useState([]);
-  const [option2, setOption2] = useState("");
+  const { optionOne, setOptionOne, optionTwo, setOptionTwo } = useStore(
+    (state) => ({
+      optionOne: state.optionOne,
+      setOptionOne: state.setOptionOne,
+      optionTwo: state.optionTwo,
+      setOptionTwo: state.setOptionTwo,
+    })
+  );
 
-  const { type, setType } = useStore((state) => ({
-    type: state.type,
-    setType: state.setType,
-  }));
+  const [option1, setOption1] = useState(optionOne);
+  const [option2List, setOption2List] = useState([]);
+  const [option2, setOption2] = useState(optionTwo);
 
   useEffect(() => {
     switch (option1) {
       case "아주대 공지사항":
+        setOptionOne(option1);
         setOption2List(아주대공지사항);
-        setOption2("아주대학교-일반");
+        setOption2(optionTwo);
         break;
       case "학과 공지사항":
+        setOptionOne(option1);
         setOption2List(학과공지사항);
-        setOption2("");
+        setOption2(optionTwo);
         break;
       case "단과대 공지사항":
+        setOptionOne(option1);
         setOption2List(단과대공지사항);
-        setOption2("");
+        setOption2(optionTwo);
         break;
       case "기타":
+        setOptionOne(option1);
         setOption2List(기타);
-        setOption2("");
+        setOption2(optionTwo);
         break;
       default:
+        setOptionOne(option1);
         setOption2List(아주대공지사항);
-        setOption2("아주대학교-일반");
+        setOption2(optionTwo);
         break;
     }
   }, [option1]);
 
   useEffect(() => {
-    setType(option2);
+    setOptionTwo(option2);
     console.log("type changed to " + option2);
-  }, [option2, setType]);
+  }, [option2, setOptionTwo]);
 
   return (
     <Container>

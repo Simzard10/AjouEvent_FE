@@ -1,8 +1,7 @@
 import React from "react";
 import SignIn from "../components/SignIn";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 const AppContaioner = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,9 +17,8 @@ const AppContaioner = styled.div`
 export default function SignInPage() {
   return (
     <AppContaioner>
-      <TopBar></TopBar>
       <SignIn></SignIn>
-      <BottomNavbar></BottomNavbar>
+      <NavigationBar></NavigationBar>
     </AppContaioner>
   );
 }

@@ -4,11 +4,18 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
+import Modal from "../components/Modal";
+import TabBar from "../components/TabBar";
 
 const Container = styled.div`
-  width: 100vw;
-  height: calc(100vh - 160px);
-  padding: 20px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+`;
+
+const EventContainer = styled.div`
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
 `;
 
@@ -32,20 +39,21 @@ const Writer = styled.p`
   margin-bottom: 5px;
 `;
 
-const Subject = styled.p`
+const Subject = styled.div`
+  width: fit-content;
+  padding: 3px 4px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  background: rgba(84, 84, 84, 0.08);
   font-size: 14px;
+  color: rgba(84, 84, 84);
   font-weight: bold;
-  margin: 0;
-`;
-
-const LikeCount = styled.p`
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0;
 `;
 
 const SliderContainer = styled.div`
-  padding-left: 20px;
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -59,9 +67,8 @@ const SliderWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 300px;
+  height: 100vw;
   object-fit: contain;
-  margin: 20px 0 20px 0;
 `;
 
 const Arrow = styled.div`
@@ -74,58 +81,160 @@ const Arrow = styled.div`
   cursor: pointer;
   z-index: 10;
 
-  ${(props) => (props.direction === "left" ? "left: 10px;" : "right: 30px;")}
+  ${(props) => (props.direction === "left" ? "left: 10px;" : "right: 10px;")}
 `;
 
-const ImageWapper = styled.div`
-  width: 20px;
-  height: 20px;
-  object-fit: cover;
-`;
-
-const DetailContaioner = styled.div`
+const TitleContainer = styled.div`
   display: flex;
-  width: 100%;
-  height: 20px;
-  object-fit: cover;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+  color: #000;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 26px */
 `;
 
 const LinkButton = styled.div`
-  background-color: #9a9a9a;
   text-align: center;
-  width: 120px;
-  color: white;
+  width: 100%;
   padding: 10px 20px;
-  margin: 10px;
-  border-radius: 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 24px 0 16px 0;
   cursor: pointer;
   display: inline-block;
 `;
 
 const ContentContaioner = styled.div`
-  width: 90%;
-  margin: 0 20px 0 20px;
-  overflow: hidden;
+  width: calc(100%-48px);
+  margin: 16px 24px 0px 24px;
+  margin-bottom: 68px;
 `;
 
-const BackButton = styled.button`
-  position: absolute;
-  top: 100px;
-  left: 10px;
-  transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.5);
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 10;
+const SubtitleContainer = styled.section`
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  gap: 20px;
+  font: 700 12px "Pretendard Variable", sans-serif;
 `;
+
+const StyledDate = styled.time`
+  color: rgba(0, 0, 0, 0.4);
+  line-height: 130%;
+`;
+
+const Stats = styled.div`
+  align-self: start;
+  display: flex;
+  gap: 8px;
+  color: #c2c8d1;
+  white-space: nowrap;
+  text-align: center;
+`;
+
+const StatItem = styled.div`
+  display: flex;
+  padding-right: 20px;
+  gap: 4px;
+`;
+
+const StatIcon = styled.img`
+  aspect-ratio: 1;
+  object-fit: auto;
+  object-position: center;
+  width: 14px;
+`;
+
+const StatValue = styled.span`
+  font-family: "Pretendard Variable", sans-serif;
+`;
+
+const HorizontalLine = styled.hr`
+  width: 312px;
+  height: 1px;
+  margin: 24px 0 24px 0;
+  background: rgba(0, 0, 0, 0.08);
+  border: 0;
+`;
+
+const BottomContainer = styled.div`
+  width: 100%;
+  z-index: 5;
+  position: fixed;
+  bottom: 0;
+  border: 1px solid rgba(35, 102, 175, 0.08);
+  background-color: #fff;
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+  color: rgba(35, 102, 175, 1);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 16px 8px;
+`;
+
+const BottomImage = styled.img`
+  aspect-ratio: 1;
+  object-fit: auto;
+  object-position: center;
+  width: 24px;
+  align-self: flex-start;
+  margin-top: 12px;
+`;
+
+const BottomBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3px 4px;
+  flex: 1;
+`;
+
+const Button = styled.button`
+  font-feature-settings: "ss10" on;
+  font-family: "Pretendard Variable", sans-serif;
+  border-radius: 4px;
+  background-color: rgba(35, 102, 175, 0.08);
+  color: rgba(35, 102, 175, 1);
+  padding: 14px 60px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+function Stat({ iconSrc, value, altText }) {
+  return (
+    <StatItem>
+      <StatIcon src={iconSrc} alt={altText} loading="lazy" />
+      <StatValue>{value}</StatValue>
+    </StatItem>
+  );
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
+};
 
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [content, setContent] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -216,10 +325,8 @@ const EventDetail = () => {
   return (
     <Container>
       {event ? (
-        <>
-          <BackButton onClick={() => window.history.back()}>
-            뒤로가기
-          </BackButton>
+        <EventContainer>
+          <TabBar Title={"공지사항"} />
           <SliderContainer>
             <Arrow direction="left" onClick={prevSlide}>
               &lt;
@@ -235,25 +342,68 @@ const EventDetail = () => {
             </Arrow>
           </SliderContainer>
           <ContentContaioner>
-            <Subject>{event.type}</Subject>
-            <Title>{event.title}</Title>
-            <DetailContaioner>
-              <ImageWapper onClick={handleStarClick}>
-                {event.star ? <FilledStarIcon /> : <EmptyStarIcon />}
-              </ImageWapper>
-              <LikeCount>{event.likesCount}</LikeCount>
-            </DetailContaioner>
-
+            <TitleContainer>
+              <Subject>{event.subject}</Subject>
+              <Title>{event.title}</Title>
+              <SubtitleContainer>
+                <StyledDate>{formatDate(event.createdAt)}</StyledDate>
+                <Stats>
+                  <Stat
+                    iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/62c7bb15f5fd13739601caff1be349795102bd00b8ccfe603cd2e43498657c46?apiKey=75213697ab8e4fbfb70997e546d69efb&"
+                    value={event.viewCount}
+                    altText="Statistic icon 1"
+                  />
+                  <Stat
+                    onClick={handleStarClick}
+                    iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/52d95bd6c4badc487be46d013f44cd23b9800d5d1e753fb3a364bcb97b18044f?apiKey=75213697ab8e4fbfb70997e546d69efb&"
+                    value={event.likesCount}
+                    altText="Statistic icon 2"
+                  />
+                </Stats>
+              </SubtitleContainer>
+            </TitleContainer>
+            <HorizontalLine />
             <Content>
               {content.map((line, index) => (
                 <Line key={index}>{line}</Line>
               ))}
             </Content>
             <Writer>작성자: {event.writer}</Writer>
+            <LinkButton onClick={handleRedirect}>바로가기</LinkButton>
           </ContentContaioner>
 
-          <LinkButton onClick={handleRedirect}>바로가기</LinkButton>
-        </>
+          <BottomContainer>
+            {event.star ? (
+              <BottomImage
+                onClick={handleStarClick}
+                loading="lazy"
+                src={`${process.env.PUBLIC_URL}/icons/FilledBookmarkIcon.svg`}
+                alt="Calendar"
+              />
+            ) : (
+              <BottomImage
+                onClick={handleStarClick}
+                loading="lazy"
+                src={`${process.env.PUBLIC_URL}/icons/EmptyBookmarkIcon.svg`}
+                alt="Calendar"
+              />
+            )}
+
+            <BottomBody>
+              <Button onClick={() => setIsModalOpen(true)}>
+                캘린더에 추가
+              </Button>
+            </BottomBody>
+          </BottomContainer>
+
+          {isModalOpen && (
+            <Modal
+              setIsModalOpen={setIsModalOpen}
+              title={event.title}
+              content={content}
+            />
+          )}
+        </EventContainer>
       ) : (
         <p>Loading...</p>
       )}

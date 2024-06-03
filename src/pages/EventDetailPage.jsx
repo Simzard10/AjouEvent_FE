@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import TopBar from "../components/TopBar";
-import BottomNavbar from "../components/BottomNavbar";
+import NavigationBar from "../components/NavigationBar";
 import EventDetail from "../events/EventDetail";
 
 const AppContaioner = styled.div`
@@ -11,17 +10,13 @@ const AppContaioner = styled.div`
   justify-content: center;
   background-color: #ffffff;
   height: 100vh;
-  overflow-y: hidden;
-  width: 100vw;
-  overflow-x: hidden;
+  width: 100%;
 `;
 
 export default function EventDetailPage() {
   return (
     <AppContaioner>
-      <TopBar></TopBar>
       <EventDetail></EventDetail>
-      <BottomNavbar></BottomNavbar>
     </AppContaioner>
   );
 }
