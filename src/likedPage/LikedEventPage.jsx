@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import LikedEvent from "./LikedEvent";
 import NavigationBar from "../components/NavigationBar";
-import LikedSearchBar from "./LikedSearchBar";
+import SearchBar from "../components/SearchBar";
 import LocationBar from "../components/LocationBar";
 import useStore from "../store/useStore";
 import { Link } from "react-router-dom";
@@ -131,7 +131,7 @@ export default function LikedEventPage() {
       {accessToken ? (
         <MainContentContaioner>
           <LocationBar location="내가 찜한 이벤트"></LocationBar>
-          <LikedSearchBar
+          <SearchBar
             keyword={keyword}
             setKeyword={setKeyword}
             setPage={setPage}

@@ -1,14 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import useStore from "../store/useStore";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
-import SearchDropBox from "../searchPage/SearchDropBox";
-import SearchBar from "../components/SearchBar";
-import axios from "axios";
-import useStore from "../store/useStore";
-import { KtoECodes } from "../departmentCodes";
+import SubscribeBar from "../components/SubscribeBar";
 import LocationBar from "../components/LocationBar";
-import SearchEvent from "./SearchEvent";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import SubscribeEvent from "./SubscribeEvent";
+import SearchBar from "../components/SearchBar";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -27,27 +26,37 @@ const MainContentContaioner = styled.div`
   padding: 0 0 80px 0;
 `;
 
-export default function SearchEventPage() {
-  const {
-    savedKeyword,
-    setSavedKeyword,
-    savedOption1,
-    setSavedOption1,
-    savedOption2,
-    setSavedOption2,
-  } = useStore((state) => ({
+const TemporaryContaioner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100vh;
+`;
+
+const StyledLink = styled(Link)`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.bgcolor};
+  border-radius: 0.5rem;
+  border: 1px solid gray;
+  width: 6rem;
+  height: 1.4rem;
+  color: ${(props) => props.color};
+  font-size: 0.8rem;
+  text-decoration: none;
+  margin: 0 1rem 0 1rem;
+`;
+
+export default function SubscribePage() {
+  const { savedKeyword, setSavedKeyword } = useStore((state) => ({
     savedKeyword: state.savedKeyword,
     setSavedKeyword: state.setSavedKeyword,
-    savedOption1: state.savedOption1,
-    setSavedOption1: state.setSavedOption1,
-    savedOption2: state.savedOption2,
-    setSavedOption2: state.setSavedOption2,
   }));
-
   const [keyword, setKeyword] = useState(savedKeyword);
-  const [option1, setOption1] = useState(savedOption1);
-  const [option2, setOption2] = useState(savedOption2);
-
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -61,18 +70,15 @@ export default function SearchEventPage() {
     if (loading || !hasMore) return;
 
     setLoading(true);
+
     try {
-      // const response = await axios.get(
-      //   `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
+      console.log(
+        `api call: ${process.env.REACT_APP_BE_URL}/api/event/subscribed?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
+      );
+
       const response = await requestWithAccessToken(
         "get",
-        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`
+        `${process.env.REACT_APP_BE_URL}/api/event/subscribed?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 
@@ -83,9 +89,9 @@ export default function SearchEventPage() {
         );
         return [...prevEvents, ...filteredEvents];
       });
+
       if (response.data.hasNext) {
         setPage((prevPage) => prevPage + 1);
-        setHasMore(true);
       } else {
         setHasMore(false);
       }
@@ -94,7 +100,11 @@ export default function SearchEventPage() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, option2, keyword]);
+  }, [loading, hasMore, page, keyword]);
+
+  useEffect(() => {
+    console.log(page);
+  }, [page]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -120,38 +130,34 @@ export default function SearchEventPage() {
 
   return (
     <AppContaioner>
-      <MainContentContaioner>
-        <LocationBar location="전체 이벤트 검색" />
-        <SearchDropBox
-          setPage={setPage}
-          setEvents={setEvents}
-          setHasMore={setHasMore}
-          fetchData={fetchData}
-          option1={option1}
-          setOption1={setOption1}
-          option2={option2}
-          setOption2={setOption2}
-          savedOption1={savedOption1}
-          setSavedOption1={setSavedOption1}
-          savedOption2={savedOption2}
-          setSavedOption2={setSavedOption2}
-        />
-        <SearchBar
-          keyword={keyword}
-          setKeyword={setKeyword}
-          setPage={setPage}
-          setEvents={setEvents}
-          setSavedKeyword={setSavedKeyword}
-          setHasMore={setHasMore}
-          fetchData={fetchData}
-        />
-        <SearchEvent
-          events={events}
-          bottomRef={bottomRef}
-          loading={loading}
-          hasMore={hasMore}
-        />
-      </MainContentContaioner>
+      {accessToken ? (
+        <MainContentContaioner>
+          <LocationBar location="구독" />
+          <SubscribeBar />
+          <SearchBar
+            keyword={keyword}
+            setKeyword={setKeyword}
+            setPage={setPage}
+            setEvents={setEvents}
+            setSavedKeyword={setSavedKeyword}
+            setHasMore={setHasMore}
+            fetchData={fetchData}
+          />
+          <SubscribeEvent
+            events={events}
+            bottomRef={bottomRef}
+            loading={loading}
+            hasMore={hasMore}
+          />
+        </MainContentContaioner>
+      ) : (
+        <TemporaryContaioner>
+          <p>로그인이 필요한 서비스입니다</p>
+          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+            로그인
+          </StyledLink>
+        </TemporaryContaioner>
+      )}
       <NavigationBar />
     </AppContaioner>
   );
