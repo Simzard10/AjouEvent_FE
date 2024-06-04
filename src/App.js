@@ -1,15 +1,14 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignInPage from "./pages/SignInPage";
-import EventPage from "./pages/EventPage";
+import SearchEventPage from "./searchPage/SearchEventPage";
 import SignUpPage from "./pages/SignUpPage";
 import SubscribePage from "./pages/SubscribePage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./login/LoginSuccess";
 import MyPage from "./pages/MyPage";
-import SavedEventPage from "./pages/SavedEventPage";
+import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./pages/HomePage";
-import EventUpload from "./events/EventUpload";
 
 //Google Analytics
 import ReactGA from "react-ga";
@@ -25,7 +24,7 @@ const ROUTER = createBrowserRouter([
   },
   {
     path: "/event",
-    element: <EventPage />,
+    element: <SearchEventPage />,
   },
   {
     path: "/event/:id",
@@ -44,8 +43,8 @@ const ROUTER = createBrowserRouter([
     element: <MyPage />,
   },
   {
-    path: "/saved",
-    element: <SavedEventPage />,
+    path: "/liked",
+    element: <LikedEventPage />,
   },
   {
     path: "/loginSuccess",

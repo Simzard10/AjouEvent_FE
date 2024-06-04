@@ -2,30 +2,18 @@
 import { create } from "zustand";
 
 const useStore = create((set) => ({
-  id: "",
-  name: "",
-  major: "",
-  keyword: "",
-  optionOne: "아주대 공지사항",
-  optionTwo: "아주대학교-일반",
+  savedKeyword: "",
+  savedOption1: "",
+  savedOption2: "아주대학교-일반",
 
-  setId: (id) => {
-    set({ id });
+  setSavedKeyword: (savedKeyword) => {
+    set({ savedKeyword });
   },
-  setName: (name) => {
-    set({ name });
+  setSavedOption1: (savedOption1) => {
+    set({ savedOption1 });
   },
-  setMajor: (major) => {
-    set({ major });
-  },
-  setKeyword: (keyword) => {
-    set({ keyword });
-  },
-  setOptionOne: (optionOne) => {
-    set({ optionOne });
-  },
-  setOptionTwo: (optionTwo) => {
-    set({ optionTwo });
+  setSavedOption2: (savedOption2) => {
+    set({ savedOption2 });
   },
 }));
 

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import EventMain from "../events/EventMain";
 import NavigationBar from "../components/NavigationBar";
-import SearchDropBox from "../events/SearchDropBox";
-import SearchBar from "../components/SearchBar";
+import SearchDropBox from "../searchPage/SearchDropBox";
+import SearchBar from "../searchPage/SearchBar";
 import GetUserPermission from "../fcm/GetUserPermission";
 import LocationBar from "../components/LocationBar";
 
