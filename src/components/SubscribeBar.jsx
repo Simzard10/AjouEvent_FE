@@ -134,15 +134,6 @@ const SubscribeBar = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        // const accessToken = localStorage.getItem("accessToken");
-        // const response = await axios.get(
-        //   `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         const response = await requestWithAccessToken(
           "get",
           `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
@@ -160,15 +151,6 @@ const SubscribeBar = () => {
   useEffect(() => {
     const fetchSubscribeItems = async () => {
       try {
-        // const accessToken = localStorage.getItem("accessToken");
-        // const response = await axios.get(
-        //   `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         const response = await requestWithAccessToken(
           "get",
           `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`
@@ -185,16 +167,6 @@ const SubscribeBar = () => {
 
   const handleSubscribe = async (topic) => {
     try {
-      // const accessToken = localStorage.getItem("accessToken");
-      // await axios.post(
-      //   `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-      //   { topic },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
@@ -273,13 +245,13 @@ const SubscribeBar = () => {
                   <ModalHeaderIcon
                     onClick={() => handleUnsubscribe(item.topic)}
                     loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/expand_more.svg`}
+                    src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
                   />
                 ) : (
                   <ModalHeaderIcon
                     onClick={() => handleSubscribe(item.topic)}
                     loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/bell.svg`}
+                    src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
                   />
                 )}
               </MenuItemInModal>
