@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import TabBar from "../components/TabBar";
 
 const AppContainer = styled.div`
   display: flex;
@@ -17,19 +18,30 @@ const AppContainer = styled.div`
 `;
 
 const Container = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
   text-align: center;
 `;
 
 const UserInfo = styled.div`
-  margin-bottom: 20px;
+  display: flex;
+  height: calc(100vh - 420px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  padding: 40px 40px 10px 40px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 `;
 
 const Button = styled.button`
   width: 50%;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
   padding: 10px 20px;
+  font-family: "Pretendard Variable";
   cursor: pointer;
 `;
 
@@ -38,6 +50,15 @@ const ButtonContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  padding: 0 30px 0 30px;
+  margin-bottom: 20px;
+`;
+
+const LogoutBtnWapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 `;
 
 const ModalBackground = styled.div`
@@ -94,13 +115,13 @@ const StyledLink = styled(Link)`
   justify-content: center;
   background-color: ${(props) => props.bgcolor};
   border-radius: 0.5rem;
-  border: 1px solid gray;
-  width: 6rem;
-  height: 1.4rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  width: 84%;
+  height: 2.4rem;
   color: ${(props) => props.color};
   font-size: 0.8rem;
   text-decoration: none;
-  margin: 0 1rem 0 1rem;
+  margin: 8rem 1rem 0 1rem;
 `;
 
 const MyPage = () => {
@@ -119,14 +140,6 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // const response = await axios.get(
-        //   `${process.env.REACT_APP_BE_URL}/api/users`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         const response = await requestWithAccessToken(
           "get",
           `${process.env.REACT_APP_BE_URL}/api/users`
@@ -169,15 +182,6 @@ const MyPage = () => {
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
     try {
-      // const response = await axios.patch(
-      //   `${process.env.REACT_APP_BE_URL}/api/users`,
-      //   editForm,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       const response = await requestWithAccessToken(
         "patch",
         `${process.env.REACT_APP_BE_URL}/api/users`,
@@ -193,14 +197,6 @@ const MyPage = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      // const response = await axios.delete(
-      //   `${process.env.REACT_APP_BE_URL}/api/users`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       const response = await requestWithAccessToken(
         "delete",
         `${process.env.REACT_APP_BE_URL}/api/users`
@@ -227,13 +223,15 @@ const MyPage = () => {
     <AppContainer>
       {accessToken ? (
         <Container>
+          <TabBar Title="마이페이지" />
           <UserInfo>
-            <h1>마이페이지</h1>
+            <h3>회원정보</h3>
             <p>이름: {user.name}</p>
             <p>전공: {user.major}</p>
             <p>이메일: {user.email}</p>
             <p>전화번호: {user.phone}</p>
           </UserInfo>
+
           <ButtonContainer>
             <Button
               onClick={() => {
@@ -245,6 +243,8 @@ const MyPage = () => {
               정보수정
             </Button>
             <Button onClick={() => setDeleteModalOpen(true)}>회원탈퇴</Button>
+          </ButtonContainer>
+          <LogoutBtnWapper>
             <StyledLink
               onClick={handleLogoutBtnClick}
               bgcolor={"white"}
@@ -253,7 +253,7 @@ const MyPage = () => {
             >
               로그아웃
             </StyledLink>
-          </ButtonContainer>
+          </LogoutBtnWapper>
 
           {editModalOpen && (
             <ModalBackground>

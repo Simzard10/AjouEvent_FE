@@ -18,7 +18,7 @@ const MenuBarContainer = styled.div`
   overflow-x: auto;
   white-space: nowrap;
   background: #ffffff;
-  padding: 16px 10px 10px 10px;
+  padding: 12px 10px 0px 16px;
 `;
 
 const MenuItemContainer = styled.div`
@@ -186,16 +186,6 @@ const SubscribeBar = () => {
 
   const handleUnsubscribe = async (topic) => {
     try {
-      // const accessToken = localStorage.getItem("accessToken");
-      // await axios.post(
-      //   `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
-      //   { topic },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,

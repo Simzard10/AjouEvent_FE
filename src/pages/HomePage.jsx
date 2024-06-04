@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
-import EventDetail from "../events/EventDetail";
+import GetUserPermission from "../fcm/GetUserPermission";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -14,6 +14,9 @@ const AppContaioner = styled.div`
 `;
 
 export default function HomePage() {
+  useEffect(() => {
+    GetUserPermission();
+  }, []);
   return (
     <AppContaioner>
       <p>homepage</p>
