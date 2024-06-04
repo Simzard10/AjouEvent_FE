@@ -232,7 +232,7 @@ const SignIn = () => {
       // 에러를 처리
       if (error.response) {
         console.error("응답 에러:", error.response.data);
-        navigate("/");
+        alert("이메일과 비밀번호를 다시 확인해주세요");
       } else if (error.request) {
         console.error("응답 없음:", error.request);
         navigate("/");

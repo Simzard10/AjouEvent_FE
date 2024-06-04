@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
@@ -130,6 +129,7 @@ const SubscribeBar = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -166,11 +166,15 @@ const SubscribeBar = () => {
   }, [menuItems]);
 
   const handleSubscribe = async (topic) => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
     try {
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-        topic
+        { topic: topic }
       );
       alert(`${EtoKCodes[topic]} 구독 완료`);
 
@@ -181,15 +185,21 @@ const SubscribeBar = () => {
       );
     } catch (error) {
       console.error("Error subscribing to topic:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleUnsubscribe = async (topic) => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
     try {
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
-        topic
+        { topic: topic }
       );
       alert(`${EtoKCodes[topic]} 구독 취소`);
 
@@ -200,6 +210,8 @@ const SubscribeBar = () => {
       );
     } catch (error) {
       console.error("Error unsubscribing from topic:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
