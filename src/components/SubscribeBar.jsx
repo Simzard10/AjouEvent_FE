@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
@@ -170,7 +169,7 @@ const SubscribeBar = () => {
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-        topic
+        { topic: topic }
       );
       alert(`${EtoKCodes[topic]} 구독 완료`);
 
@@ -189,7 +188,7 @@ const SubscribeBar = () => {
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
-        topic
+        { topic: topic }
       );
       alert(`${EtoKCodes[topic]} 구독 취소`);
 
