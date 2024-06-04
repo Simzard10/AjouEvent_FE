@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
-import Modal from "../components/Modal";
+import CalendarModal from "../components/CalendarModal";
 import TabBar from "../components/TabBar";
 
 const Container = styled.div`
@@ -397,7 +397,7 @@ const EventDetail = () => {
           </BottomContainer>
 
           {isModalOpen && (
-            <Modal
+            <CalendarModal
               setIsModalOpen={setIsModalOpen}
               title={event.title}
               content={content}

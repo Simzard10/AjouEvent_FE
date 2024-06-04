@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "../icons/SearchIcon";
-import useStore from "../store/useStore";
 
 const Container = styled.div`
   display: flex;
@@ -47,14 +46,27 @@ const IconWapper = styled.div`
   cursor: pointer;
 `;
 
-const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { setKeyword } = useStore((state) => ({
-    setKeyword: state.setKeyword,
-  }));
+const SearchBar = ({
+  keyword,
+  setKeyword,
+  setPage,
+  setEvents,
+  setSavedKeyword,
+  setHasMore,
+  fetchData,
+}) => {
+  const [inputTerm, setInputTerm] = useState(keyword);
 
-  const handleSearchClick = () => {
-    setKeyword(searchTerm);
+  const handleSearchClick = async () => {
+    await Promise.all([
+      setPage(0),
+      setHasMore(true),
+      setEvents([]),
+      setKeyword(inputTerm),
+      setSavedKeyword(inputTerm),
+    ]);
+
+    fetchData();
   };
 
   const handleKeyDown = (e) => {
@@ -68,8 +80,8 @@ const SearchBar = () => {
       <InputContentContainer>
         <InputBox
           type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={inputTerm}
+          onChange={(e) => setInputTerm(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="검색어를 입력해 주세요"
         />

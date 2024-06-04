@@ -71,7 +71,7 @@ const items = [
     srcEmpty: `${process.env.PUBLIC_URL}/icons/favorite_border.svg`,
     label: "찜",
     alt: "Favorites",
-    link: "/saved",
+    link: "/liked",
   },
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/subscriptions.svg`,

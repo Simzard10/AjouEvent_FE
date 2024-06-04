@@ -149,22 +149,6 @@ const EventMain = () => {
     fetchInitData();
   }, [optionTwo, keyword]);
 
-  if (loading && events.length === 0) {
-    return (
-      <FlexContainer>
-        <ErrorMessage>로딩중...</ErrorMessage>
-      </FlexContainer>
-    );
-  }
-
-  if (events.length === 0) {
-    return (
-      <FlexContainer>
-        <ErrorMessage>불러올 이벤트가 없습니다.</ErrorMessage>
-      </FlexContainer>
-    );
-  }
-
   return (
     <>
       <FlexContainer>

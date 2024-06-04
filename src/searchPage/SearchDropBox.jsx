@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import useStore from "../store/useStore";
 
 const option1List = [
   "아주대 공지사항",
@@ -98,54 +97,83 @@ function FilterOption({
   );
 }
 
-function SearchDropBox() {
-  const { optionOne, setOptionOne, optionTwo, setOptionTwo } = useStore(
-    (state) => ({
-      optionOne: state.optionOne,
-      setOptionOne: state.setOptionOne,
-      optionTwo: state.optionTwo,
-      setOptionTwo: state.setOptionTwo,
-    })
-  );
-
-  const [option1, setOption1] = useState(optionOne);
+function SearchDropBox({
+  setPage,
+  setEvents,
+  setHasMore,
+  fetchData,
+  option1,
+  setOption1,
+  option2,
+  setOption2,
+  savedOption1,
+  setSavedOption1,
+  savedOption2,
+  setSavedOption2,
+}) {
   const [option2List, setOption2List] = useState([]);
-  const [option2, setOption2] = useState(optionTwo);
-
   useEffect(() => {
     switch (option1) {
       case "아주대 공지사항":
-        setOptionOne(option1);
+        setSavedOption1(option1);
         setOption2List(아주대공지사항);
-        setOption2(optionTwo);
+        if (아주대공지사항.includes(savedOption2)) {
+          setOption2(savedOption2);
+        } else {
+          setOption2("");
+        }
         break;
       case "학과 공지사항":
-        setOptionOne(option1);
+        setSavedOption1(option1);
         setOption2List(학과공지사항);
-        setOption2(optionTwo);
+        if (학과공지사항.includes(savedOption2)) {
+          setOption2(savedOption2);
+        } else {
+          setOption2("");
+        }
         break;
       case "단과대 공지사항":
-        setOptionOne(option1);
+        setSavedOption1(option1);
         setOption2List(단과대공지사항);
-        setOption2(optionTwo);
+        if (단과대공지사항.includes(savedOption2)) {
+          setOption2(savedOption2);
+        } else {
+          setOption2("");
+        }
         break;
       case "기타":
-        setOptionOne(option1);
+        setSavedOption1(option1);
         setOption2List(기타);
-        setOption2(optionTwo);
+        if (기타.includes(savedOption2)) {
+          setOption2(savedOption2);
+        } else {
+          setOption2("");
+        }
         break;
       default:
-        setOptionOne(option1);
+        setOption1("아주대 공지사항");
         setOption2List(아주대공지사항);
-        setOption2(optionTwo);
+        setOption2("아주대학교-일반");
         break;
     }
   }, [option1]);
 
   useEffect(() => {
-    setOptionTwo(option2);
-    console.log("type changed to " + option2);
-  }, [option2, setOptionTwo]);
+    const fetchDataAndUpdateState = async () => {
+      await Promise.all([
+        setPage(0),
+        setHasMore(true),
+        setEvents([]),
+        setSavedOption2(option2),
+      ]);
+
+      fetchData();
+
+      console.log("type changed to " + option2);
+    };
+
+    fetchDataAndUpdateState();
+  }, [option2]);
 
   return (
     <Container>

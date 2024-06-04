@@ -72,7 +72,7 @@ const SubmitButton = styled(Button)`
   background-color: #47bcff;
 `;
 
-function Modal({ setIsModalOpen, title, content }) {
+function CalendarModal({ setIsModalOpen, title, content }) {
   const today = new Date().toISOString().split("T")[0];
   const currentTime = new Date().toISOString().split(".")[0];
 
@@ -155,4 +155,4 @@ function Modal({ setIsModalOpen, title, content }) {
   );
 }
 
-export default Modal;
+export default CalendarModal;
