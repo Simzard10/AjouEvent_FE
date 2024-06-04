@@ -5,6 +5,7 @@ import FilledStarIcon from "../icons/FilledStarIcon";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const CardContainer = styled.div`
   width: calc(48% - 1rem);
@@ -87,27 +88,34 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
     e.stopPropagation();
 
     try {
-      let accessToken = localStorage.getItem("accessToken");
       if (cardStar) {
-        await axios.delete(
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // await axios.delete(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        await requestWithAccessToken(
+          "delete",
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
         );
         setCardStar(!cardStar);
         setLikes(likes - 1);
       } else {
-        await axios.post(
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // await axios.post(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+        //   {},
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        await requestWithAccessToken(
+          "post",
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
         );
         setCardStar(!cardStar);
         setLikes(likes + 1);

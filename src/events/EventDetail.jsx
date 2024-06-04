@@ -6,6 +6,7 @@ import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
 import CalendarModal from "../components/CalendarModal";
 import TabBar from "../components/TabBar";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const Container = styled.div`
   width: 100%;
@@ -235,18 +236,21 @@ const EventDetail = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [content, setContent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // const response = await axios.get(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         );
         let sliceContent = response.data.content.split("\\n");
         setContent(sliceContent);
@@ -286,15 +290,18 @@ const EventDetail = () => {
   const handleStarClick = async () => {
     try {
       console.log("event.star" + event.star);
-      let accessToken = localStorage.getItem("accessToken");
       if (event.star) {
-        await axios.delete(
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // await axios.delete(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        await requestWithAccessToken(
+          "delete",
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
         );
         setEvent((prevEvent) => ({
           ...prevEvent,
@@ -302,14 +309,18 @@ const EventDetail = () => {
           likesCount: prevEvent.likesCount - 1,
         }));
       } else {
-        await axios.post(
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // await axios.post(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
+        //   {},
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        await requestWithAccessToken(
+          "post",
+          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
         );
         setEvent((prevEvent) => ({
           ...prevEvent,

@@ -8,6 +8,7 @@ import useStore from "../store/useStore";
 import { KtoECodes } from "../departmentCodes";
 import LocationBar from "../components/LocationBar";
 import SearchEvent from "./SearchEvent";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -61,13 +62,17 @@ export default function SearchEventPage() {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // const response = await axios.get(
+      //   `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 

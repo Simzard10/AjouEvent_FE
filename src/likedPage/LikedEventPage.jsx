@@ -5,7 +5,8 @@ import NavigationBar from "../components/NavigationBar";
 import LikedSearchBar from "./LikedSearchBar";
 import LocationBar from "../components/LocationBar";
 import useStore from "../store/useStore";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -32,6 +33,22 @@ const MainContentContaioner = styled.div`
   padding: 0 0 80px 0;
 `;
 
+const StyledLink = styled(Link)`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.bgcolor};
+  border-radius: 0.5rem;
+  border: 1px solid gray;
+  width: 6rem;
+  height: 1.4rem;
+  color: ${(props) => props.color};
+  font-size: 0.8rem;
+  text-decoration: none;
+  margin: 0 1rem 0 1rem;
+`;
+
 export default function LikedEventPage() {
   const { savedKeyword, setSavedKeyword } = useStore((state) => ({
     savedKeyword: state.savedKeyword,
@@ -56,13 +73,10 @@ export default function LikedEventPage() {
       console.log(
         `api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
-      const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 
@@ -136,6 +150,9 @@ export default function LikedEventPage() {
       ) : (
         <Contaioner>
           <p>로그인이 필요한 서비스입니다</p>
+          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+            로그인
+          </StyledLink>
         </Contaioner>
       )}
       <NavigationBar />

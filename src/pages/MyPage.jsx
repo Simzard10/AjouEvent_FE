@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const AppContainer = styled.div`
   display: flex;
@@ -119,22 +119,25 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/users`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // const response = await axios.get(
+        //   `${process.env.REACT_APP_BE_URL}/api/users`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/users`
         );
         setUser(response.data);
       } catch (error) {
         console.error(error);
       }
     };
-    if (accessToken) {
-      fetchUserInfo();
-    }
+
+    fetchUserInfo();
   }, []);
 
   const handleEditChange = (e) => {
@@ -166,14 +169,19 @@ const MyPage = () => {
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
     try {
-      const response = await axios.patch(
+      // const response = await axios.patch(
+      //   `${process.env.REACT_APP_BE_URL}/api/users`,
+      //   editForm,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      const response = await requestWithAccessToken(
+        "patch",
         `${process.env.REACT_APP_BE_URL}/api/users`,
-        editForm,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        editForm
       );
       alert(response.data.message);
       setUser(editForm);
@@ -185,13 +193,17 @@ const MyPage = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_BE_URL}/api/users`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // const response = await axios.delete(
+      //   `${process.env.REACT_APP_BE_URL}/api/users`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      const response = await requestWithAccessToken(
+        "delete",
+        `${process.env.REACT_APP_BE_URL}/api/users`
       );
       if (response.status === 200) {
         alert("탈퇴가 완료되었습니다.");

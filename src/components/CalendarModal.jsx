@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const ModalBackgroundContainer = styled.div`
   position: fixed;
@@ -86,7 +87,6 @@ function CalendarModal({ setIsModalOpen, title, content }) {
   };
 
   const handleSubmit = async () => {
-    const accessToken = localStorage.getItem("accessToken");
     const eventData = {
       summary,
       description,
@@ -95,14 +95,19 @@ function CalendarModal({ setIsModalOpen, title, content }) {
     };
 
     try {
-      await axios.post(
-        "https://ajou-event.shop/api/event/calendar",
-        eventData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // await axios.post(
+      //   `${process.env.REACT_APP_BE_URL}/api/event/calendar`,
+      //   eventData,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      await requestWithAccessToken(
+        "post",
+        `${process.env.REACT_APP_BE_URL}/api/event/calendar`,
+        eventData
       );
       setIsModalOpen(false);
     } catch (error) {

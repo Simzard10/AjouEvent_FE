@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { EtoKCodes } from "../departmentCodes";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const Container = styled.div`
   display: flex;
@@ -133,14 +134,9 @@ const SubscribeBar = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://ajou-event.shop/api/topic/subscriptionsStatus",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
         );
         const datas = response.data;
         setMenuItems(datas);
@@ -155,14 +151,9 @@ const SubscribeBar = () => {
   useEffect(() => {
     const fetchSubscribeItems = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://ajou-event.shop/api/topic/subscriptions",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`
         );
         const topics = response.data.topics;
         setSubscribeItems(topics);
@@ -176,15 +167,10 @@ const SubscribeBar = () => {
 
   const handleSubscribe = async (topic) => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      await axios.post(
-        "https://ajou-event.shop/api/topic/subscribe",
-        { topic },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      await requestWithAccessToken(
+        "post",
+        `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
+        topic
       );
       alert(`${EtoKCodes[topic]} 구독 완료`);
 
@@ -200,15 +186,20 @@ const SubscribeBar = () => {
 
   const handleUnsubscribe = async (topic) => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      await axios.post(
-        "https://ajou-event.shop/api/topic/unsubscribe",
-        { topic },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // const accessToken = localStorage.getItem("accessToken");
+      // await axios.post(
+      //   `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
+      //   { topic },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      await requestWithAccessToken(
+        "post",
+        `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
+        topic
       );
       alert(`${EtoKCodes[topic]} 구독 취소`);
 
@@ -254,13 +245,13 @@ const SubscribeBar = () => {
                   <ModalHeaderIcon
                     onClick={() => handleUnsubscribe(item.topic)}
                     loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/expand_more.svg`}
+                    src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
                   />
                 ) : (
                   <ModalHeaderIcon
                     onClick={() => handleSubscribe(item.topic)}
                     loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/bell.svg`}
+                    src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
                   />
                 )}
               </MenuItemInModal>
