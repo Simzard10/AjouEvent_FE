@@ -129,6 +129,7 @@ const SubscribeBar = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -165,6 +166,10 @@ const SubscribeBar = () => {
   }, [menuItems]);
 
   const handleSubscribe = async (topic) => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
     try {
       await requestWithAccessToken(
         "post",
@@ -180,10 +185,16 @@ const SubscribeBar = () => {
       );
     } catch (error) {
       console.error("Error subscribing to topic:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleUnsubscribe = async (topic) => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
     try {
       await requestWithAccessToken(
         "post",
@@ -199,6 +210,8 @@ const SubscribeBar = () => {
       );
     } catch (error) {
       console.error("Error unsubscribing from topic:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
