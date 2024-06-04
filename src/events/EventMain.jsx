@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import useStore from "../store/useStore";
 import { KtoECodes } from "../departmentCodes";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -37,7 +38,6 @@ const EventMain = () => {
       setOptionTwo: state.setOptionTwo,
     })
   );
-  const accessToken = localStorage.getItem("accessToken");
 
   const pageSize = 10;
 
@@ -48,13 +48,17 @@ const EventMain = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // const response = await axios.get(
+      //   `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 
@@ -116,13 +120,17 @@ const EventMain = () => {
         if (!KtoECodes[optionTwo]) {
           return;
         }
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=0&size=${pageSize}&keyword=${keyword}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        // const response = await axios.get(
+        //   `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=0&size=${pageSize}&keyword=${keyword}`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //     },
+        //   }
+        // );
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[optionTwo]}?page=0&size=${pageSize}&keyword=${keyword}`
         );
         const newEvents = response.data.result;
 

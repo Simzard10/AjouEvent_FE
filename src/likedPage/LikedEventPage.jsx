@@ -6,6 +6,7 @@ import LikedSearchBar from "./LikedSearchBar";
 import LocationBar from "../components/LocationBar";
 import useStore from "../store/useStore";
 import axios from "axios";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -56,13 +57,17 @@ export default function LikedEventPage() {
       console.log(
         `api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
-      const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      // const response = await axios.get(
+      //   `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
       );
       const newEvents = response.data.result;
 
