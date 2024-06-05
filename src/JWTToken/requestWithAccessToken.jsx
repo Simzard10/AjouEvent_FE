@@ -63,9 +63,12 @@ export default async function requestWithAccessToken(method, url, data = null) {
           },
         });
       }
+      console.error(
+        `Response making ${method} request with access token:`,
+        response
+      );
       return response;
     } else {
-      // 다른 오류 처리
       console.error(`Error making ${method} request with access token:`, error);
       throw error;
     }
