@@ -17,3 +17,4 @@ npm install dotenv (.env)
 npm install react-intersection-observer --save (무한스크롤)
 
 npm install react-ga --save
+npm install react-bootstrap bootstrap

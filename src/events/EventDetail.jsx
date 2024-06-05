@@ -288,14 +288,6 @@ const EventDetail = () => {
     try {
       console.log("event.star" + event.star);
       if (event.star) {
-        // await axios.delete(
-        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         await requestWithAccessToken(
           "delete",
           `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
@@ -306,15 +298,6 @@ const EventDetail = () => {
           likesCount: prevEvent.likesCount - 1,
         }));
       } else {
-        // await axios.post(
-        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        //   {},
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         await requestWithAccessToken(
           "post",
           `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
