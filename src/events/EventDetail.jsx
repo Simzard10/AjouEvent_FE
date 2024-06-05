@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import EmptyStarIcon from "../icons/EmptyStarIcon";
-import FilledStarIcon from "../icons/FilledStarIcon";
 import CalendarModal from "../components/CalendarModal";
 import TabBar from "../components/TabBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
