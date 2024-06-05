@@ -3,7 +3,7 @@ import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Carousel from "react-bootstrap/Carousel";
 
-const BannerContaioner = styled.div`
+const BannerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,6 +11,12 @@ const BannerContaioner = styled.div`
   background-color: #ffffff;
   height: 100vw;
   width: 100%;
+`;
+
+const CarouselItemImage = styled.img`
+  width: 100%;
+  height: 100vw;
+  object-fit: cover;
 `;
 
 export default function HomeBanner() {
@@ -21,7 +27,7 @@ export default function HomeBanner() {
   };
 
   return (
-    <BannerContaioner>
+    <BannerContainer>
       <Carousel
         activeIndex={index}
         onSelect={handleSelect}
@@ -30,27 +36,25 @@ export default function HomeBanner() {
         touch={true}
       >
         <Carousel.Item>
-          <img
-            className="d-block w-100"
+          <CarouselItemImage
             src={`${process.env.PUBLIC_URL}/icons/TestBanner2.svg`}
             alt="First slide"
           />
         </Carousel.Item>
         <Carousel.Item>
-          <img
-            className="d-block w-100"
+          <CarouselItemImage
             src={`${process.env.PUBLIC_URL}/icons/TestBanner2.svg`}
             alt="Second slide"
           />
         </Carousel.Item>
         <Carousel.Item>
-          <img
-            className="d-block w-100"
+          <CarouselItemImage
             src={`${process.env.PUBLIC_URL}/icons/TestBanner2.svg`}
             alt="Third slide"
           />
         </Carousel.Item>
       </Carousel>
+
       <div className="carousel-indicators">
         <button
           type="button"
@@ -72,6 +76,6 @@ export default function HomeBanner() {
           aria-label="Slide 3"
         ></button>
       </div>
-    </BannerContaioner>
+    </BannerContainer>
   );
 }
