@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useStore } from "../store/useStore";
+import React from "react";
 import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TapWrapper = styled.div`
   width: 100%;
@@ -17,6 +16,7 @@ const TapIcon = styled.img`
   width: 20px;
   object-fit: contain;
   object-position: center;
+  cursor: pointer; /* 클릭 가능한 아이콘 표시 */
 `;
 
 const TapTitle = styled.h1`
@@ -29,10 +29,20 @@ const TapTitle = styled.h1`
 `;
 
 const TabBar = ({ Title }) => {
+  const navigate = useNavigate();
+
+  const arrowBackClicked = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate("/event");
+    }
+  };
+
   return (
     <TapWrapper>
       <TapIcon
-        onClick={() => window.history.back()}
+        onClick={arrowBackClicked}
         loading="lazy"
         src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
       />
