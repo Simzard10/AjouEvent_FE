@@ -8,7 +8,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./loginPage/LoginSuccess";
 import MyPage from "./pages/MyPage";
 import LikedEventPage from "./likedPage/LikedEventPage";
-import HomePage from "./pages/HomePage";
+import HomePage from "./homePage/HomePage";
 
 //Google Analytics
 import ReactGA from "react-ga";
