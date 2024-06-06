@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import GetUserPermission from "../fcm/GetUserPermission";
-// import useStore from "../store/useStore";
+import Swal from "sweetalert2";
 
 const Container = styled.div`
   z-index: 1;
@@ -231,21 +231,36 @@ const SignIn = () => {
       localStorage.setItem("id", response.data.id);
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("major", response.data.major);
-
-      alert("로그인이 완료되었습니다!");
+      Swal.fire({
+        icon: "success",
+        title: "로그인 성공",
+        text: `${response.data.name}님 환영합니다!`,
+      });
       navigate("/");
     } catch (error) {
       // 에러를 처리
       if (error.response) {
         console.error("응답 에러:", error.response.data);
-        alert("이메일과 비밀번호를 다시 확인해주세요");
+        Swal.fire({
+          icon: "error",
+          title: "로그인 실패",
+          text: "이메일과 비밀번호를 다시 확인해주세요",
+        });
       } else if (error.request) {
         console.error("응답 없음:", error.request);
-        alert(error.request);
+        Swal.fire({
+          icon: "warning",
+          title: "응답없음",
+          text: error.request,
+        });
         navigate("/signIn");
       } else {
         console.error("요청 설정 에러:", error.message);
-        alert(error.message);
+        Swal.fire({
+          icon: "warning",
+          title: "요청 설정 에러",
+          text: error.message,
+        });
         navigate("/signIn");
       }
     }
@@ -360,7 +375,11 @@ const SignIn = () => {
           to="/signIn"
           style={{ marginLeft: "20px" }}
           onClick={() => {
-            alert("기능개발중입니다.");
+            Swal.fire({
+              icon: "question",
+              title: "존재하지 않는 페이지입니다",
+              text: "기능 개발 중입니다",
+            });
           }}
         >
           비밀번호를 잊어버리셨나요?

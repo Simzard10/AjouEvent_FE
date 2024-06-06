@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 
 const Container = styled.div`
   z-index: 1;
@@ -193,15 +194,34 @@ const SignUp = () => {
         }
       );
 
-      alert("회원가입이 완료되었습니다!");
+      Swal.fire({
+        icon: "success",
+        title: "회원가입 성공",
+        text: "회원가입이 완료되었습니다.",
+      });
       navigate("/signIn");
     } catch (error) {
       if (error.response) {
         console.error("응답 에러:", error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "회원가입 실패",
+          text: "응답 에러",
+        });
       } else if (error.request) {
         console.error("응답 없음:", error.request);
+        Swal.fire({
+          icon: "error",
+          title: "회원가입 실패",
+          text: "응답 없음",
+        });
       } else {
         console.error("요청 설정 에러:", error.message);
+        Swal.fire({
+          icon: "error",
+          title: "회원가입 실패",
+          text: "요청 설정 에러",
+        });
       }
     }
   };

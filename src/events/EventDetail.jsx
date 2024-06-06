@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import CalendarModal from "../components/CalendarModal";
 import TabBar from "../components/TabBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import Swal from "sweetalert2";
 
 const Container = styled.div`
   width: 100%;
@@ -273,7 +274,11 @@ const EventDetail = () => {
     if (event && event.url) {
       window.location.href = event.url;
     } else {
-      alert("바로가기 가능한 url이 없습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "url 에러",
+        text: "바로가기 가능한 url이 없습니다.",
+      });
     }
   };
 

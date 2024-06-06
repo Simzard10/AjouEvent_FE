@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default async function requestWithAccessToken(method, url, data = null) {
   const accessToken = localStorage.getItem("accessToken");
@@ -96,7 +97,11 @@ async function refreshAccessToken() {
       localStorage.removeItem("id");
       localStorage.removeItem("name");
       localStorage.removeItem("major");
-      alert("로그인 시간이 만료되어 로그아웃 되었습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "타임오버",
+        text: "로그인 시간이 만료되어 로그아웃 되었습니다.",
+      });
       window.location.href = "/signIn"; // 리다이렉션
     } else {
       localStorage.removeItem("refreshToken");
@@ -105,7 +110,11 @@ async function refreshAccessToken() {
       localStorage.removeItem("id");
       localStorage.removeItem("name");
       localStorage.removeItem("major");
-      alert(`Forced Logout - Error Code ${error.response.status}`);
+      Swal.fire({
+        icon: "warning",
+        title: "Forced Logout",
+        text: `Error Code ${error.response.status}`,
+      });
       console.error("Error refreshing access token:", error);
       throw error;
     }
