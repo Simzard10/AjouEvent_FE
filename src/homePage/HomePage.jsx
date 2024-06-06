@@ -15,6 +15,15 @@ const AppContaioner = styled.div`
   width: 100%;
 `;
 
+const MainContentContaioner = styled.div`
+  display: flex;
+  width: 100vw;
+  overflow-x: hidden;
+  align-items: center;
+  flex-direction: column;
+  padding: 0 0 80px 0;
+`;
+
 export default function HomePage() {
   useEffect(() => {
     GetUserPermission();
@@ -22,9 +31,11 @@ export default function HomePage() {
 
   return (
     <AppContaioner>
-      <HomeBanner />
-      <LocationBar location="이번주 인기글" />
-      <HomeHotEvent />
+      <MainContentContaioner>
+        <HomeBanner />
+        <LocationBar location="이번주 인기글" />
+        <HomeHotEvent />
+      </MainContentContaioner>
       <NavigationBar></NavigationBar>
     </AppContaioner>
   );

@@ -9,6 +9,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  font-family: "Pretendard Variable";
 `;
 
 const EventContainer = styled.div`
@@ -148,7 +149,7 @@ const StatIcon = styled.img`
 `;
 
 const StatValue = styled.span`
-  font-family: "Pretendard Variable", sans-serif;
+  font-family: "Pretendard Variable";
 `;
 
 const HorizontalLine = styled.hr`
@@ -194,7 +195,7 @@ const BottomBody = styled.div`
 
 const Button = styled.button`
   font-feature-settings: "ss10" on;
-  font-family: "Pretendard Variable", sans-serif;
+  font-family: "Pretendard Variable";
   border-radius: 4px;
   background-color: rgba(35, 102, 175, 0.08);
   color: rgba(35, 102, 175, 1);
@@ -237,14 +238,6 @@ const EventDetail = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        // const response = await axios.get(
-        //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         const response = await requestWithAccessToken(
           "get",
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
