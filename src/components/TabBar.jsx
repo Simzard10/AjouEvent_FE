@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const TapWrapper = styled.div`
   width: 100%;

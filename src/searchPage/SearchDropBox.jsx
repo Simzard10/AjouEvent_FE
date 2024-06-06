@@ -205,6 +205,7 @@ const Container = styled.div`
   padding: 14px;
   margin-bottom: 6px;
   width: 100%;
+  font-family: "Pretendard Variable";
   font-size: 14px;
   color: #1b1e26;
   font-weight: 500;
@@ -244,7 +245,7 @@ const FilterOptionContent = styled.div`
 const Select = styled.select`
   -webkit-appearance: none;
   -moz-appearance: none;
-  font-family: "Spoqa Han Sans Neo";
+  font-family: "Pretendard Variable";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -258,7 +259,7 @@ const Select = styled.select`
 `;
 
 const Option = styled.option`
-  font-family: "Spoqa Han Sans Neo";
+  font-family: "Pretendard Variable";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;

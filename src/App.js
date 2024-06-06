@@ -12,6 +12,7 @@ import HomePage from "./homePage/HomePage";
 
 //Google Analytics
 import ReactGA from "react-ga";
+import GuidePage from "./pages/GuidePage";
 
 const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID; // 환경 변수에 저장된 추적ID 가져오기
 ReactGA.initialize(gaTrackingId, { debug: true }); // react-ga 초기화 및 debug 사용
@@ -53,6 +54,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/subscribe",
     element: <SubscribePage />,
+  },
+  {
+    path: "/guide",
+    element: <GuidePage />,
   },
 ]);
 

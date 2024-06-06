@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import GetUserPermission from "../fcm/GetUserPermission";
 import LocationBar from "../components/LocationBar";
 import HomeBanner from "./HomeBanner";
 import HomeHotEvent from "./HomeHotEvent";
+import DailyModal from "../components/DailyModal";
+import HelpBox from "../components/HelpBox";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +17,7 @@ const AppContaioner = styled.div`
   width: 100%;
 `;
 
-const MainContentContaioner = styled.div`
+const MainContentContainer = styled.div`
   display: flex;
   width: 100vw;
   overflow-x: hidden;
@@ -25,18 +27,55 @@ const MainContentContaioner = styled.div`
 `;
 
 export default function HomePage() {
+  const [showModal, setShowModal] = useState(false);
+  const [isPWAInstalled, setIsPWAInstalled] = useState(false);
+
   useEffect(() => {
     GetUserPermission();
-  }, []);
+
+    // Check if the app is running in standalone mode
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setIsPWAInstalled(true);
+      return;
+    }
+
+    const dismissedUntil = localStorage.getItem("modalDismissedUntil");
+    if (dismissedUntil) {
+      const now = new Date();
+      if (new Date(dismissedUntil) > now) {
+        return;
+      }
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      // Prevent the default mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Check if the prompt is available
+      if (!isPWAInstalled) {
+        setShowModal(true);
+      }
+    });
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("beforeinstallprompt", () => {});
+    };
+  }, [isPWAInstalled]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
-    <AppContaioner>
-      <MainContentContaioner>
+    <AppContainer>
+      <MainContentContainer>
+        <HelpBox />
         <HomeBanner />
         <LocationBar location="이번주 인기글" />
         <HomeHotEvent />
-      </MainContentContaioner>
-      <NavigationBar></NavigationBar>
-    </AppContaioner>
+      </MainContentContainer>
+      <NavigationBar />
+      {showModal && <DailyModal onClose={handleCloseModal} />}
+    </AppContainer>
   );
 }
