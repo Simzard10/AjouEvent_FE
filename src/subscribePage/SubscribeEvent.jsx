@@ -3,10 +3,10 @@ import EventCard from "../events/EventCard";
 
 const FlexContainer = styled.div`
   display: flex;
-  height: calc(100%-154px);
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
+  padding: 0 20px 0 20px;
 `;
 
 const SubscribeEvent = ({ events, bottomRef, loading, hasMore }) => {
@@ -19,8 +19,10 @@ const SubscribeEvent = ({ events, bottomRef, loading, hasMore }) => {
             id={event.eventId}
             title={event.title}
             subject={event.subject}
+            content={event.content}
             imgUrl={event.imgUrl}
             likesCount={event.likesCount}
+            viewCount={event.viewCount}
             star={event.star}
           />
         ))}

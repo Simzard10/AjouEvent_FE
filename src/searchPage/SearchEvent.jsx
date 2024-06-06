@@ -6,6 +6,7 @@ const FlexContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
+  padding: 0 20px 0 20px;
 `;
 
 const SearchEvent = ({ events, bottomRef, loading, hasMore }) => {
@@ -18,8 +19,10 @@ const SearchEvent = ({ events, bottomRef, loading, hasMore }) => {
             id={event.eventId}
             title={event.title}
             subject={event.subject}
+            content={event.content}
             imgUrl={event.imgUrl}
             likesCount={event.likesCount}
+            viewCount={event.viewCount}
             star={event.star}
           />
         ))}
