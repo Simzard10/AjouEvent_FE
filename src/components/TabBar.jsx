@@ -19,13 +19,12 @@ const TapIcon = styled.img`
   cursor: pointer; /* 클릭 가능한 아이콘 표시 */
 `;
 
-const TapTitle = styled.h1`
+const TapTitle = styled.div`
   color: #000;
   font-family: "Pretendard Variable";
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
-  letter-spacing: -0.2px;
 `;
 
 const TabBar = ({ Title }) => {
