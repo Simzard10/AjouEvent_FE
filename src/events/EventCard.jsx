@@ -191,7 +191,7 @@ const EventCard = ({
   return (
     <CardContainer onClick={handleCardClick}>
       <CardImageWapper>
-        <Image src={imgUrl} alt={title} />
+        <Image src={imgUrl} alt={title} loading="lazy" />
       </CardImageWapper>
       <DetailsContainer>
         <TitleContainer>

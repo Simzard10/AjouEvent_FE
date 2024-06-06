@@ -31,7 +31,7 @@ const InputBox = styled.input`
   background-color: #fff;
   border: none;
   outline: none;
-  font-family: "Spoqa Han Sans Neo";
+  font-family: "Pretendard Variable";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;

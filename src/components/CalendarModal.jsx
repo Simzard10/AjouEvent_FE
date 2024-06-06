@@ -95,15 +95,6 @@ function CalendarModal({ setIsModalOpen, title, content }) {
     };
 
     try {
-      // await axios.post(
-      //   `${process.env.REACT_APP_BE_URL}/api/event/calendar`,
-      //   eventData,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/event/calendar`,

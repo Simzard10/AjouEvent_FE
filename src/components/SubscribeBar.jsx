@@ -19,6 +19,8 @@ const MenuBarContainer = styled.div`
   white-space: nowrap;
   background: #ffffff;
   padding: 12px 10px 0px 16px;
+  font-family: "Pretendard Variable";
+  font-weight: 600;
 `;
 
 const MenuItemContainer = styled.div`
