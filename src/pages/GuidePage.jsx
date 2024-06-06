@@ -15,7 +15,7 @@ const AppContaioner = styled.div`
 export default function GuidePage() {
   return (
     <AppContaioner>
-      <TabBar Title={"사용 가이드"} />
+      <TabBar Title={"사용 가이드 ver.0.0.1"} />
       <img
         alt="IOSInstall"
         src={`${process.env.PUBLIC_URL}/image/installIOS.svg`}
