@@ -9,7 +9,7 @@ const FlexContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
-const SearchEvent = ({ events, bottomRef, loading, hasMore }) => {
+const SearchEvent = ({ events, bottomRef, loading, hasMore, isError }) => {
   return (
     <>
       <FlexContainer>
@@ -30,6 +30,7 @@ const SearchEvent = ({ events, bottomRef, loading, hasMore }) => {
       <div ref={bottomRef} style={{ height: "1px" }}></div>
       {loading && <p>이벤트 불러 오는 중...</p>}
       {!hasMore && <p>더 이상 불러올 이벤트가 없습니다.</p>}
+      {isError && <p>서버 에러</p>}
     </>
   );
 };

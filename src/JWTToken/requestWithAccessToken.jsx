@@ -6,63 +6,48 @@ export default async function requestWithAccessToken(method, url, data = null) {
 
   try {
     let response;
+    const config = accessToken
+      ? {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      : {};
+
     if (method === "get") {
-      response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      response = await axios.get(url, config);
     } else if (method === "post") {
-      response = await axios.post(url, data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      response = await axios.post(url, data, config);
     } else if (method === "patch") {
-      response = await axios.patch(url, data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      response = await axios.patch(url, data, config);
     } else if (method === "delete") {
-      response = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      response = await axios.delete(url, config);
     }
     return response;
   } catch (error) {
     // accessToken이 만료되었을 때
-    if ((error.response && error.response.status === 401) || 404 || 500) {
+    if (error.response && error.response.status === 401) {
+      console.log("401Error");
       // 새로운 accessToken 얻기 시도
       const newAccessToken = await refreshAccessToken();
+      const newConfig = newAccessToken
+        ? {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          }
+        : {};
+
       // 새로운 accessToken으로 다시 요청
       let response;
       if (method === "get") {
-        response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+        response = await axios.get(url, newConfig);
       } else if (method === "post") {
-        response = await axios.post(url, data, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+        response = await axios.post(url, data, newConfig);
       } else if (method === "patch") {
-        response = await axios.patch(url, data, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+        response = await axios.patch(url, data, newConfig);
       } else if (method === "delete") {
-        response = await axios.delete(url, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+        response = await axios.delete(url, newConfig);
       }
       console.error(
         `Response making ${method} request with access token:`,
@@ -102,17 +87,11 @@ async function refreshAccessToken() {
         title: "타임오버",
         text: "로그인 시간이 만료되어 로그아웃 되었습니다.",
       });
-      window.location.href = "/signIn"; // 리다이렉션
+      window.location.href = "/signIn";
     } else {
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("email");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("id");
-      localStorage.removeItem("name");
-      localStorage.removeItem("major");
       Swal.fire({
         icon: "warning",
-        title: "Forced Logout",
+        title: "Error",
         text: `Error Code ${error.response.status}`,
       });
       console.error("Error refreshing access token:", error);

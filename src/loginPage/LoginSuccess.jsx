@@ -71,7 +71,7 @@ const LoginSuccess = () => {
           if (error.response) {
             if (error.response.status === 404) {
               Swal.fire({
-                icon: "erroe",
+                icon: "error",
                 title: "회원가입되지 않은 사용자",
                 text: "회원가입 페이지로 이동합니다.",
               });
