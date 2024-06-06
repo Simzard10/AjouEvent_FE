@@ -51,11 +51,12 @@ export default function SearchEventPage() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isError, setIsError] = useState(false);
   const pageSize = 10;
   const bottomRef = useRef(null);
 
   const fetchData = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loading || !hasMore || isError) return;
 
     setLoading(true);
     try {
@@ -80,6 +81,7 @@ export default function SearchEventPage() {
       }
     } catch (error) {
       console.error("Error fetching events:", error);
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -139,6 +141,7 @@ export default function SearchEventPage() {
           bottomRef={bottomRef}
           loading={loading}
           hasMore={hasMore}
+          isError={isError}
         />
       </MainContentContaioner>
       <NavigationBar />
