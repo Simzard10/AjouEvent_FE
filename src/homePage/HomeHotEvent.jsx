@@ -1,19 +1,59 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import EventCard from "../events/EventCard";
 
-const EventContainer = styled.div`
+const FlexContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   width: 100%;
-  height: 220px;
-  justify-content: center;
-  align-items: center;
-  p {
-    font-family: "Pretendard Variable";
-  }
 `;
+
 export default function HomeHotEvent() {
+  const [events, setEvents] = useState([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadHotEvent = async () => {
+      if (error || loading) return;
+
+      setLoading(true);
+      try {
+        const response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/event/popular`
+        );
+        const newEvents = response.data;
+
+        setEvents(newEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadHotEvent();
+  }, []);
+
   return (
-    <EventContainer>
-      <p>불러올 인기글이 없습니다.</p>
-    </EventContainer>
+    <>
+      <FlexContainer>
+        {events.map((event, index) => (
+          <EventCard
+            key={`${event.eventId}-${index}`}
+            id={event.eventId}
+            title={event.title}
+            subject={event.subject}
+            imgUrl={event.imgUrl}
+            likesCount={event.likesCount}
+            star={event.star}
+          />
+        ))}
+      </FlexContainer>
+      {error && <p>더 이상 불러올 이벤트가 없습니다.</p>}
+    </>
   );
 }

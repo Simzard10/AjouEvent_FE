@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
-import TabBar from "../components/TabBar";
+import LocationBar from "../components/LocationBar";
 
 const AppContainer = styled.div`
   display: flex;
@@ -31,6 +31,7 @@ const UserInfo = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
+  font-family: "Pretendard Variable";
   padding: 40px 40px 10px 40px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 `;
@@ -115,13 +116,13 @@ const StyledLink = styled(Link)`
   justify-content: center;
   background-color: ${(props) => props.bgcolor};
   border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  width: 84%;
-  height: 2.4rem;
+  border: 1px solid gray;
+  width: 6rem;
+  height: 1.4rem;
   color: ${(props) => props.color};
   font-size: 0.8rem;
   text-decoration: none;
-  margin: 8rem 1rem 0 1rem;
+  margin: 0 1rem 0 1rem;
 `;
 
 const MyPage = () => {
@@ -138,6 +139,7 @@ const MyPage = () => {
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
+    if (!accessToken) return;
     const fetchUserInfo = async () => {
       try {
         const response = await requestWithAccessToken(
@@ -223,7 +225,7 @@ const MyPage = () => {
     <AppContainer>
       {accessToken ? (
         <Container>
-          <TabBar Title="마이페이지" />
+          <LocationBar location="마이페이지" />
           <UserInfo>
             <h3>회원정보</h3>
             <p>이름: {user.name}</p>
