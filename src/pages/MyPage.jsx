@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import LocationBar from "../components/LocationBar";
+import Swal from "sweetalert2";
 
 const AppContainer = styled.div`
   display: flex;
@@ -189,7 +190,11 @@ const MyPage = () => {
         `${process.env.REACT_APP_BE_URL}/api/users`,
         editForm
       );
-      alert(response.data.message);
+      Swal.fire({
+        icon: "success",
+        title: "정보수정 성공",
+        text: response.data.message,
+      });
       setUser(editForm);
       setEditModalOpen(false);
     } catch (error) {
@@ -204,7 +209,11 @@ const MyPage = () => {
         `${process.env.REACT_APP_BE_URL}/api/users`
       );
       if (response.status === 200) {
-        alert("탈퇴가 완료되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "회원 탈퇴 성공",
+          text: "회원 탈퇴했습니다.",
+        });
         window.location.href = "/";
       }
     } catch (error) {
@@ -214,7 +223,11 @@ const MyPage = () => {
 
   //임시 로그아웃
   const handleLogoutBtnClick = () => {
-    alert("로그아웃 했습니다.");
+    Swal.fire({
+      icon: "success",
+      title: "로그아웃 성공",
+      text: "로그아웃 했습니다.",
+    });
     localStorage.removeItem("accessToken");
     localStorage.removeItem("id");
     localStorage.removeItem("name");

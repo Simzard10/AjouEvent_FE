@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import Swal from "sweetalert2";
 
 const Container = styled.div`
   display: flex;
@@ -125,6 +126,18 @@ const MenuItemInModal = styled.div`
   border-bottom: 1px solid #e0e0e0;
 `;
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "center-center",
+  showConfirmButton: false,
+  timer: 1000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
+
 const SubscribeBar = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [subscribeItems, setSubscribeItems] = useState([]);
@@ -171,12 +184,16 @@ const SubscribeBar = () => {
     setIsProcessing(true);
 
     try {
+      Toast.fire({
+        icon: "success",
+        title: `${EtoKCodes[topic]} 구독 중`,
+      });
+
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
         { topic: topic }
       );
-      alert(`${EtoKCodes[topic]} 구독 완료`);
 
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
@@ -196,12 +213,16 @@ const SubscribeBar = () => {
     setIsProcessing(true);
 
     try {
+      Toast.fire({
+        icon: "error",
+        title: `${EtoKCodes[topic]} 구독 취소 중`,
+      });
+
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
         { topic: topic }
       );
-      alert(`${EtoKCodes[topic]} 구독 취소`);
 
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>

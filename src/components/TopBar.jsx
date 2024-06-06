@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import GetUserPermission from "../fcm/GetUserPermission";
+import Swal from "sweetalert2";
 
 const TopBarContainer = styled.div`
   z-index: 5;
@@ -91,7 +92,11 @@ export default function TopBar() {
   }, []);
 
   const handleLogoutBtnClick = () => {
-    alert("로그아웃 했습니다.");
+    Swal.fire({
+      icon: "seccess",
+      title: "로그아웃 성공",
+      text: "로그아웃 했습니다.",
+    });
     setIsSignIn(false);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("id");
