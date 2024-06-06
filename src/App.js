@@ -10,18 +10,12 @@ import MyPage from "./pages/MyPage";
 import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./homePage/HomePage";
 
+//Google Analytics
 import ReactGA from "react-ga";
-import { createBrowserHistory } from "history";
 
-const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID;
-ReactGA.initialize(gaTrackingId);
-
-const history = createBrowserHistory();
-history.listen((response) => {
-  console.log(response.location.pathname);
-  ReactGA.set({ page: response.location.pathname });
-  ReactGA.pageview(response.location.pathname);
-});
+const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID; // 환경 변수에 저장된 추적ID 가져오기
+ReactGA.initialize(gaTrackingId, { debug: true }); // react-ga 초기화 및 debug 사용
+ReactGA.pageview(window.location.pathname); // 추적하려는 page 설정
 
 const ROUTER = createBrowserRouter([
   {
