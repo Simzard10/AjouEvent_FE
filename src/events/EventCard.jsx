@@ -1,75 +1,74 @@
 import styled from "styled-components";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
 import EmptyStarIcon from "../icons/EmptyStarIcon";
 import FilledStarIcon from "../icons/FilledStarIcon";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useState } from "react";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const CardContainer = styled.div`
-  width: calc(48% - 1rem);
-  height: 12rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+  width: calc(100vw - 40px);
+  height: 144px;
   text-decoration: none;
-  margin: 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  overflow: hidden;
+  margin-top: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   cursor: pointer;
-
-  &:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 호버 시 그림자 효과 추가 */
-  }
 `;
 
 const Image = styled.img`
-  object-fit: cover;
-  width: 100%;
-  height: 8rem;
+  border-radius: 20px;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
 `;
 
 const DetailsContainer = styled.div`
-  padding: 4px 10px;
+  display: flex;
+  width: calc(100vw - 176px);
+  height: 120px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 `;
 
 const ImageWapper = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   object-fit: cover;
   cursor: pointer;
 `;
 
 const TitleText = styled.div`
-  height: 20px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  text-decoration: none;
-  white-space: nowrap;
+  display: flex;
+  width: 100%;
+  height: 40px;
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: keep-all;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-const SubjectText = styled.p`
-  font-size: 0.7rem;
-  font-weight: bold;
-  text-decoration: none;
-  margin: 0;
-  color: rgb(0, 102, 179);
-`;
-
-const LikeCountText = styled.p`
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-decoration: none;
-  margin: 0;
-`;
-
 const SubDetailContainer = styled.div`
-  display: flex;
   width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 600;
+  color: gray;
+  font-family: "Pretendard Variable";
 `;
 
 const LikeContainer = styled.div`
@@ -79,7 +78,85 @@ const LikeContainer = styled.div`
   align-items: center;
 `;
 
-const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
+const TagContaioner = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: end;
+`;
+
+const CardImageWapper = styled.div`
+  object-fit: cover;
+  width: 120px;
+  height: 120px;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const Subject = styled.div`
+  width: fit-content;
+  padding: 3px 4px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  background: rgba(84, 84, 84, 0.08);
+  font-size: 14px;
+  color: rgba(84, 84, 84);
+  font-weight: bold;
+  font-family: "Pretendard Variable";
+`;
+
+const Stats = styled.div`
+  align-self: start;
+  display: flex;
+  color: #c2c8d1;
+  white-space: nowrap;
+  text-align: center;
+`;
+
+const StatItem = styled.div`
+  display: flex;
+  padding-right: 20px;
+  gap: 4px;
+`;
+
+const StatIcon = styled.img`
+  aspect-ratio: 1;
+  object-fit: auto;
+  object-position: center;
+  width: 14px;
+`;
+
+const StatValue = styled.span`
+  font-family: "Pretendard Variable";
+`;
+
+function Stat({ iconSrc, value, altText }) {
+  return (
+    <StatItem>
+      <StatIcon src={iconSrc} alt={altText} loading="lazy" />
+      <StatValue>{value}</StatValue>
+    </StatItem>
+  );
+}
+
+const EventCard = ({
+  id,
+  title,
+  subject,
+  content,
+  imgUrl,
+  likesCount,
+  viewCount,
+  star,
+}) => {
   const [cardStar, setCardStar] = useState(star);
   const [likes, setLikes] = useState(likesCount);
   const navigate = useNavigate();
@@ -89,14 +166,6 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
 
     try {
       if (cardStar) {
-        // await axios.delete(
-        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         await requestWithAccessToken(
           "delete",
           `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
@@ -104,15 +173,6 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
         setCardStar(!cardStar);
         setLikes(likes - 1);
       } else {
-        // await axios.post(
-        //   `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        //   {},
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
         await requestWithAccessToken(
           "post",
           `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`
@@ -130,11 +190,29 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
   };
   return (
     <CardContainer onClick={handleCardClick}>
-      <Image src={imgUrl} alt={title} />
+      <CardImageWapper>
+        <Image src={imgUrl} alt={title} />
+      </CardImageWapper>
       <DetailsContainer>
-        <TitleText>{title}</TitleText>
-        <SubDetailContainer>
-          <SubjectText>{subject}</SubjectText>
+        <TitleContainer>
+          <Subject>{subject}</Subject>
+          <TitleText>{title}</TitleText>
+          <SubDetailContainer>{content}</SubDetailContainer>
+        </TitleContainer>
+        <TagContaioner>
+          <Stats>
+            <Stat
+              iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/62c7bb15f5fd13739601caff1be349795102bd00b8ccfe603cd2e43498657c46?apiKey=75213697ab8e4fbfb70997e546d69efb&"
+              value={viewCount}
+              altText="Statistic icon 1"
+            />
+            <Stat
+              onClick={handleStarClick}
+              iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/52d95bd6c4badc487be46d013f44cd23b9800d5d1e753fb3a364bcb97b18044f?apiKey=75213697ab8e4fbfb70997e546d69efb&"
+              value={likesCount}
+              altText="Statistic icon 2"
+            />
+          </Stats>
           <LikeContainer>
             <ImageWapper onClick={handleStarClick}>
               {cardStar ? (
@@ -143,9 +221,8 @@ const EventCard = ({ id, title, subject, imgUrl, likesCount, star }) => {
                 <EmptyStarIcon></EmptyStarIcon>
               )}
             </ImageWapper>
-            <LikeCountText>{likes}</LikeCountText>
           </LikeContainer>
-        </SubDetailContainer>
+        </TagContaioner>
       </DetailsContainer>
     </CardContainer>
   );

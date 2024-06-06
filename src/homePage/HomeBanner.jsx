@@ -16,7 +16,7 @@ const BannerContainer = styled.div`
 const CarouselItemImage = styled.img`
   width: 100%;
   height: 100vw;
-  object-fit: cover;
+  object-fit: contain;
 `;
 
 export default function HomeBanner() {
