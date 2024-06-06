@@ -88,7 +88,7 @@ async function refreshAccessToken() {
     return newAccessToken;
   } catch (error) {
     // refreshToken이 만료되었을 경우
-    if ((error.response && error.response.status === 401) || 404 || 500) {
+    if (error.response && error.response.status === 401) {
       // localStorage 초기화 및 리다이렉션 수행
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("email");
@@ -99,7 +99,13 @@ async function refreshAccessToken() {
       alert("로그인 시간이 만료되어 로그아웃 되었습니다.");
       window.location.href = "/signIn"; // 리다이렉션
     } else {
-      // 다른 오류 처리
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("email");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("id");
+      localStorage.removeItem("name");
+      localStorage.removeItem("major");
+      alert(`Forced Logout - Error Code ${error.response.status}`);
       console.error("Error refreshing access token:", error);
       throw error;
     }

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../searchPage/SearchDropBox";
 import SearchBar from "../components/SearchBar";
-import axios from "axios";
 import useStore from "../store/useStore";
 import { KtoECodes } from "../departmentCodes";
 import LocationBar from "../components/LocationBar";
@@ -55,21 +54,11 @@ export default function SearchEventPage() {
   const pageSize = 10;
   const bottomRef = useRef(null);
 
-  const accessToken = localStorage.getItem("accessToken");
-
   const fetchData = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
-      // const response = await axios.get(
-      //   `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
       const response = await requestWithAccessToken(
         "get",
         `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`

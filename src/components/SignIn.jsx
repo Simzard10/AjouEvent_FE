@@ -241,11 +241,12 @@ const SignIn = () => {
         alert("이메일과 비밀번호를 다시 확인해주세요");
       } else if (error.request) {
         console.error("응답 없음:", error.request);
-        navigate("/");
+        alert(error.request);
+        navigate("/signIn");
       } else {
         console.error("요청 설정 에러:", error.message);
         alert(error.message);
-        navigate("/");
+        navigate("/signIn");
       }
     }
   };

@@ -47,19 +47,20 @@ const LoginSuccess = () => {
               navigate("/signUp");
             } else {
               console.error("응답 에러:", error.response.data);
-              navigate("/");
+              navigate("/signIn");
             }
           } else if (error.request) {
             console.error("응답 없음:", error.request);
-            navigate("/");
+            navigate("/signIn");
           } else {
             console.error("요청 설정 에러:", error.message);
             alert(error.message);
-            navigate("/");
+            navigate("/signIn");
           }
         }
       } else {
         console.error("Missing URL parameters");
+        alert("Missing URL parameters");
         navigate("/signIn");
       }
     };
