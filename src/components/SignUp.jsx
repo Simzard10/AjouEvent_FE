@@ -9,10 +9,11 @@ import Swal from "sweetalert2";
 const Container = styled.div`
   z-index: 1;
   display: block;
-  padding-top: 100px;
+  padding-top: 5vh;
   height: 100vh;
   width: 60%;
   background-color: transparent;
+  font-family: "Pretendard Variable";
 `;
 
 const Heading = styled.h1`
@@ -62,7 +63,7 @@ const Form = styled.form`
       color: rgba(0, 0, 0);
       padding: 0 0 0 15px;
       font-size: 14px;
-      font-family: "Montserrat", sans-serif;
+      font-family: "Pretendard Variable";
 
       &:focus,
       &:active {
@@ -86,15 +87,15 @@ const Form = styled.form`
     background: rgb(0, 102, 179);
     color: white;
     display: block;
-    width: 96%;
+    width: 90%;
     max-width: 680px;
-    height: 4rem;
+    height: 3rem;
     border-radius: 10px;
     margin: 6px;
     border: none;
     cursor: pointer;
     font-size: 14px;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Pretendard Variable";
     padding: 0 4px;
 
     &:hover {
@@ -140,8 +141,8 @@ const Error = styled.div`
   justify-content: start;
   width: 100%;
   color: red;
-  padding-left: 40px;
-  font-size: 0.5em;
+  padding-left: 20px;
+  font-size: 0.8em;
 `;
 
 const SignUp = () => {
