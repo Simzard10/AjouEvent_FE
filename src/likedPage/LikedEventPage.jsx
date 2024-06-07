@@ -152,7 +152,7 @@ export default function LikedEventPage() {
       ) : (
         <Contaioner>
           <p>로그인이 필요한 서비스입니다</p>
-          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+          <StyledLink bgcolor={"white"} color={"black"} to="/login">
             로그인
           </StyledLink>
         </Contaioner>

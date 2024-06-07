@@ -120,12 +120,12 @@ export default function TopBar() {
             onClick={handleLogoutBtnClick}
             bgcolor={"white"}
             color={"black"}
-            to="/signIn"
+            to="/login"
           >
             로그아웃
           </StyledLink>
         ) : (
-          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+          <StyledLink bgcolor={"white"} color={"black"} to="/login">
             로그인
           </StyledLink>
         )}

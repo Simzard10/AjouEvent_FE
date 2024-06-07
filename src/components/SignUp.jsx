@@ -184,23 +184,20 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BE_URL}/api/users/register`,
-        {
-          name,
-          major,
-          email,
-          password,
-          phone,
-        }
-      );
+      await axios.post(`${process.env.REACT_APP_BE_URL}/api/users/register`, {
+        name,
+        major,
+        email,
+        password,
+        phone,
+      });
 
       Swal.fire({
         icon: "success",
         title: "회원가입 성공",
         text: "회원가입이 완료되었습니다.",
       });
-      navigate("/signIn");
+      navigate("/login");
     } catch (error) {
       if (error.response) {
         console.error("응답 에러:", error.response.data);

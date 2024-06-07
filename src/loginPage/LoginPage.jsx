@@ -1,5 +1,5 @@
 import React from "react";
-import SignIn from "../components/SignIn";
+import Login from "./Login";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 const AppContaioner = styled.div`
@@ -14,10 +14,10 @@ const AppContaioner = styled.div`
   overflow-x: hidden;
 `;
 
-export default function SignInPage() {
+export default function LoginPage() {
   return (
     <AppContaioner>
-      <SignIn></SignIn>
+      <Login></Login>
       <NavigationBar></NavigationBar>
     </AppContaioner>
   );

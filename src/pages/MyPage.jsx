@@ -140,7 +140,6 @@ const MyPage = () => {
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    if (!accessToken) return;
     const fetchUserInfo = async () => {
       try {
         const response = await requestWithAccessToken(
@@ -154,7 +153,7 @@ const MyPage = () => {
     };
 
     fetchUserInfo();
-  }, []);
+  }, [accessToken]);
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -264,7 +263,7 @@ const MyPage = () => {
               onClick={handleLogoutBtnClick}
               bgcolor={"white"}
               color={"black"}
-              to="/signIn"
+              to="/login"
             >
               로그아웃
             </StyledLink>
@@ -332,7 +331,7 @@ const MyPage = () => {
       ) : (
         <>
           <p>로그인이 필요한 서비스입니다</p>
-          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+          <StyledLink bgcolor={"white"} color={"black"} to="/login">
             로그인
           </StyledLink>
         </>

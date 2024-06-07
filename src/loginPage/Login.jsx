@@ -167,7 +167,7 @@ const BottomSignUpWapper = styled.div`
     margin: 0;
   }
 `;
-const SignIn = () => {
+const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -231,7 +231,7 @@ const SignIn = () => {
           title: "응답없음",
           text: error.request,
         });
-        navigate("/signIn");
+        navigate("/login");
       } else {
         console.error("요청 설정 에러:", error.message);
         Swal.fire({
@@ -239,7 +239,7 @@ const SignIn = () => {
           title: "요청 설정 에러",
           text: error.message,
         });
-        navigate("/signIn");
+        navigate("/login");
       }
     }
   };
@@ -317,7 +317,7 @@ const SignIn = () => {
       </GoogleButton>
       {/* <div style={{ display: "flex" }}>
         <SignUpStyledLink
-          to="/signIn"
+          to="/login"
           style={{ marginLeft: "20px" }}
           onClick={() => {
             Swal.fire({
@@ -341,4 +341,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;

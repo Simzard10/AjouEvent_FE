@@ -56,7 +56,7 @@ export default function HomeHotEvent() {
           />
         ))}
       </FlexContainer>
-      {isError && <p>더 이상 불러올 이벤트가 없습니다.</p>}
+      {isError && <p>서버 에러</p>}
     </>
   );
 }
