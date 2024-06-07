@@ -62,6 +62,7 @@ export default function SubscribePage() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isError, setIsError] = useState(false);
   const pageSize = 10;
   const bottomRef = useRef(null);
 
@@ -72,7 +73,7 @@ export default function SubscribePage() {
   }, []);
 
   const fetchData = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loading || !hasMore || isError) return;
 
     setLoading(true);
 
@@ -101,6 +102,7 @@ export default function SubscribePage() {
         setHasMore(false);
       }
     } catch (error) {
+      setIsError(true);
       console.error("Error fetching events:", error);
     } finally {
       setLoading(false);
@@ -153,6 +155,7 @@ export default function SubscribePage() {
             bottomRef={bottomRef}
             loading={loading}
             hasMore={hasMore}
+            isError={isError}
           />
         </MainContentContaioner>
       ) : (

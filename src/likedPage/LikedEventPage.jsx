@@ -57,7 +57,7 @@ export default function LikedEventPage() {
   const [keyword, setKeyword] = useState(savedKeyword);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10;
@@ -66,7 +66,7 @@ export default function LikedEventPage() {
   const accessToken = localStorage.getItem("accessToken");
 
   const fetchData = useCallback(async () => {
-    if (loading || !hasMore || error) return;
+    if (loading || !hasMore || isError) return;
 
     setLoading(true);
 
@@ -96,7 +96,7 @@ export default function LikedEventPage() {
       }
     } catch (error) {
       console.error("Error fetching events:", error);
-      setError(true);
+      setIsError(true);
     } finally {
       setLoading(false);
     }

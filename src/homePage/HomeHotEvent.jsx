@@ -13,12 +13,12 @@ const FlexContainer = styled.div`
 
 export default function HomeHotEvent() {
   const [events, setEvents] = useState([]);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadHotEvent = async () => {
-      if (error || loading) return;
+      if (isError || loading) return;
 
       setLoading(true);
       try {
@@ -31,7 +31,7 @@ export default function HomeHotEvent() {
         setEvents(newEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
-        setError(true);
+        setIsError(true);
       } finally {
         setLoading(false);
       }
@@ -56,7 +56,7 @@ export default function HomeHotEvent() {
           />
         ))}
       </FlexContainer>
-      {error && <p>더 이상 불러올 이벤트가 없습니다.</p>}
+      {isError && <p>더 이상 불러올 이벤트가 없습니다.</p>}
     </>
   );
 }

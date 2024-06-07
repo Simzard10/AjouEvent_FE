@@ -9,7 +9,7 @@ const FlexContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
-const SubscribeEvent = ({ events, bottomRef, loading, hasMore }) => {
+const SubscribeEvent = ({ events, bottomRef, loading, hasMore, isError }) => {
   return (
     <>
       <FlexContainer>
@@ -30,6 +30,7 @@ const SubscribeEvent = ({ events, bottomRef, loading, hasMore }) => {
       <div ref={bottomRef} style={{ height: "1px" }}></div>
       {loading && <p>로딩중...</p>}
       {!hasMore && <p>불러올 이벤트가 없습니다.</p>}
+      {isError && <p>서버 에러</p>}
     </>
   );
 };

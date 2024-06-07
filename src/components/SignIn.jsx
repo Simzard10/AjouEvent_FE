@@ -21,21 +21,21 @@ const Container = styled.div`
   height: 100vh;
   background-color: transparent;
   margin: 0;
+  font-family: "Pretendard Variable";
 `;
 
 const Heading = styled.h1`
   color: #000000;
   font-size: 32px;
-  font-weight: 100;
-  letter-spacing: -3px;
+  font-weight: 200;
   text-align: left;
-  margin: 0 0 0 20px;
-  transition: 0.2s linear;
+  margin: 0 auto 10px 30px;
+  font-family: "Pretendard Variable";
 `;
 
 const SignUpStyledLink = styled(Link)`
   text-decoration: none;
-  font-size: 0.7rem;
+  font-size: 1.2rem;
   color: rgb(0, 102, 179);
   border-bottom: solid white 1px;
   cursor: pointer;
@@ -67,8 +67,8 @@ const Form = styled.form`
       border: none;
       color: rgba(0, 0, 0);
       padding: 0 0 0 15px;
-      font-size: 14px;
-      font-family: "Montserrat", sans-serif;
+      font-size: 1rem;
+      font-family: "Pretendard Variable";
 
       &:focus,
       &:active {
@@ -86,11 +86,11 @@ const Form = styled.form`
     max-width: 680px;
     height: 50px;
     border-radius: 30px;
-    margin: 0 auto;
+    margin: 10px auto 0 auto;
     border: none;
     cursor: pointer;
-    font-size: 14px;
-    font-family: "Montserrat", sans-serif;
+    font-size: 1rem;
+    font-family: "Pretendard Variable";
     transition: 0.2s linear;
 
     &:hover {
@@ -135,11 +135,11 @@ const GoogleButton = styled.button`
   display: block;
   width: 90%;
   max-width: 680px;
-  margin: 10px auto 0 auto;
+  margin: 16px auto 0 auto;
   height: 50px;
   cursor: pointer;
-  font-size: 14px;
-  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  font-family: "Pretendard Variable";
   border-radius: 30px;
   border: none;
   line-height: 40px;
@@ -163,7 +163,7 @@ const BottomSignUpWapper = styled.div`
   padding-right: 14px;
   p {
     color: black;
-    font-size: 0.6rem;
+    font-size: 1rem;
     margin: 0;
   }
 `;
@@ -247,10 +247,6 @@ const SignIn = () => {
   return (
     <Container>
       <Heading>로그인하기</Heading>
-      <GoogleButton onClick={handleGoogleButtonClicked}>
-        <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
-        구글 소셜 LOGIN
-      </GoogleButton>
       <Separator></Separator>
       <Form onSubmit={handleSignIn}>
         <div className="input__block">
@@ -310,12 +306,16 @@ const SignIn = () => {
           </span>
         </div>
 
-        <Separator></Separator>
         <button type="submit" className="signin__btn">
           로그인하기
         </button>
       </Form>
-      <div style={{ display: "flex" }}>
+      <Separator></Separator>
+      <GoogleButton onClick={handleGoogleButtonClicked}>
+        <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
+        구글 소셜 LOGIN
+      </GoogleButton>
+      {/* <div style={{ display: "flex" }}>
         <SignUpStyledLink
           to="/signIn"
           style={{ marginLeft: "20px" }}
@@ -329,7 +329,7 @@ const SignIn = () => {
         >
           비밀번호를 잊어버리셨나요?
         </SignUpStyledLink>
-      </div>
+      </div> */}
       <Separator></Separator>
       <BottomSignUpWapper>
         <p>
