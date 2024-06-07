@@ -74,7 +74,7 @@ async function refreshAccessToken() {
       localStorage.removeItem("id");
       localStorage.removeItem("name");
       localStorage.removeItem("major");
-      window.location.href = "/signIn";
+      window.location.href = "/login";
     }
 
     const response = await axios.patch(

@@ -82,7 +82,7 @@ const LoginSuccess = () => {
                 icon: "warning",
                 title: "응답 에러:" + error.response.data,
               });
-              navigate("/signIn");
+              navigate("/login");
             }
           } else if (error.request) {
             console.error("응답 없음:", error.request);
@@ -90,14 +90,14 @@ const LoginSuccess = () => {
               icon: "warning",
               title: "응답 없음:" + error.request,
             });
-            navigate("/signIn");
+            navigate("/login");
           } else {
             console.error("요청 설정 에러:", error.message);
             Toast.fire({
               icon: "warning",
               title: "요청 설정 에러:" + error.message,
             });
-            navigate("/signIn");
+            navigate("/login");
           }
         }
       } else {
@@ -106,7 +106,7 @@ const LoginSuccess = () => {
           icon: "warning",
           title: "Missing URL parameters",
         });
-        navigate("/signIn");
+        navigate("/login");
       }
     };
 

@@ -3,7 +3,7 @@ import useStore from "../store/useStore";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
-import SubscribeBar from "../components/SubscribeBar";
+import SubscribeBar from "./SubscribeBar";
 import LocationBar from "../components/LocationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import SubscribeEvent from "./SubscribeEvent";
@@ -107,7 +107,7 @@ export default function SubscribePage() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, keyword]);
+  }, [loading, hasMore, isError, page, keyword]);
 
   useEffect(() => {
     console.log(page);
@@ -161,7 +161,7 @@ export default function SubscribePage() {
       ) : (
         <TemporaryContaioner>
           <p>로그인이 필요한 서비스입니다</p>
-          <StyledLink bgcolor={"white"} color={"black"} to="/signIn">
+          <StyledLink bgcolor={"white"} color={"black"} to="/login">
             로그인
           </StyledLink>
         </TemporaryContaioner>
