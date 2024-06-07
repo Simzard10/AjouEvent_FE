@@ -155,24 +155,6 @@ const GoogleButton = styled.button`
     box-shadow: 0 0 0 rgba(37, 40, 45, 0);
   }
 `;
-const CheckBoxContainer = styled.div`
-  display: flex;
-  margin-top: 10px;
-  font-size: 0.8rem;
-  user-select: none;
-`;
-
-const StyledCheckBox = styled.input`
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  border: 2px solid #999;
-  appearance: none;
-  cursor: pointer;
-  &:checked {
-    background: rgb(0, 102, 179);
-  }
-`;
 
 const BottomSignUpWapper = styled.div`
   display: flex;
@@ -221,11 +203,7 @@ const SignIn = () => {
       );
 
       localStorage.setItem("accessToken", response.data.accessToken);
-      if (document.getElementById("maintainSignIn").checked) {
-        document.cookie = `longLivedToken=${
-          response.data.accessToken
-        }; max-age=${365 * 24 * 60 * 60}; path=/;`;
-      }
+      localStorage.setItem("refreshToken", response.data.refreshToken);
 
       // 응답 로그
       localStorage.setItem("id", response.data.id);
@@ -265,25 +243,6 @@ const SignIn = () => {
       }
     }
   };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedId = getCookie("savedId");
-    if (savedId) {
-      document.getElementById("email").value = savedId;
-    }
-  });
-
-  // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-  function getCookie(cookieName) {
-    const cookies = document.cookie.split(";");
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      if (name === cookieName) {
-        return decodeURIComponent(value);
-      }
-    }
-    return null;
-  }
 
   return (
     <Container>
@@ -350,20 +309,6 @@ const SignIn = () => {
             )}
           </span>
         </div>
-        <CheckBoxContainer>
-          <StyledCheckBox type="checkbox" id="maintainSignIn"></StyledCheckBox>
-          <label
-            htmlFor="maintainSignIn"
-            style={{ color: "black", marginRight: "16px" }}
-          >
-            로그인 상태 유지
-          </label>
-
-          <StyledCheckBox type="checkbox" id="saveId"></StyledCheckBox>
-          <label htmlFor="saveId" style={{ color: "black" }}>
-            ID 기억하기
-          </label>
-        </CheckBoxContainer>
 
         <Separator></Separator>
         <button type="submit" className="signin__btn">

@@ -27,9 +27,10 @@ export default async function requestWithAccessToken(method, url, data = null) {
   } catch (error) {
     // accessToken이 만료되었을 때
     if (error.response && error.response.status === 401) {
-      console.log("401Error");
+      console.log("Access Token 401Error");
       // 새로운 accessToken 얻기 시도
       const newAccessToken = await refreshAccessToken();
+
       const newConfig = newAccessToken
         ? {
             headers: {
@@ -40,6 +41,7 @@ export default async function requestWithAccessToken(method, url, data = null) {
 
       // 새로운 accessToken으로 다시 요청
       let response;
+      console.log("New Access Token request");
       if (method === "get") {
         response = await axios.get(url, newConfig);
       } else if (method === "post") {
@@ -65,16 +67,28 @@ async function refreshAccessToken() {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
+    if (!refreshToken) {
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("email");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("id");
+      localStorage.removeItem("name");
+      localStorage.removeItem("major");
+      window.location.href = "/signIn";
+    }
+
     const response = await axios.patch(
       `${process.env.REACT_APP_BE_URL}/api/users/reissue-token`,
       { refreshToken }
     );
     const newAccessToken = response.data.accessToken;
+    console.log("refresh token respon" + newAccessToken);
     localStorage.setItem("accessToken", newAccessToken);
     return newAccessToken;
   } catch (error) {
     // refreshToken이 만료되었을 경우
     if (error.response && error.response.status === 401) {
+      console.log("refresh token 401 error");
       // localStorage 초기화 및 리다이렉션 수행
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("email");
@@ -87,8 +101,8 @@ async function refreshAccessToken() {
         title: "타임오버",
         text: "로그인 시간이 만료되어 로그아웃 되었습니다.",
       });
-      window.location.href = "/signIn";
     } else {
+      console.log(error.response.status);
       Swal.fire({
         icon: "warning",
         title: "Error",
