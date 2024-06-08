@@ -239,8 +239,8 @@ const SubscribeBar = () => {
 
       Swal.fire({
         icon: "success",
-        title: "구독 성공",
-        text: `${EtoKCodes[topic]}를 구독하셨습니다`,
+        title: "구독 취소 성공",
+        text: `${EtoKCodes[topic]}를 구독 취소하셨습니다`,
       });
 
       setMenuItems((prevMenuItems) =>
