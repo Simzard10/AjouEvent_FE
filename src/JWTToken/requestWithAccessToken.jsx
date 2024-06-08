@@ -109,7 +109,11 @@ async function refreshAccessToken() {
       localStorage.removeItem("id");
       localStorage.removeItem("name");
       localStorage.removeItem("major");
-      alert("server error");
+      Swal.fire({
+        icon: "warning",
+        title: "타임오버",
+        text: "로그인 시간이 만료되어 로그아웃 되었습니다.",
+      });
       console.error("Error refreshing access token:", error);
       window.location.href = "/login";
       throw error;

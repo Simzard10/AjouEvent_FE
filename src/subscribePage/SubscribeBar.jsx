@@ -187,7 +187,7 @@ const SubscribeBar = () => {
 
     try {
       Toast.fire({
-        icon: "success",
+        icon: "info",
         title: `${EtoKCodes[topic]} 구독 중`,
       });
 
@@ -197,12 +197,23 @@ const SubscribeBar = () => {
         { topic: topic }
       );
 
+      Swal.fire({
+        icon: "success",
+        title: "구독 성공",
+        text: `${EtoKCodes[topic]}를 구독하셨습니다`,
+      });
+
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
           item.topic === topic ? { ...item, subscribed: true } : item
         )
       );
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "구독 실패",
+        text: "서버 에러",
+      });
       console.error("Error subscribing to topic:", error);
     } finally {
       setIsProcessing(false);
@@ -216,7 +227,7 @@ const SubscribeBar = () => {
 
     try {
       Toast.fire({
-        icon: "error",
+        icon: "info",
         title: `${EtoKCodes[topic]} 구독 취소 중`,
       });
 
@@ -226,12 +237,23 @@ const SubscribeBar = () => {
         { topic: topic }
       );
 
+      Swal.fire({
+        icon: "success",
+        title: "구독 성공",
+        text: `${EtoKCodes[topic]}를 구독하셨습니다`,
+      });
+
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
           item.topic === topic ? { ...item, subscribed: false } : item
         )
       );
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "구독 실패",
+        text: "서버 에러",
+      });
       console.error("Error unsubscribing from topic:", error);
     } finally {
       setIsProcessing(false);
