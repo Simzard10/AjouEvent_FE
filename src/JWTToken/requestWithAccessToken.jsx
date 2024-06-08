@@ -101,14 +101,17 @@ async function refreshAccessToken() {
         title: "타임오버",
         text: "로그인 시간이 만료되어 로그아웃 되었습니다.",
       });
+      window.location.href = "/login";
     } else {
-      console.log(error.response.status);
-      Swal.fire({
-        icon: "warning",
-        title: "Error",
-        text: `Error Code ${error.response.status}`,
-      });
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("email");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("id");
+      localStorage.removeItem("name");
+      localStorage.removeItem("major");
+      alert("server error");
       console.error("Error refreshing access token:", error);
+      window.location.href = "/login";
       throw error;
     }
   }
