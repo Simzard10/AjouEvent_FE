@@ -102,10 +102,6 @@ export default function LikedEventPage() {
     }
   }, [loading, hasMore, page, keyword]);
 
-  useEffect(() => {
-    console.log(page);
-  }, [page]);
-
   // Handle infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -38,10 +38,12 @@ const LoginSuccess = () => {
 
       if (authorizationCode) {
         const fcmToken = localStorage.getItem("fcmToken");
+        const redirectUri = window.location.origin + "/loginSuccess";
 
         const loginData = {
           authorizationCode: authorizationCode,
           fcmToken: fcmToken,
+          redirectUri: redirectUri,
         };
 
         try {

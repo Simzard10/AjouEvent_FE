@@ -141,6 +141,7 @@ const MyPage = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      if (!accessToken) return;
       try {
         const response = await requestWithAccessToken(
           "get",

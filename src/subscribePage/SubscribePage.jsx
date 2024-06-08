@@ -109,10 +109,6 @@ export default function SubscribePage() {
     }
   }, [loading, hasMore, isError, page, keyword]);
 
-  useEffect(() => {
-    console.log(page);
-  }, [page]);
-
   // Handle infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
