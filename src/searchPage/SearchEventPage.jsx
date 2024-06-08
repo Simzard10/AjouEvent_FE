@@ -135,7 +135,6 @@ export default function SearchEventPage() {
           setEvents={setEvents}
           setSavedKeyword={setSavedKeyword}
           setHasMore={setHasMore}
-          fetchData={fetchData}
         />
         <SearchEvent
           events={events}

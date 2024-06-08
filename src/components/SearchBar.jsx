@@ -51,10 +51,8 @@ const SearchBar = ({
   setKeyword,
   setPage,
   setEvents,
-  savedKeyword,
   setSavedKeyword,
   setHasMore,
-  fetchData,
 }) => {
   const [inputTerm, setInputTerm] = useState(keyword);
 
