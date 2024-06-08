@@ -51,6 +51,7 @@ const SearchBar = ({
   setKeyword,
   setPage,
   setEvents,
+  savedKeyword,
   setSavedKeyword,
   setHasMore,
   fetchData,
@@ -65,8 +66,6 @@ const SearchBar = ({
       setKeyword(inputTerm),
       setSavedKeyword(inputTerm),
     ]);
-
-    fetchData();
   };
 
   const handleKeyDown = (e) => {

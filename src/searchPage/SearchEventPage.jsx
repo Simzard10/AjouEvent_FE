@@ -8,6 +8,7 @@ import { KtoECodes } from "../departmentCodes";
 import LocationBar from "../components/LocationBar";
 import SearchEvent from "./SearchEvent";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import SearchIcon from "../icons/SearchIcon";
 
 const AppContaioner = styled.div`
   display: flex;
