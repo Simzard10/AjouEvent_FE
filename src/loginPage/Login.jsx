@@ -167,6 +167,7 @@ const BottomSignUpWapper = styled.div`
     margin: 0;
   }
 `;
+
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
@@ -180,6 +181,15 @@ const Login = () => {
   };
 
   const handleGoogleButtonClicked = () => {
+    const fcmToken = localStorage.getItem("fcmToken");
+    if (!fcmToken) {
+      Swal.fire({
+        icon: "error",
+        title: "알림허용안됨",
+        text: "홈화면의 알림아이콘을 터치해주세요",
+      });
+      return;
+    }
     const redirect_uri_origin = window.location.origin;
     window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri_origin}/loginSuccess&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar`;
   };
@@ -190,7 +200,14 @@ const Login = () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const fcmToken = localStorage.getItem("fcmToken");
-
+    if (!fcmToken) {
+      Swal.fire({
+        icon: "error",
+        title: "알림허용안됨",
+        text: "홈화면의 알림아이콘을 터치해주세요",
+      });
+      return;
+    }
     const userData = {
       email: email,
       password: password,
