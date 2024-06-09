@@ -41,3 +41,4 @@ GA4 적용
 이벤트 상세에 캐러셀적용
 24.06.10
 FCM토큰 정상발급확인
+"Notification" in window 일때 예외 처리

@@ -16,6 +16,9 @@ const Toast = Swal.mixin({
 
 const GetUserPermission = async (setIsLoading) => {
   try {
+    //서비스워커 추가
+    await navigator.serviceWorker.register("sw.js");
+
     const registrations = await navigator.serviceWorker.getRegistrations();
     if (registrations.length === 0) {
       setIsLoading(true);
