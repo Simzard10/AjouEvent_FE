@@ -3,7 +3,16 @@ import { getMessaging, getToken } from "firebase/messaging";
 
 const GetFCMToken = async () => {
   try {
-    const messaging = getMessaging(firebaseApp);
+    const messagingPromise = new Promise((resolve, reject) => {
+      const messaging = getMessaging(firebaseApp);
+      if (messaging) {
+        resolve(messaging);
+      } else {
+        reject(new Error("Messaging object is not available"));
+      }
+    });
+
+    const messaging = await messagingPromise;
     const currentToken = await getToken(messaging, {
       vapidKey: process.env.REACT_APP_VAPID_KEY,
     });

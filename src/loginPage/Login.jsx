@@ -168,12 +168,28 @@ const BottomSignUpWapper = styled.div`
   }
 `;
 
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  z-index: 1000;
+`;
+
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    GetUserPermission();
+    GetUserPermission(setIsLoading);
   }, []);
 
   const togglePasswordVisibility = () => {
@@ -264,6 +280,7 @@ const Login = () => {
 
   return (
     <Container>
+      {isLoading && <LoadingOverlay>Loading...</LoadingOverlay>}
       <Heading>로그인하기</Heading>
       <Separator></Separator>
       <Form onSubmit={handleSignIn}>

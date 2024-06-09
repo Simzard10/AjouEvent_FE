@@ -75,10 +75,7 @@ const StyledLink = styled(Link)`
 `;
 
 export default function TopBar() {
-  const navigate = useNavigate();
-  const handleAlarmClick = () => {
-    GetUserPermission();
-  };
+  const handleAlarmClick = () => {};
 
   const [isSignIn, setIsSignIn] = useState(false);
 

@@ -8,7 +8,6 @@ import LocationBar from "../components/LocationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import SubscribeEvent from "./SubscribeEvent";
 import SearchBar from "../components/SearchBar";
-import GetUserPermission from "../fcm/GetUserPermission";
 
 const AppContaioner = styled.div`
   display: flex;
@@ -67,10 +66,6 @@ export default function SubscribePage() {
   const bottomRef = useRef(null);
 
   const accessToken = localStorage.getItem("accessToken");
-
-  useEffect(() => {
-    GetUserPermission();
-  }, []);
 
   const fetchData = useCallback(async () => {
     if (loading || !hasMore || isError) return;

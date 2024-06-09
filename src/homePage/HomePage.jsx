@@ -7,7 +7,6 @@ import HomeBanner from "./HomeBanner";
 import HomeHotEvent from "./HomeHotEvent";
 import DailyModal from "../components/DailyModal";
 import HelpBox from "../components/HelpBox";
-import { redirect } from "react-router-dom";
 
 const AppContainer = styled.div`
   display: flex;
@@ -27,13 +26,31 @@ const MainContentContainer = styled.div`
   padding: 0 0 80px 0;
 `;
 
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  z-index: 1000;
+`;
+
 export default function HomePage() {
   const [showModal, setShowModal] = useState(false);
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    GetUserPermission();
+    GetUserPermission(setIsLoading);
+  }, []);
 
+  useEffect(() => {
     // Check if the app is running in standalone mode
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsPWAInstalled(true);
@@ -84,8 +101,9 @@ export default function HomePage() {
 
   return (
     <AppContainer>
+      {isLoading && <LoadingOverlay>알림 서비스 등록 중...</LoadingOverlay>}
       <MainContentContainer>
-        <HelpBox />
+        <HelpBox setIsLoading={setIsLoading} />
         <HomeBanner images={images} />
         <LocationBar location="이번주 인기글" />
         <HomeHotEvent />
