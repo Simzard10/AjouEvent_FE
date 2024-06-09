@@ -3,19 +3,21 @@ import { registerServiceWorker } from "../serviceWorkerRegistration";
 
 const GetUserPermission = async (setIsLoading) => {
   try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    if (registrations.length === 0) {
+      setIsLoading(true);
+      await registerServiceWorker();
+      setIsLoading(false);
+    }
+
     if (!("Notification" in window)) {
       alert(
-        "브라우저가 웹 알림을 지원하지 않음. 알림기능 사용을 원하시면 다른 브라우저를 사용해주세요."
+        "브라우저가 웹 알림을 지원하지 않음. 알림기능 사용을 원하시면 브라우저 및 소프트웨어를 업데이트해주세요."
       );
       return;
     }
 
     console.log("Checking notification permission...");
-
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    if (registrations.length === 0) {
-      await registerServiceWorker();
-    }
 
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
