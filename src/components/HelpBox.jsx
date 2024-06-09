@@ -37,14 +37,14 @@ const Toast = Swal.mixin({
   },
 });
 
-const HelpBox = () => {
+const HelpBox = ({ setIsLoading }) => {
   const navigate = useNavigate();
   const handleBellClick = () => {
     Toast.fire({
       icon: "success",
       title: `알림 설정 요청`,
     });
-    GetUserPermission();
+    GetUserPermission(setIsLoading);
   };
   const handleInstallClicked = () => {
     navigate("/guide");

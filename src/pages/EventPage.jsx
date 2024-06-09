@@ -4,7 +4,6 @@ import EventMain from "../events/EventMain";
 import NavigationBar from "../components/NavigationBar";
 import SearchDropBox from "../searchPage/SearchDropBox";
 import SearchBar from "../searchPage/SearchBar";
-import GetUserPermission from "../fcm/GetUserPermission";
 import LocationBar from "../components/LocationBar";
 
 const AppContaioner = styled.div`
@@ -25,10 +24,6 @@ const MainContentContaioner = styled.div`
 `;
 
 export default function EventPage() {
-  useEffect(() => {
-    GetUserPermission();
-  }, []);
-
   return (
     <AppContaioner>
       <MainContentContaioner>
