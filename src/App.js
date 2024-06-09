@@ -10,12 +10,7 @@ import MyPage from "./pages/MyPage";
 import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./homePage/HomePage";
 import GuidePage from "./pages/GuidePage";
-import ReactGA from "react-ga";
-import Analytics from "./GA/Analytics";
-
-// Initialize Google Analytics
-const TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
-ReactGA.initialize(TRACKING_ID);
+import RouteChangeTracker from "./RouteChangeTracker";
 
 const ROUTER = createBrowserRouter([
   {
@@ -64,7 +59,7 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={ROUTER}>
-        <Analytics />
+        <RouteChangeTracker />
       </RouterProvider>
     </div>
   );
