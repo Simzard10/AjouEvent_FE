@@ -17,19 +17,13 @@ const CarouselItemImage = styled.img`
   width: 100%;
   height: 100vw;
   object-fit: contain;
-  cursor: pointer; /* Add cursor pointer for indicating clickable */
 `;
 
-export default function HomeBanner({ images }) {
+export default function EventBanner({ images }) {
   const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
-  };
-
-  // 클릭 핸들러 추가
-  const handleClick = (url) => {
-    window.location.href = url;
   };
 
   return (
@@ -42,9 +36,9 @@ export default function HomeBanner({ images }) {
         touch={true}
         style={{ width: "100vw", height: "100vw" }}
       >
-        {images.map((image, idx) => (
-          <Carousel.Item key={idx} onClick={() => handleClick(image.url)}>
-            <CarouselItemImage src={image.src} alt={`Slide ${idx + 1}`} />
+        {images.map((src, idx) => (
+          <Carousel.Item key={idx}>
+            <CarouselItemImage src={src} alt={`Slide ${idx + 1}`} />
           </Carousel.Item>
         ))}
       </Carousel>

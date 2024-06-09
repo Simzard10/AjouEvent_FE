@@ -5,6 +5,7 @@ import CalendarModal from "../components/CalendarModal";
 import TabBar from "../components/TabBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
+import EventBanner from "./EventBanner";
 
 const Container = styled.div`
   width: 100%;
@@ -51,37 +52,6 @@ const Subject = styled.div`
   font-size: 14px;
   color: rgba(84, 84, 84);
   font-weight: bold;
-`;
-
-const SliderContainer = styled.div`
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-`;
-
-const SliderWrapper = styled.div`
-  display: flex;
-  transition: transform 0.5s ease;
-  transform: translateX(${(props) => props.translate}px);
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 100vw;
-  object-fit: contain;
-`;
-
-const Arrow = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 10;
-
-  ${(props) => (props.direction === "left" ? "left: 10px;" : "right: 10px;")}
 `;
 
 const TitleContainer = styled.div`
@@ -232,7 +202,6 @@ const formatDate = (dateString) => {
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [content, setContent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -243,8 +212,11 @@ const EventDetail = () => {
           "get",
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         );
-        let sliceContent = response.data.content.split("\\n");
-        setContent(sliceContent);
+        if (response.data.content) {
+          let sliceContent = response.data.content.split("\\n");
+          setContent(sliceContent);
+        }
+
         setEvent(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);
@@ -253,22 +225,6 @@ const EventDetail = () => {
 
     fetchEvent();
   }, [id]);
-
-  const nextSlide = () => {
-    if (event && event.imgUrl && currentIndex < event.imgUrl.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const calculateTranslateValue = () => {
-    return -(currentIndex * 295);
-  };
 
   const handleRedirect = () => {
     if (event && event.url) {
@@ -284,7 +240,6 @@ const EventDetail = () => {
 
   const handleStarClick = async () => {
     try {
-      console.log("event.star" + event.star);
       if (event.star) {
         await requestWithAccessToken(
           "delete",
@@ -316,20 +271,7 @@ const EventDetail = () => {
       {event ? (
         <EventContainer>
           <TabBar Title={"공지사항"} />
-          <SliderContainer>
-            <Arrow direction="left" onClick={prevSlide}>
-              &lt;
-            </Arrow>
-            <SliderWrapper translate={calculateTranslateValue()}>
-              {event.imgUrl &&
-                event.imgUrl.map((url, index) => (
-                  <Image key={index} src={url} alt={`Image ${index + 1}`} />
-                ))}
-            </SliderWrapper>
-            <Arrow direction="right" onClick={nextSlide}>
-              &gt;
-            </Arrow>
-          </SliderContainer>
+          <EventBanner images={event.imgUrl} />
           <ContentContaioner>
             <TitleContainer>
               <Subject>{event.subject}</Subject>
@@ -360,7 +302,6 @@ const EventDetail = () => {
             <Writer>작성자: {event.writer}</Writer>
             <LinkButton onClick={handleRedirect}>바로가기</LinkButton>
           </ContentContaioner>
-
           <BottomContainer>
             {event.star ? (
               <BottomImage
@@ -384,7 +325,6 @@ const EventDetail = () => {
               </Button>
             </BottomBody>
           </BottomContainer>
-
           {isModalOpen && (
             <CalendarModal
               setIsModalOpen={setIsModalOpen}

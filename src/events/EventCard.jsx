@@ -4,6 +4,7 @@ import FilledStarIcon from "../icons/FilledStarIcon";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import Swal from "sweetalert2";
 
 const CardContainer = styled.div`
   display: flex;
@@ -182,6 +183,11 @@ const EventCard = ({
       }
     } catch (error) {
       console.error("Error toggling like:", error);
+      Swal.fire({
+        icon: "error",
+        title: "좋아요 에러",
+        text: "로그인이 필요한 기능입니다.",
+      });
     }
   };
 
@@ -209,7 +215,7 @@ const EventCard = ({
             <Stat
               onClick={handleStarClick}
               iconSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/52d95bd6c4badc487be46d013f44cd23b9800d5d1e753fb3a364bcb97b18044f?apiKey=75213697ab8e4fbfb70997e546d69efb&"
-              value={likesCount}
+              value={likes}
               altText="Statistic icon 2"
             />
           </Stats>

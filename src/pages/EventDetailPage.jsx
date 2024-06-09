@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import NavigationBar from "../components/NavigationBar";
 import EventDetail from "../events/EventDetail";
 
 const AppContaioner = styled.div`

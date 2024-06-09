@@ -7,6 +7,7 @@ import HomeBanner from "./HomeBanner";
 import HomeHotEvent from "./HomeHotEvent";
 import DailyModal from "../components/DailyModal";
 import HelpBox from "../components/HelpBox";
+import { redirect } from "react-router-dom";
 
 const AppContainer = styled.div`
   display: flex;
@@ -66,11 +67,26 @@ export default function HomePage() {
     setShowModal(false);
   };
 
+  const images = [
+    {
+      src: `${process.env.PUBLIC_URL}/icons/TestBanner0.png`,
+      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
+    },
+    {
+      src: `${process.env.PUBLIC_URL}/icons/TestBanner1.png`,
+      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
+    },
+    {
+      src: `${process.env.PUBLIC_URL}/icons/TestBanner2.png`,
+      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
+    },
+  ];
+
   return (
     <AppContainer>
       <MainContentContainer>
         <HelpBox />
-        <HomeBanner />
+        <HomeBanner images={images} />
         <LocationBar location="이번주 인기글" />
         <HomeHotEvent />
       </MainContentContainer>
