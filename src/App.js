@@ -9,14 +9,13 @@ import LoginSuccess from "./loginPage/LoginSuccess";
 import MyPage from "./pages/MyPage";
 import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./homePage/HomePage";
-
-//Google Analytics
-import ReactGA from "react-ga";
 import GuidePage from "./pages/GuidePage";
+import ReactGA from "react-ga";
+import Analytics from "./GA/Analytics";
 
-const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID; // 환경 변수에 저장된 추적ID 가져오기
-ReactGA.initialize(gaTrackingId, { debug: true }); // react-ga 초기화 및 debug 사용
-ReactGA.pageview(window.location.pathname); // 추적하려는 page 설정
+// Initialize Google Analytics
+const TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
+ReactGA.initialize(TRACKING_ID);
 
 const ROUTER = createBrowserRouter([
   {
@@ -48,12 +47,12 @@ const ROUTER = createBrowserRouter([
     element: <LikedEventPage />,
   },
   {
-    path: "/loginSuccess",
-    element: <LoginSuccess />,
-  },
-  {
     path: "/subscribe",
     element: <SubscribePage />,
+  },
+  {
+    path: "/loginSuccess",
+    element: <LoginSuccess />,
   },
   {
     path: "/guide",
@@ -64,7 +63,9 @@ const ROUTER = createBrowserRouter([
 function App() {
   return (
     <div className="App">
-      <RouterProvider router={ROUTER} />
+      <RouterProvider router={ROUTER}>
+        <Analytics />
+      </RouterProvider>
     </div>
   );
 }
