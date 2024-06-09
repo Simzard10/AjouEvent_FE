@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import GetUserPermission from "../fcm/GetUserPermission";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 const StickyContainer = styled.div`
@@ -25,25 +24,9 @@ const TapIcon = styled.img`
   cursor: pointer; /* 클릭 가능한 아이콘 표시 */
 `;
 
-const Toast = Swal.mixin({
-  toast: true,
-  position: "center-center",
-  showConfirmButton: false,
-  timer: 1000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener("mouseenter", Swal.stopTimer);
-    toast.addEventListener("mouseleave", Swal.resumeTimer);
-  },
-});
-
 const HelpBox = ({ setIsLoading }) => {
   const navigate = useNavigate();
   const handleBellClick = () => {
-    Toast.fire({
-      icon: "success",
-      title: `알림 설정 요청`,
-    });
     GetUserPermission(setIsLoading);
   };
   const handleInstallClicked = () => {
