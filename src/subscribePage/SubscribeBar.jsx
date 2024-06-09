@@ -110,6 +110,7 @@ const ModalHeaderTitle = styled.h1`
   font-style: normal;
   font-weight: 700;
   letter-spacing: -0.2px;
+  margin: 0;
 `;
 
 const ModalHeader = styled.div`
@@ -126,6 +127,8 @@ const MenuItemInModal = styled.div`
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
+  font-family: "Pretendard Variable";
+  font-weight: 600;
 `;
 
 const Toast = Swal.mixin({

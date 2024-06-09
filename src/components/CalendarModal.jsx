@@ -103,12 +103,14 @@ const InputLabel = styled.p`
 `;
 
 function CalendarModal({ setIsModalOpen, title, content }) {
-  const currentTime = new Date().toISOString().split(".")[0];
+  const currentTime = new Date();
+  currentTime.setHours(currentTime.getHours() + 9);
+  const formattedCurrentTime = currentTime.toISOString().slice(0, 16);
 
   const [summary, setSummary] = useState(title);
   const [description, setDescription] = useState(content.join("\n"));
-  const [startDate, setStartDate] = useState(currentTime);
-  const [endDate, setEndDate] = useState(currentTime);
+  const [startDate, setStartDate] = useState(formattedCurrentTime);
+  const [endDate, setEndDate] = useState(formattedCurrentTime);
 
   const [summaryError, setSummaryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
