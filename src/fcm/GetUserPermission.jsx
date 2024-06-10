@@ -17,7 +17,7 @@ const Toast = Swal.mixin({
 const GetUserPermission = async (setIsLoading) => {
   try {
     //서비스워커 추가
-    await navigator.serviceWorker.register("sw.js");
+    await navigator.serviceWorker.register("firebase-messaging-sw.js");
 
     const registrations = await navigator.serviceWorker.getRegistrations();
     if (registrations.length === 0) {
@@ -37,20 +37,29 @@ const GetUserPermission = async (setIsLoading) => {
 
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      console.log("Notification permission granted. Ready to send token...");
-      setIsLoading(true);
-      await GetFCMToken();
-      setIsLoading(false);
-      let isFCMToken = localStorage.getItem("fcmToken");
-      if (!isFCMToken) {
+      try {
+        console.log("Notification permission granted. Ready to send token...");
         setIsLoading(true);
         await GetFCMToken();
         setIsLoading(false);
+        let isFCMToken = localStorage.getItem("fcmToken");
+        if (!isFCMToken) {
+          setIsLoading(true);
+          await GetFCMToken();
+          setIsLoading(false);
+          Toast.fire({
+            icon: "error",
+            title: `알림 토큰 저장 실패`,
+          });
+        } else {
+          console.log("token setting complete");
+        }
+      } catch {
+        Toast.fire({
+          icon: "error",
+          title: `알림 토큰 요청 실패`,
+        });
       }
-      Toast.fire({
-        icon: "success",
-        title: `알림 설정 요청 성공`,
-      });
     } else {
       alert("알림권한이 허용되어 있지않습니다. 권한을 허용해 주십시오.");
       console.log(
