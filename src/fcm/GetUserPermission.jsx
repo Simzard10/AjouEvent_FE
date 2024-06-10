@@ -61,16 +61,16 @@ const GetUserPermission = async (setIsLoading) => {
         });
       }
     } else if (permission === "denied") {
-      alert("알림권한이 허용되어 있지않습니다. 권한을 허용해 주십시오.");
+      // alert("알림권한이 허용되어 있지않습니다. 권한을 허용해 주십시오.");
       console.log(
         "Notification permission not granted. Requesting permission..."
       );
     } else {
-      Toast.fire({
-        icon: "warning",
-        title: `알림 설정 안함`,
-        text: "알림 설정 요청을 원하시면 종아이콘을 클릭해주세요.",
-      });
+      // Toast.fire({
+      //   icon: "warning",
+      //   title: `알림 설정 안함`,
+      //   text: "알림 설정 요청을 원하시면 종아이콘을 클릭해주세요.",
+      // });
     }
   } catch (error) {
     Toast.fire({
