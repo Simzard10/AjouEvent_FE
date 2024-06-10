@@ -333,8 +333,8 @@ const SignUp = () => {
     }
   };
 
-  const handleNumberChange = (e) => {
-    setNumber(e.target.value);
+  const handleNumberChange = (number) => {
+    setNumber(number);
   };
 
   const handleEmailCheck = async (email, e) => {
