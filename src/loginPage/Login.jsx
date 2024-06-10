@@ -36,6 +36,7 @@ const Heading = styled.h1`
 const HeadingWapper = styled.div`
   display: flex;
   width: 100%;
+  max-width: 680px;
   align-items: start;
   justify-content: baseline;
   padding-left: 1rem;
@@ -50,8 +51,7 @@ const SignUpStyledLink = styled(Link)`
 `;
 
 const Form = styled.form`
-  width: 90%;
-  max-width: 680px;
+  width: 100%;
   margin: 10px auto 10px;
   display: flex;
   flex-direction: column;
@@ -110,6 +110,7 @@ const Form = styled.form`
 const Separator = styled.div`
   display: block;
   margin: 10px auto 10px;
+  max-width: 680px;
   text-align: center;
   height: 10px;
   position: relative;
@@ -143,7 +144,7 @@ const GoogleButton = styled.button`
   display: block;
   width: 90%;
   max-width: 680px;
-  margin: 8px auto 0 auto;
+  margin: 16px auto 0 auto;
   height: 50px;
   cursor: pointer;
   font-size: 1rem;
@@ -359,13 +360,13 @@ const Login = () => {
         <button type="submit" className="signin__btn">
           로그인하기
         </button>
-        <Separator></Separator>
-        <GoogleButton onClick={handleGoogleButtonClicked}>
-          <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
-          구글 소셜 LOGIN
-        </GoogleButton>
-        <Separator></Separator>
       </Form>
+      <Separator></Separator>
+      <GoogleButton onClick={handleGoogleButtonClicked}>
+        <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
+        구글 소셜 LOGIN
+      </GoogleButton>
+      <Separator></Separator>
 
       <BottomSignUpWapper>
         <p>
