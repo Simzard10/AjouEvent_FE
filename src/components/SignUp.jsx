@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -145,6 +145,48 @@ const Error = styled.div`
   font-size: 0.8em;
 `;
 
+const LoadingWrapper = styled.div`
+  width: 20%;
+  height: full;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+`;
+
+const LoadingImage = styled.img`
+  width: 50%;
+  height: 50%;
+`;
+
+const Button = styled.button`
+  width: 30%;
+  background: rgb(0, 102, 179);
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  border: none;
+  height: 4rem;
+  letter-spacing: 0.05em;
+  focus-outline: none;
+  cursor: pointer;
+  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  &:hover {
+    background-opacity: ${(props) => (props.disabled ? 1 : 0.8)};
+  }
+`;
+
+const VerificationWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  align-items: center;
+`;
+
+
+
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formErrors, setFormErrors] = useState({});
@@ -153,9 +195,15 @@ const SignUp = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const [number, setNumber] = useState('');
+  const [emailCheck, setEmailCheck] = useState(false);
+  const [emailRequested, setEmailRequested] = useState(false);
+  const [emailRequestLoading, setEmailRequestLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
+
   const validateForm = (name, major, email, password, phone) => {
     const errors = {};
-    const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
     if (!name) errors.name = "* 이름을 입력해주세요.";
     if (!major) errors.major = "* 학과를 입력해주세요.";
     if (!email) {
@@ -224,6 +272,84 @@ const SignUp = () => {
     }
   };
 
+  const emailRequest = async (email) => {
+
+    try {
+      setEmailRequestLoading(true);
+      const response = await axios.get(`${process.env.REACT_APP_BE_URL}/api/users/duplicateEmail?email=${email}`);
+      const duplicateCheck = response.data;
+
+      if (!duplicateCheck) {
+        Swal.fire({
+          icon: "error",
+          title: "이메일 중복",
+          text: "이미 존재하는 이메일입니다.",
+        });
+        setEmailRequestLoading(false);
+      }
+      else {
+
+        setEmailRequested(true);
+
+        try {
+          await axios.post(`${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`);
+
+          Swal.fire({
+            icon: "success",
+            title: "인증번호 전송",
+            text: "인증번호 전송이 완료되었습니다.",
+          });
+
+        } catch (error) {
+          console.error("Error fetching events:", error);
+          Swal.fire({
+            icon: "error",
+            title: "인증번호 전송",
+            text: "인증번호 전송 실패",
+          });
+
+          setEmailRequestLoading(false);
+        } finally {
+          setEmailRequestLoading(false);
+        }
+      }
+
+
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      Swal.fire({
+        icon: "error",
+        title: "이메일 중복 확인 실패",
+        text: "요청 설정 에러",
+      });
+    }
+
+  }
+
+  const handleNumberChange = (e) => {
+    setNumber(e.target.value);
+  };
+
+  const handleEmailCheck = async (email, e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`);
+
+      Swal.fire({
+        icon: "success",
+        title: "이메일 인증 완료",
+        text: "이메일 인증이 완료되었습니다.",
+      });
+      setEmailCheck(true);
+    } catch (e) {
+      Swal.fire({
+        icon: "error",
+        title: "이메일 인증 실패",
+        text: "이메일 인증 실패",
+      });
+    }
+  };
+
   return (
     <>
       <Container>
@@ -254,16 +380,59 @@ const SignUp = () => {
             />
           </div>
           {formErrors.major && <Error>{formErrors.major}</Error>}
-          <div className="input__block">
-            <p>이메일</p>
-            <input
-              type="email"
-              placeholder="아주 G-mail"
-              className="input"
-              id="email"
-              name="email"
-            />
+
+          <div style={{ display: "flex", width: "100%" }}>
+            <div className="input__block">
+              <p>이메일</p>
+              <input
+                type="email"
+                placeholder="아주 G-mail"
+                className="input"
+                id="email"
+                name="email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            {emailRequestLoading ?
+              <LoadingWrapper>
+                <LoadingImage src="Spinner.gif" alt="loading" />
+              </LoadingWrapper>
+              :
+              <Button
+                type="button"
+                onClick={() => emailRequest(email)}
+                disabled={!emailPattern.test(email) || emailCheck}
+              >
+                {emailRequested ? '재요청' : '인증 요청'}
+              </Button>
+            }
           </div>
+          {emailRequested && (
+            <VerificationWrapper>
+              <div className="input__block">
+                <p>인증번호</p>
+                <input
+                  type="text"
+                  placeholder="인증번호"
+                  className="input"
+                  id="email"
+                  name="number"
+                  onChange={(e) => setNumber(e.target.value)}
+                />
+              </div>
+              {emailCheck ? (
+                <div style={{width: "30%"}}>인증 완료</div>
+              ) : (
+                <Button
+                  type="button"
+                  disabled={!emailRequested || number.length !== 6}
+                  onClick={(e) => handleEmailCheck(email, e)}
+                >
+                  인증 확인
+                </Button>
+              )}
+            </VerificationWrapper>
+          )}
           {formErrors.email && <Error>{formErrors.email}</Error>}
           <div className="input__block">
             <p>비밀번호</p>
