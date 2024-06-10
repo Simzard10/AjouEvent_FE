@@ -60,11 +60,13 @@ const GetUserPermission = async (setIsLoading) => {
           title: `알림 토큰 요청 실패`,
         });
       }
-    } else {
+    } else if (permission === "denied") {
       alert("알림권한이 허용되어 있지않습니다. 권한을 허용해 주십시오.");
       console.log(
         "Notification permission not granted. Requesting permission..."
       );
+    } else {
+      GetUserPermission();
     }
   } catch (error) {
     Toast.fire({

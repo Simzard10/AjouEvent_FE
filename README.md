@@ -39,6 +39,9 @@ GA4 적용
 마이페이지 배너 클릭시 리다이렉팅
 이벤트 좋아요 바로 오르게
 이벤트 상세에 캐러셀적용
-24.06.10
+24.06.10 - 0.1.1
 FCM토큰 정상발급확인
 "Notification" in window 일때 예외 처리
+24.06.10 - 0.1.2
+signUp 전화번호 삭제 및 이메일 인증 , UI/UX
+Notification Denied case error alert추가

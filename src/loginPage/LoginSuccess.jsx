@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 
 const Container = styled.div`
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,6 +17,20 @@ const Container = styled.div`
   font-style: normal;
   font-weight: 700;
 `;
+
+const LoadingWrapper = styled.div`
+  width: 20%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingImage = styled.img`
+  width: 50%;
+  height: 50%;
+`;
+
 const Toast = Swal.mixin({
   toast: true,
   position: "center-center",
@@ -116,7 +132,14 @@ const LoginSuccess = () => {
     handleLogin();
   }, [location, navigate]);
 
-  return <Container>로그인 중...</Container>;
+  return (
+    <Container>
+      로그인 중
+      <LoadingWrapper>
+        <LoadingImage src="Spinner.gif" alt="loading" />
+      </LoadingWrapper>
+    </Container>
+  );
 };
 
 export default LoginSuccess;
