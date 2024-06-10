@@ -5,7 +5,7 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import ReactGA from "react-ga4";
-import { registerServiceWorker } from "./serviceWorkerRegistration";
+// import { registerServiceWorker } from "./serviceWorkerRegistration";
 
 if (process.env.REACT_APP_GA_TRACKING_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_TRACKING_ID);
@@ -18,7 +18,7 @@ root.render(<App />);
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register();
-registerServiceWorker();
+// registerServiceWorker();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

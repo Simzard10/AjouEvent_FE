@@ -17,18 +17,18 @@ const Toast = Swal.mixin({
 const GetUserPermission = async (setIsLoading) => {
   try {
     //서비스워커 추가
-    await navigator.serviceWorker.register("firebase-messaging-sw.js");
+    // await navigator.serviceWorker.register("firebase-messaging-sw.js");
 
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    if (registrations.length === 0) {
-      setIsLoading(true);
-      await registerServiceWorker();
-      setIsLoading(false);
-    }
+    // const registrations = await navigator.serviceWorker.getRegistrations();
+    // if (registrations.length === 0) {
+    //   setIsLoading(true);
+    //   await registerServiceWorker();
+    //   setIsLoading(false);
+    // }
 
     if (!("Notification" in window)) {
       alert(
-        "본 기기는 자동으로 알림설정을 지원하지 않는 기기입니다. 바탕화면에 바로가기 추가 후, 홈페이지 상단에 종모양아이콘 클릭하여 꼭 수동으로 알림설정요청을 해주세요."
+        "본 기기는 웹에서 알림설정을 지원하지 않는 기기입니다. 바탕화면에 바로가기 추가 후, 홈페이지 상단에 종모양아이콘 클릭하여 꼭 수동으로 알림설정요청을 해주세요."
       );
       return;
     }
@@ -66,7 +66,11 @@ const GetUserPermission = async (setIsLoading) => {
         "Notification permission not granted. Requesting permission..."
       );
     } else {
-      GetUserPermission();
+      Toast.fire({
+        icon: "warning",
+        title: `알림 설정 안함`,
+        text: "알림 설정 요청을 원하시면 종아이콘을 클릭해주세요.",
+      });
     }
   } catch (error) {
     Toast.fire({
