@@ -28,7 +28,7 @@ const GetUserPermission = async (setIsLoading) => {
 
     if (!("Notification" in window)) {
       alert(
-        "브라우저가 웹 알림을 지원하지 않습니다. 브라우저 설정에서 알림 권한과 소프트웨어 버전을 다시 확인 해 주세요."
+        "본 기기는 자동으로 알림설정을 지원하지 않는 기기입니다. 바탕화면에 바로가기 추가 후, 홈페이지 상단에 종모양아이콘 클릭하여 꼭 수동으로 알림설정요청을 해주세요."
       );
       return;
     }
