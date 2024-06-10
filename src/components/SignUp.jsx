@@ -8,8 +8,10 @@ import Swal from "sweetalert2";
 
 const Container = styled.div`
   z-index: 1;
-  display: block;
-  padding-top: 5vh;
+  display: flex;
+  padding-top: 30%;
+  flex-direction: column;
+  align-items: center;
   height: 100vh;
   width: 60%;
   background-color: transparent;
@@ -33,29 +35,31 @@ const HeadingWapper = styled.div`
 
 const Form = styled.form`
   width: 100%;
-  max-width: 680px;
   margin: 10px auto 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 8px;
+
   p {
     font-size: 14px;
     margin: 0.8rem 0 0.2rem 1rem;
+    font-weight: 600;
   }
+
   .input__block {
     display: flex;
     flex-direction: column;
     align-items: start;
-    margin: 5px;
     position: relative;
-    max-width: 680px;
     height: 4rem;
     border-radius: 10px;
     border: solid 1px #cdcdcd;
     padding: 0 6px;
-    width: 90%;
+    width: 100%;
     background: rgba(255, 255, 255);
+
     input {
       display: inline-block;
       width: 90%;
@@ -77,31 +81,15 @@ const Form = styled.form`
     display: flex;
     width: 100%;
   }
-  .hf-input__block {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-  }
+`;
 
-  .signin__btn {
-    background: rgb(0, 102, 179);
-    color: white;
-    display: block;
-    width: 90%;
-    max-width: 680px;
-    height: 3rem;
-    border-radius: 10px;
-    margin: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: "Pretendard Variable";
-    padding: 0 4px;
-
-    &:hover {
-      box-shadow: 0 0 0 rgba(233, 30, 99, 0);
-    }
-  }
+const InputWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-family: "Pretendard Variable";
 `;
 
 const Separator = styled.div`
@@ -151,7 +139,6 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
 `;
 
 const LoadingImage = styled.img`
@@ -168,12 +155,14 @@ const Button = styled.button`
   border: none;
   height: 4rem;
   letter-spacing: 0.05em;
-  focus-outline: none;
+  outline: none;
+  white-space: pre-wrap;
+  text-align: center;
   cursor: pointer;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   &:hover {
-    background-opacity: ${(props) => (props.disabled ? 1 : 0.8)};
+    opacity: ${(props) => (props.disabled ? 1 : 0.8)};
   }
 `;
 
@@ -181,11 +170,32 @@ const VerificationWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 16px;
   align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-family: "Pretendard Variable";
 `;
 
+const SignUpButton = styled.button`
+  background: rgb(0, 102, 179);
+  color: white;
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  height: 3rem;
+  border-radius: 10px;
+  margin: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: "Pretendard Variable";
+  padding: 0 4px;
 
+  &:hover {
+    box-shadow: 0 0 0 rgba(233, 30, 99, 0);
+  }
+`;
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -195,14 +205,14 @@ const SignUp = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const [number, setNumber] = useState('');
+  const [number, setNumber] = useState("");
   const [emailCheck, setEmailCheck] = useState(false);
   const [emailRequested, setEmailRequested] = useState(false);
   const [emailRequestLoading, setEmailRequestLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
 
-  const validateForm = (name, major, email, password, phone) => {
+  const validateForm = (name, major, email, password) => {
     const errors = {};
     if (!name) errors.name = "* 이름을 입력해주세요.";
     if (!major) errors.major = "* 학과를 입력해주세요.";
@@ -212,7 +222,7 @@ const SignUp = () => {
       errors.email = "* 아주 G-mail 형식에 맞지 않습니다.";
     }
     if (!password) errors.password = "* 비밀번호를 입력해주세요.";
-    if (!phone) errors.phone = "* 전화번호를 입력해주세요.";
+    // if (!phone) errors.phone = "* 전화번호를 입력해주세요.";
     return errors;
   };
 
@@ -223,9 +233,9 @@ const SignUp = () => {
     const major = e.target.elements.major.value;
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-    const phone = e.target.elements.phone.value;
+    // const phone = e.target.elements.phone.value;
 
-    const errors = validateForm(name, major, email, password, phone);
+    const errors = validateForm(name, major, email, password);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
@@ -237,7 +247,7 @@ const SignUp = () => {
         major,
         email,
         password,
-        phone,
+        // phone,
       });
 
       Swal.fire({
@@ -273,10 +283,11 @@ const SignUp = () => {
   };
 
   const emailRequest = async (email) => {
-
     try {
       setEmailRequestLoading(true);
-      const response = await axios.get(`${process.env.REACT_APP_BE_URL}/api/users/duplicateEmail?email=${email}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_URL}/api/users/duplicateEmail?email=${email}`
+      );
       const duplicateCheck = response.data;
 
       if (!duplicateCheck) {
@@ -286,20 +297,19 @@ const SignUp = () => {
           text: "이미 존재하는 이메일입니다.",
         });
         setEmailRequestLoading(false);
-      }
-      else {
-
+      } else {
         setEmailRequested(true);
 
         try {
-          await axios.post(`${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`);
+          await axios.post(
+            `${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`
+          );
 
           Swal.fire({
             icon: "success",
             title: "인증번호 전송",
             text: "인증번호 전송이 완료되었습니다.",
           });
-
         } catch (error) {
           console.error("Error fetching events:", error);
           Swal.fire({
@@ -313,8 +323,6 @@ const SignUp = () => {
           setEmailRequestLoading(false);
         }
       }
-
-
     } catch (error) {
       console.error("Error fetching events:", error);
       Swal.fire({
@@ -323,8 +331,7 @@ const SignUp = () => {
         text: "요청 설정 에러",
       });
     }
-
-  }
+  };
 
   const handleNumberChange = (e) => {
     setNumber(e.target.value);
@@ -333,7 +340,9 @@ const SignUp = () => {
   const handleEmailCheck = async (email, e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`);
+      await axios.post(
+        `${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`
+      );
 
       Swal.fire({
         icon: "success",
@@ -356,7 +365,7 @@ const SignUp = () => {
         <HeadingWapper>
           <Heading>가입하기</Heading>
         </HeadingWapper>
-        <Separator></Separator>
+        <Separator />
         <Form onSubmit={handleSignUp}>
           <div className="input__block">
             <p>이름</p>
@@ -381,7 +390,7 @@ const SignUp = () => {
           </div>
           {formErrors.major && <Error>{formErrors.major}</Error>}
 
-          <div style={{ display: "flex", width: "100%" }}>
+          <InputWrapper>
             <div className="input__block">
               <p>이메일</p>
               <input
@@ -393,20 +402,20 @@ const SignUp = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            {emailRequestLoading ?
+            {emailRequestLoading ? (
               <LoadingWrapper>
                 <LoadingImage src="Spinner.gif" alt="loading" />
               </LoadingWrapper>
-              :
+            ) : (
               <Button
                 type="button"
                 onClick={() => emailRequest(email)}
                 disabled={!emailPattern.test(email) || emailCheck}
               >
-                {emailRequested ? '재요청' : '인증 요청'}
+                {emailRequested ? "재요청" : "인증\n요청"}
               </Button>
-            }
-          </div>
+            )}
+          </InputWrapper>
           {emailRequested && (
             <VerificationWrapper>
               <div className="input__block">
@@ -417,18 +426,22 @@ const SignUp = () => {
                   className="input"
                   id="email"
                   name="number"
-                  onChange={(e) => setNumber(e.target.value)}
+                  onChange={(e) => handleNumberChange(e.target.value)}
                 />
               </div>
               {emailCheck ? (
-                <div style={{width: "30%"}}>인증 완료</div>
+                <div style={{ width: "30%" }}>
+                  인증 <br /> 완료
+                </div>
               ) : (
                 <Button
                   type="button"
                   disabled={!emailRequested || number.length !== 6}
                   onClick={(e) => handleEmailCheck(email, e)}
                 >
-                  인증 확인
+                  인증
+                  <br />
+                  확인
                 </Button>
               )}
             </VerificationWrapper>
@@ -445,28 +458,18 @@ const SignUp = () => {
                 autoComplete="off"
               />
               <span onClick={togglePasswordVisibility}>
-                {isPasswordVisible ? (
-                  <FontAwesomeIcon
-                    style={{
-                      marginRight: "20px",
-                      opacity: "0.5",
-                    }}
-                    icon={faEye}
-                  />
-                ) : (
-                  <FontAwesomeIcon
-                    style={{
-                      marginRight: "20px",
-                      opacity: "0.5",
-                    }}
-                    icon={faEyeSlash}
-                  />
-                )}
+                <FontAwesomeIcon
+                  icon={isPasswordVisible ? faEye : faEyeSlash}
+                  style={{
+                    marginRight: "20px",
+                    opacity: "0.5",
+                  }}
+                />
               </span>
             </div>
           </div>
           {formErrors.password && <Error>{formErrors.password}</Error>}
-          <div className="input__block">
+          {/* <div className="input__block">
             <p>전화번호</p>
             <input
               type="text"
@@ -476,10 +479,8 @@ const SignUp = () => {
               name="phone"
             />
           </div>
-          {formErrors.phone && <Error>{formErrors.phone}</Error>}
-          <button type="submit" className="signin__btn">
-            가입하기
-          </button>
+          {formErrors.phone && <Error>{formErrors.phone}</Error>} */}
+          <SignUpButton type="submit">가입하기</SignUpButton>
         </Form>
       </Container>
     </>
