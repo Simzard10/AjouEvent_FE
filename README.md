@@ -45,3 +45,4 @@ FCM토큰 정상발급확인
 24.06.10 - 0.1.2
 signUp 전화번호 삭제 및 이메일 인증 , UI/UX
 Notification Denied case error alert추가
+service worker 등록 삭제

@@ -40,7 +40,7 @@ const Form = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 
   p {
     font-size: 14px;
