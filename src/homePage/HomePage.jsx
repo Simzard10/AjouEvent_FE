@@ -101,7 +101,7 @@ export default function HomePage() {
 
   return (
     <AppContainer>
-      {isLoading && <LoadingOverlay>알림 서비스 등록 중...</LoadingOverlay>}
+      {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
       <MainContentContainer>
         <HelpBox setIsLoading={setIsLoading} />
         <HomeBanner images={images} />

@@ -18,6 +18,7 @@ const Container = styled.div`
   z-index: 1;
   display: block;
   padding-top: 8rem;
+  width: 90%;
   height: 100vh;
   background-color: transparent;
   margin: 0;
@@ -28,9 +29,16 @@ const Heading = styled.h1`
   color: #000000;
   font-size: 32px;
   font-weight: 200;
+  margin: 0;
   text-align: left;
-  margin: 0 auto 10px 30px;
   font-family: "Pretendard Variable";
+`;
+const HeadingWapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: start;
+  justify-content: baseline;
+  padding-left: 1rem;
 `;
 
 const SignUpStyledLink = styled(Link)`
@@ -42,7 +50,7 @@ const SignUpStyledLink = styled(Link)`
 `;
 
 const Form = styled.form`
-  width: 100%;
+  width: 90%;
   max-width: 680px;
   margin: 10px auto 10px;
   display: flex;
@@ -135,7 +143,7 @@ const GoogleButton = styled.button`
   display: block;
   width: 90%;
   max-width: 680px;
-  margin: 16px auto 0 auto;
+  margin: 8px auto 0 auto;
   height: 50px;
   cursor: pointer;
   font-size: 1rem;
@@ -159,8 +167,8 @@ const GoogleButton = styled.button`
 const BottomSignUpWapper = styled.div`
   display: flex;
   justify-content: right;
+  width: 90%;
   align-items: center;
-  padding-right: 14px;
   p {
     color: black;
     font-size: 1rem;
@@ -284,9 +292,13 @@ const Login = () => {
   return (
     <Container>
       {isLoading && <LoadingOverlay>Loading...</LoadingOverlay>}
-      <Heading>로그인하기</Heading>
-      <Separator></Separator>
+
       <Form onSubmit={handleSignIn}>
+        <HeadingWapper>
+          <Heading>로그인하기</Heading>
+        </HeadingWapper>
+
+        <Separator></Separator>
         <div className="input__block">
           <FontAwesomeIcon
             style={{
@@ -347,12 +359,20 @@ const Login = () => {
         <button type="submit" className="signin__btn">
           로그인하기
         </button>
+        <Separator></Separator>
+        <GoogleButton onClick={handleGoogleButtonClicked}>
+          <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
+          구글 소셜 LOGIN
+        </GoogleButton>
+        <Separator></Separator>
       </Form>
-      <Separator></Separator>
-      <GoogleButton onClick={handleGoogleButtonClicked}>
-        <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
-        구글 소셜 LOGIN
-      </GoogleButton>
+
+      <BottomSignUpWapper>
+        <p>
+          계정이 없나요? <SignUpStyledLink to="/signUp">가입</SignUpStyledLink>
+          하세요.
+        </p>
+      </BottomSignUpWapper>
       {/* <div style={{ display: "flex" }}>
         <SignUpStyledLink
           to="/login"
@@ -368,13 +388,6 @@ const Login = () => {
           비밀번호를 잊어버리셨나요?
         </SignUpStyledLink>
       </div> */}
-      <Separator></Separator>
-      <BottomSignUpWapper>
-        <p>
-          계정이 없나요? <SignUpStyledLink to="/signUp">가입</SignUpStyledLink>
-          하세요.
-        </p>
-      </BottomSignUpWapper>
     </Container>
   );
 };

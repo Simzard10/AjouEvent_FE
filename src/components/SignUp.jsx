@@ -135,7 +135,7 @@ const Error = styled.div`
 
 const LoadingWrapper = styled.div`
   width: 20%;
-  height: full;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
