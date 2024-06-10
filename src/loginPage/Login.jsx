@@ -291,7 +291,7 @@ const Login = () => {
 
   return (
     <Container>
-      {isLoading && <LoadingOverlay>Loading...</LoadingOverlay>}
+      {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
 
       <Form onSubmit={handleSignIn}>
         <HeadingWapper>
