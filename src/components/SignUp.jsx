@@ -333,8 +333,11 @@ const SignUp = () => {
     }
   };
 
-  const handleNumberChange = (number) => {
-    setNumber(number);
+  const handleNumberChange = (e) => {
+    setNumber(e.target.value);
+    console.log(
+      "emailRequested:" + emailRequested + "number.length" + number.length
+    );
   };
 
   const handleEmailCheck = async (email, e) => {
@@ -424,9 +427,9 @@ const SignUp = () => {
                   type="text"
                   placeholder="인증번호"
                   className="input"
-                  id="email"
+                  id="number"
                   name="number"
-                  onChange={(e) => handleNumberChange(e.target.value)}
+                  onChange={(e) => handleNumberChange(e)}
                 />
               </div>
               {emailCheck ? (
