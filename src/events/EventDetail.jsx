@@ -200,12 +200,13 @@ const formatDate = (dateString) => {
   return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
 };
 
-const getCookie = (name) => {
+// 쿠키 값을 가져오는 함수
+function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
-};
+  return null; // 쿠키가 없을 때 null 반환
+}
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -220,25 +221,23 @@ const EventDetail = () => {
         //   "get",
         //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         // );
-
-        // localStorage에서 accessToken을 가져옴
         const accessToken = localStorage.getItem("accessToken");
+        const alreadyViewClubEventNum = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("AlreadyViewClubEventNum="))
+          ?.split("=")[1];
 
-        // 쿠키에서 AlreadyViewClubEventNum 값을 가져옴
-        const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
-
-        // config 객체를 만듦
-        const config = {
-          headers: {
-            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-            ...(alreadyViewClubEventNum && {
-              AlreadyViewClubEventNum: alreadyViewClubEventNum,
-            }),
-          },
-        };
-        console.log(document.cookie.split(";"));
-        console.log("config:" + alreadyViewClubEventNum);
-        // API 호출
+        const config = accessToken
+          ? {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          : {
+              headers: {
+                Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
+              },
+            };
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
           config,
