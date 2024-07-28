@@ -219,12 +219,12 @@ const EventDetail = () => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-              withCredentials: true,
             }
-          : { withCredentials: true };
+          : {};
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          config
+          config,
+          { withCredentials: true }
         );
 
         if (response.data.content) {
