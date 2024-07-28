@@ -214,14 +214,17 @@ const EventDetail = () => {
         //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         // );
         const accessToken = localStorage.getItem("accessToken");
+        const config = accessToken
+          ? {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+              withCredentials: true,
+            }
+          : { withCredentials: true };
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-            withCredentials: true,
-          }
+          config
         );
 
         if (response.data.content) {
