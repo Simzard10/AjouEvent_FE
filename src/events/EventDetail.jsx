@@ -6,6 +6,7 @@ import TabBar from "../components/TabBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 import EventBanner from "./EventBanner";
+import axios from "axios";
 
 const Container = styled.div`
   width: 100%;
@@ -208,10 +209,21 @@ const EventDetail = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
+        // const response = await requestWithAccessToken(
+        //   "get",
+        //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
+        // );
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            withCredentials: true,
+          }
         );
+
         if (response.data.content) {
           let sliceContent = response.data.content.split("\\n");
           setContent(sliceContent);
