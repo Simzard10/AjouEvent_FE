@@ -200,11 +200,24 @@ const formatDate = (dateString) => {
   return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
 };
 
+// // 쿠키 값을 가져오는 함수
+// function getCookie(name) {
+//   const value = `; ${document.cookie}`;
+//   console.log(value);
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(";").shift();
+//   return null; // 쿠키가 없을 때 null 반환
+// }
+
 const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ") c = c.substring(1, c.length); // 앞의 공백을 제거
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length); // 쿠키 이름이 일치하는 경우 값 반환
+  }
+  return null; // 쿠키가 없는 경우 null 반환
 };
 
 const EventDetail = () => {
@@ -220,25 +233,28 @@ const EventDetail = () => {
         //   "get",
         //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         // );
-
-        // localStorage에서 accessToken을 가져옴
         const accessToken = localStorage.getItem("accessToken");
-
-        // 쿠키에서 AlreadyViewClubEventNum 값을 가져옴
         const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
 
-        // config 객체를 만듦
-        const config = {
-          headers: {
-            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-            ...(alreadyViewClubEventNum && {
-              AlreadyViewClubEventNum: alreadyViewClubEventNum,
-            }),
-          },
-        };
-        console.log(document.cookie.split(";"));
-        console.log("config:" + alreadyViewClubEventNum);
-        // API 호출
+        console.log(alreadyViewClubEventNum);
+        let config;
+
+        if (accessToken) {
+          config = {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          };
+        } else if (alreadyViewClubEventNum) {
+          config = {
+            headers: {
+              Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
+            },
+          };
+        } else {
+          config = {};
+        }
+
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
           config,
