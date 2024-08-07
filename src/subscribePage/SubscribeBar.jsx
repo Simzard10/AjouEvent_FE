@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { EtoKCodes } from "../departmentCodes";
+import { EtoKCodes, priorityOrder } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 
@@ -263,12 +263,17 @@ const SubscribeBar = () => {
     }
   };
 
+  // Sort menuItems according to priorityOrder
+  const sortedMenuItems = menuItems.sort(
+    (a, b) => priorityOrder.indexOf(a.topic) - priorityOrder.indexOf(b.topic)
+  );
+
   return (
     <Container>
       <MenuBarContainer>
         <ViewAllButton onClick={() => setShowModal(true)}>
           <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/Menu.svg`} />
-          <p>전체</p>
+          <p>구독 설정</p>
         </ViewAllButton>
         <MenuItemContainer>
           {subscribeItems.map((item, index) => (
@@ -288,7 +293,7 @@ const SubscribeBar = () => {
               />
               <ModalHeaderTitle>전체 항목</ModalHeaderTitle>
             </ModalHeader>
-            {menuItems.map((item, index) => (
+            {sortedMenuItems.map((item, index) => (
               <MenuItemInModal key={index}>
                 {EtoKCodes[item.topic]}
                 {item.subscribed ? (
