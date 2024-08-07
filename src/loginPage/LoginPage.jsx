@@ -2,7 +2,7 @@ import React from "react";
 import Login from "./Login";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,9 +16,9 @@ const AppContaioner = styled.div`
 
 export default function LoginPage() {
   return (
-    <AppContaioner>
+    <AppContainer>
       <Login></Login>
       <NavigationBar></NavigationBar>
-    </AppContaioner>
+    </AppContainer>
   );
 }

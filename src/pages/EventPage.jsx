@@ -6,7 +6,7 @@ import SearchDropBox from "../searchPage/SearchDropBox";
 import SearchBar from "../searchPage/SearchBar";
 import LocationBar from "../components/LocationBar";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -25,7 +25,7 @@ const MainContentContaioner = styled.div`
 
 export default function EventPage() {
   return (
-    <AppContaioner>
+    <AppContainer>
       <MainContentContaioner>
         <LocationBar location="전체 이벤트 검색" />
         <SearchDropBox />
@@ -33,6 +33,6 @@ export default function EventPage() {
         <EventMain />
       </MainContentContaioner>
       <NavigationBar />
-    </AppContaioner>
+    </AppContainer>
   );
 }

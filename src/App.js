@@ -11,6 +11,7 @@ import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./homePage/HomePage";
 import GuidePage from "./pages/GuidePage";
 import RouteChangeTracker from "./RouteChangeTracker";
+import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/privacy-agreement",
+    element: <PrivacyAgreementPage />,
   },
   {
     path: "/signUp",

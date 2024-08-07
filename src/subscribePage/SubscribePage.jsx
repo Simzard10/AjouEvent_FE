@@ -9,7 +9,7 @@ import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import SubscribeEvent from "./SubscribeEvent";
 import SearchBar from "../components/SearchBar";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -127,7 +127,7 @@ export default function SubscribePage() {
   }, [loading, hasMore, fetchData]);
 
   return (
-    <AppContaioner>
+    <AppContainer>
       {accessToken ? (
         <MainContentContaioner>
           <LocationBar location="구독" />
@@ -158,6 +158,6 @@ export default function SubscribePage() {
         </TemporaryContaioner>
       )}
       <NavigationBar />
-    </AppContaioner>
+    </AppContainer>
   );
 }

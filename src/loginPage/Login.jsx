@@ -370,7 +370,7 @@ const Login = () => {
 
       <BottomSignUpWapper>
         <p>
-          계정이 없나요? <SignUpStyledLink to="/signUp">가입</SignUpStyledLink>
+          계정이 없나요? <SignUpStyledLink to="/privacy-agreement">가입</SignUpStyledLink>
           하세요.
         </p>
       </BottomSignUpWapper>

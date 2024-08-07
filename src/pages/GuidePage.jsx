@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import TabBar from "../components/TabBar";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,7 +14,7 @@ const AppContaioner = styled.div`
 
 export default function GuidePage() {
   return (
-    <AppContaioner>
+    <AppContainer>
       <TabBar Title={`사용 가이드 ver.0.1.3`} />
       <img
         alt="IOSInstall"
@@ -25,6 +25,6 @@ export default function GuidePage() {
         src={`${process.env.PUBLIC_URL}/image/installAndriod.svg`}
       ></img>
       <hr />
-    </AppContaioner>
+    </AppContainer>
   );
 }
