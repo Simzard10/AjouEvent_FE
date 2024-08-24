@@ -4,6 +4,7 @@ import LoginPage from "./loginPage/LoginPage";
 import SearchEventPage from "./searchPage/SearchEventPage";
 import SignUpPage from "./pages/SignUpPage";
 import SubscribePage from "./subscribePage/SubscribePage";
+import KeywordSubscribePage from "./subscribePage/KeywordSubscribePage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./loginPage/LoginSuccess";
 import MyPage from "./pages/MyPage";
@@ -49,6 +50,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/subscribe",
     element: <SubscribePage />,
+  },
+  {
+    path: "/subscribe/keywordSubscribe",
+    element: <KeywordSubscribePage />,
   },
   {
     path: "/loginSuccess",
