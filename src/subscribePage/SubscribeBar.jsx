@@ -173,7 +173,7 @@ const SubscribeBar = () => {
           "get",
           `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`
         );
-        const topics = response.data.topics;
+        const topics = response.data;
         setSubscribeItems(topics);
       } catch (error) {
         console.error("Error fetching subscribe items:", error);
@@ -191,24 +191,24 @@ const SubscribeBar = () => {
     try {
       Toast.fire({
         icon: "info",
-        title: `${EtoKCodes[topic]} 구독 중`,
+        title: `${topic.koreanTopic} 구독 중`,
       });
 
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-        { topic: topic }
+        { topic: topic.englishTopic }
       );
 
       Swal.fire({
         icon: "success",
         title: "구독 성공",
-        text: `${EtoKCodes[topic]}를 구독하셨습니다`,
+        text: `${topic.koreanTopic}를 구독하셨습니다`,
       });
 
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
-          item.topic === topic ? { ...item, subscribed: true } : item
+          item.koreanTopic === topic.koreanTopic ? { ...item, subscribed: true } : item
         )
       );
     } catch (error) {
@@ -231,24 +231,24 @@ const SubscribeBar = () => {
     try {
       Toast.fire({
         icon: "info",
-        title: `${EtoKCodes[topic]} 구독 취소 중`,
+        title: `${topic.koreanTopic} 구독 취소 중`,
       });
 
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
-        { topic: topic }
+        { topic: topic.englishTopic }
       );
 
       Swal.fire({
         icon: "success",
         title: "구독 취소 성공",
-        text: `${EtoKCodes[topic]}를 구독 취소하셨습니다`,
+        text: `${topic.koreanTopic}를 구독 취소하셨습니다`,
       });
 
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
-          item.topic === topic ? { ...item, subscribed: false } : item
+          item.koreanTopic === topic.koreanTopic ? { ...item, subscribed: false } : item
         )
       );
     } catch (error) {
@@ -272,7 +272,7 @@ const SubscribeBar = () => {
         </ViewAllButton>
         <MenuItemContainer>
           {subscribeItems.map((item, index) => (
-            <MenuItem key={index}>{item}</MenuItem>
+            <MenuItem key={index}>{item.koreanTopic}</MenuItem>
           ))}
         </MenuItemContainer>
       </MenuBarContainer>
@@ -290,16 +290,16 @@ const SubscribeBar = () => {
             </ModalHeader>
             {menuItems.map((item, index) => (
               <MenuItemInModal key={index}>
-                {EtoKCodes[item.topic]}
+                {item.koreanTopic}
                 {item.subscribed ? (
                   <ModalHeaderIcon
-                    onClick={() => handleUnsubscribe(item.topic)}
+                    onClick={() => handleUnsubscribe(item)}
                     loading="lazy"
                     src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
                   />
                 ) : (
                   <ModalHeaderIcon
-                    onClick={() => handleSubscribe(item.topic)}
+                    onClick={() => handleSubscribe(item)}
                     loading="lazy"
                     src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
                   />

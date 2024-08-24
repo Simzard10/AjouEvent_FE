@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import EventDetail from "../events/EventDetail";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,8 +14,8 @@ const AppContaioner = styled.div`
 
 export default function EventDetailPage() {
   return (
-    <AppContaioner>
+    <AppContainer>
       <EventDetail></EventDetail>
-    </AppContaioner>
+    </AppContainer>
   );
 }

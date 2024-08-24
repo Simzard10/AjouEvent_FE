@@ -6,6 +6,7 @@ const FlexContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
+  height: 100%;
   padding: 0 20px 0 20px;
 `;
 

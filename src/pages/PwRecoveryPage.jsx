@@ -3,7 +3,7 @@ import TopBar from "../components/TopBar";
 import styled from "styled-components";
 import PwRecovery from "../components/PwRecovery";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,9 +17,9 @@ const AppContaioner = styled.div`
 
 export default function PwRecoveryPage() {
   return (
-    <AppContaioner>
+    <AppContainer>
       <TopBar></TopBar>
       <PwRecovery></PwRecovery>
-    </AppContaioner>
+    </AppContainer>
   );
 }

@@ -4,6 +4,7 @@ import LoginPage from "./loginPage/LoginPage";
 import SearchEventPage from "./searchPage/SearchEventPage";
 import SignUpPage from "./pages/SignUpPage";
 import SubscribePage from "./subscribePage/SubscribePage";
+import KeywordSubscribePage from "./subscribePage/KeywordSubscribePage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginSuccess from "./loginPage/LoginSuccess";
 import MyPage from "./pages/MyPage";
@@ -11,6 +12,7 @@ import LikedEventPage from "./likedPage/LikedEventPage";
 import HomePage from "./homePage/HomePage";
 import GuidePage from "./pages/GuidePage";
 import RouteChangeTracker from "./RouteChangeTracker";
+import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const ROUTER = createBrowserRouter([
     element: <LoginPage />,
   },
   {
+    path: "/privacy-agreement",
+    element: <PrivacyAgreementPage />,
+  },
+  {
     path: "/signUp",
     element: <SignUpPage />,
   },
@@ -44,6 +50,10 @@ const ROUTER = createBrowserRouter([
   {
     path: "/subscribe",
     element: <SubscribePage />,
+  },
+  {
+    path: "/subscribe/keywordSubscribe",
+    element: <KeywordSubscribePage />,
   },
   {
     path: "/loginSuccess",
