@@ -18,52 +18,77 @@ export default function SubscribeTab() {
         savedKeyword: state.savedKeyword,
         setSavedKeyword: state.setSavedKeyword,
     }));
-    const [keyword, setKeyword] = useState(savedKeyword);
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-    const [isError, setIsError] = useState(false);
-    const pageSize = 10;
-    const bottomRef = useRef(null);
 
+  const [keyword, setKeyword] = useState(savedKeyword);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState(false); 
+  const pageSize = 10;
+  const bottomRef = useRef(null);
 
-    const fetchData = useCallback(async () => {
-        if (loading || !hasMore || isError) return;
+  const accessToken = localStorage.getItem("accessToken");
 
-        setLoading(true);
+  const fetchData = useCallback(async () => {
+    if (loading || !hasMore || isError) return;
 
-        try {
-            console.log(
-                `api call: ${process.env.REACT_APP_BE_URL}/api/event/subscribed?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
-            );
+    setLoading(true);
 
-            const response = await requestWithAccessToken(
-                "get",
-                `${process.env.REACT_APP_BE_URL}/api/event/subscribed?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
-            );
-            const newEvents = response.data.result;
+    try {
+      const url = selectedTopic
+        ? `${process.env.REACT_APP_BE_URL}/api/event/${encodeURIComponent(selectedTopic)}?page=${page}&size=${pageSize}&keyword=${keyword}`
+        : `${process.env.REACT_APP_BE_URL}/api/event/subscribed?page=${page}&size=${pageSize}&keyword=${keyword}`;
 
-            setEvents((prevEvents) => {
-                const eventIds = new Set(prevEvents.map((event) => event.eventId));
-                const filteredEvents = newEvents.filter(
-                    (event) => !eventIds.has(event.eventId)
-                );
-                return [...prevEvents, ...filteredEvents];
-            });
+      console.log(`api call: ${url}`);
 
-            if (response.data.hasNext) {
-                setPage((prevPage) => prevPage + 1);
-            } else {
-                setHasMore(false);
-            }
-        } catch (error) {
-            setIsError(true);
-            console.error("Error fetching events:", error);
-        } finally {
-            setLoading(false);
+      const response = await requestWithAccessToken("get", url);
+      const newEvents = response.data.result;
+
+      setEvents((prevEvents) => {
+        const eventIds = new Set(prevEvents.map((event) => event.eventId));
+        const filteredEvents = newEvents.filter(
+          (event) => !eventIds.has(event.eventId)
+        );
+        return [...prevEvents, ...filteredEvents];
+      });
+
+      if (response.data.hasNext) {
+        setPage((prevPage) => prevPage + 1);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      setIsError(true);
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, isError, page, keyword, , selectedTopic]);
+
+  // Handle infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && hasMore) {
+          fetchData();
         }
-    }, [loading, hasMore, isError, page, keyword]);
+      },
+      { threshold: 1 }
+    );
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current);
+    }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
+  }, [loading, hasMore, fetchData]);
+
 
 
     // Handle infinite scroll
@@ -89,25 +114,37 @@ export default function SubscribeTab() {
     }, [loading, hasMore, fetchData]);
     
 
+    const handleTopicSelect = (topic) => {
+    if (selectedTopic === topic) {
+        setSelectedTopic(false);  
+    } else {
+        setSelectedTopic(topic); 
+    }
+    setPage(0); 
+    setEvents([]);
+    setHasMore(true); 
+    fetchData(); 
+    };
+
     return (
         <AppContainer>
-            <SubscribeBar />
-            <SearchBar
-                keyword={keyword}
-                setKeyword={setKeyword}
-                setPage={setPage}
-                setEvents={setEvents}
-                setSavedKeyword={setSavedKeyword}
-                setHasMore={setHasMore}
-                fetchData={fetchData}
-            />
-            <SubscribeEvent
-                events={events}
-                bottomRef={bottomRef}
-                loading={loading}
-                hasMore={hasMore}
-                isError={isError}
-            />
+            <SubscribeBar onTopicSelect={handleTopicSelect} />
+          <SearchBar
+            keyword={keyword}
+            setKeyword={setKeyword}
+            setPage={setPage}
+            setEvents={setEvents}
+            setSavedKeyword={setSavedKeyword}
+            setHasMore={setHasMore}
+            fetchData={fetchData}
+          />
+          <SubscribeEvent
+            events={events}
+            bottomRef={bottomRef}
+            loading={loading}
+            hasMore={hasMore}
+            isError={isError}
+          />
         </AppContainer>
     );
 }
