@@ -7,6 +7,7 @@ import HomeBanner from "./HomeBanner";
 import HomeHotEvent from "./HomeHotEvent";
 import DailyModal from "../components/DailyModal";
 import HelpBox from "../components/HelpBox";
+import PWAPrompt from 'react-ios-pwa-prompt';
 
 const AppContainer = styled.div`
   display: flex;
@@ -45,13 +46,37 @@ export default function HomePage() {
   const [showModal, setShowModal] = useState(false);
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [bannerImages, setBannerImages] = useState([]);
+  const [isIOS, setIsIOS] = useState(false); // iOS 장치 여부 상태 추가
+  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
 
   useEffect(() => {
     GetUserPermission(setIsLoading);
   }, []);
 
   useEffect(() => {
-    // Check if the app is running in standalone mode
+    const fetchBannerImages = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BE_URL}/api/event/banner`);
+        const data = await response.json();
+        setBannerImages(data);
+      } catch (error) {
+        console.error("Error fetching banner images:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBannerImages();
+  }, []);
+
+  useEffect(() => {
+    // iOS 장치 여부 확인
+    const isDeviceIOS =
+      /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
+    setIsIOS(isDeviceIOS);
+
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsPWAInstalled(true);
       return;
@@ -66,50 +91,53 @@ export default function HomePage() {
     }
 
     window.addEventListener("beforeinstallprompt", (e) => {
-      // Prevent the default mini-infobar from appearing on mobile
       e.preventDefault();
-      // Check if the prompt is available
       if (!isPWAInstalled) {
         setShowModal(true);
       }
     });
 
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("beforeinstallprompt", () => {});
     };
   }, [isPWAInstalled]);
 
+  useEffect(() => {
+    // iOS 장치인 경우에만 PWA 프롬프트를 표시
+    if (isIOS) {
+      setShouldShowPWAPrompt(true);
+    }
+  }, [isIOS]);
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  const images = [
-    {
-      src: `${process.env.PUBLIC_URL}/icons/TestBanner0.png`,
-      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
-    },
-    {
-      src: `${process.env.PUBLIC_URL}/icons/TestBanner1.png`,
-      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
-    },
-    {
-      src: `${process.env.PUBLIC_URL}/icons/TestBanner2.png`,
-      url: "https://ace.ajou.ac.kr/ace/paran/meeting.do?mode=view&articleNo=318550&article.offset=12&articleLimit=12#!/list",
-    },
-  ];
 
   return (
     <AppContainer>
       {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
       <MainContentContainer>
         <HelpBox setIsLoading={setIsLoading} />
-        <HomeBanner images={images} />
+        <HomeBanner images={bannerImages} />
         <LocationBar location="이번주 인기글" />
         <HomeHotEvent />
       </MainContentContainer>
       <NavigationBar />
       {showModal && <DailyModal onClose={handleCloseModal} />}
+      {/* iOS 장치라면 PWAPrompt 표시 */}
+      {isIOS && (
+        <PWAPrompt 
+          promptOnVisit={1} 
+          timesToShow={1}
+          copyTitle="AjouEvent 앱 설치하기 - 아이폰"
+          copySubtitle="홈 화면에 앱을 추가하고 각종 공지사항, 키워드 알림을 받아보세요."
+          copyDescription="AjouEvent는 앱설치 없이 홈화면에 추가를 통해 사용할 수 있습니다. 홈화면에 추가된 앱을 실행한 뒤 알림 허용을 누르시면 됩니다!"
+          copyShareStep="하단 메뉴에서 '공유' 아이콘을 눌러주세요.(크롬은 상단)"
+          copyAddToHomeScreenStep="아래의 '홈 화면에 추가' 버튼을 눌러주세요."
+          appIconPath="https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png"
+          isShown={shouldShowPWAPrompt} 
+        />
+      )}
     </AppContainer>
   );
 }
