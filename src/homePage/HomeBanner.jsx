@@ -13,11 +13,58 @@ const BannerContainer = styled.div`
   width: 100%;
 `;
 
+const CarouselWrapper = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vw;
+`;
+
+const StyledCarousel = styled(Carousel)`
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: #2366AF; /* 화살표 색상 변경 */
+    background-size: 100%, 100%; /* 화살표 아이콘의 크기 조정 */
+    border-radius: 50%; /* 원형으로 만들기 */
+    width: 30px;
+    height: 30px;
+  }
+
+  .carousel-indicators {
+    position: absolute;
+    bottom: -30px; /* 배너 아래로 이동 */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .carousel-indicators button {
+    background-color: gray; /* 비활성 인디케이터 색상 */
+    width: 10px; /* 인디케이터의 너비 */
+    height: 10px; /* 인디케이터의 높이 */
+    border-radius: 50%; /* 타원형으로 만들기 */
+    opacity: 0.5; /* 비활성 인디케이터의 투명도 */
+    margin: 0 4px; /* 인디케이터 간의 간격 */
+  }
+
+  .carousel-indicators .active {
+    background-color: #2366AF; /* 활성 인디케이터 색상 */
+    opacity: 1; /* 활성 인디케이터의 투명도 */
+    width: 40px; /* 활성 인디케이터의 너비 */
+    height: 15px; /* 활성 인디케이터의 높이 */
+    border-radius: 50px; /* 타원형으로 만들기 */
+  }
+`;
+
 const CarouselItemImage = styled.img`
   width: 100%;
   height: 100vw;
   object-fit: contain;
-  cursor: pointer; /* Add cursor pointer for indicating clickable */
+  cursor: pointer;
 `;
 
 export default function HomeBanner({ images }) {
@@ -27,40 +74,27 @@ export default function HomeBanner({ images }) {
     setIndex(selectedIndex);
   };
 
-  // 클릭 핸들러 추가
   const handleClick = (url) => {
     window.location.href = url;
   };
 
   return (
     <BannerContainer>
-      <Carousel
-        activeIndex={index}
-        onSelect={handleSelect}
-        controls={true}
-        interval={null}
-        touch={true}
-        style={{ width: "100vw", height: "100vw" }}
-      >
-        {images.map((image, idx) => (
-          <Carousel.Item key={idx} onClick={() => handleClick(image.url)}>
-            <CarouselItemImage src={image.src} alt={`Slide ${idx + 1}`} />
-          </Carousel.Item>
-        ))}
-      </Carousel>
-
-      <div className="carousel-indicators">
-        {images.map((_, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => handleSelect(idx)}
-            className={index === idx ? "active" : ""}
-            aria-current={index === idx ? "true" : undefined}
-            aria-label={`Slide ${idx + 1}`}
-          ></button>
-        ))}
-      </div>
+      <CarouselWrapper>
+        <StyledCarousel
+          activeIndex={index}
+          onSelect={handleSelect}
+          controls={true}
+          interval={null}
+          touch={true}
+        >
+          {images.map((image, idx) => (
+            <Carousel.Item key={idx} onClick={() => handleClick(image.siteUrl)}>
+              <CarouselItemImage src={image.imgUrl} alt={`Slide ${idx + 1}`} />
+            </Carousel.Item>
+          ))}
+        </StyledCarousel>
+      </CarouselWrapper>
     </BannerContainer>
   );
 }
