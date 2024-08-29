@@ -36,6 +36,8 @@ const MenuItemContainer = styled.div`
 `;
 
 const MenuItem = styled.div`
+  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : 'Blue')};
+  color: ${(props) => (props.isSelected ? 'Blue' : 'black')};
   display: flex;
   height: fit-content;
   padding: 8px 12px;
@@ -60,6 +62,7 @@ const ViewAllButton = styled.div`
   border: 2px solid #f7f7f7;
   background-color: #ffffff;
   cursor: pointer;
+  background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')}; /* 항상 회색 유지 */
   p {
     margin: 0;
   }
@@ -131,6 +134,19 @@ const MenuItemInModal = styled.div`
   font-weight: 600;
 `;
 
+const CategoryTitle = styled.h2`
+  font-family: "Pretendard Variable";
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+`;
+
 const Toast = Swal.mixin({
   toast: true,
   position: "center-center",
@@ -143,11 +159,27 @@ const Toast = Swal.mixin({
   },
 });
 
-const SubscribeBar = () => {
+const SubscribeBar = ( { onTopicSelect } ) => {
   const [menuItems, setMenuItems] = useState([]);
   const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [openCategory, setOpenCategory] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+
+  const handleTopicClick = (topic) => {
+    if (selectedTopic === topic) {
+      setSelectedTopic(null); 
+      onTopicSelect(null);    
+    } else {
+      setSelectedTopic(topic); 
+      onTopicSelect(topic);  
+    }
+  };
+
+  const handleCategoryClick = (category) => {
+    setOpenCategory(openCategory === category ? null : category);
+  };
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -263,35 +295,85 @@ const SubscribeBar = () => {
     }
   };
 
-  return (
-    <Container>
-      <MenuBarContainer>
-        <ViewAllButton onClick={() => setShowModal(true)}>
-          <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/Menu.svg`} />
-          <p>전체</p>
-        </ViewAllButton>
-        <MenuItemContainer>
-          {subscribeItems.map((item, index) => (
-            <MenuItem key={index}>{item.koreanTopic}</MenuItem>
-          ))}
-        </MenuItemContainer>
-      </MenuBarContainer>
+  const categorizeAndSortItems = (items) => {
+    const categories = {
+      학과: [],
+      단과대: [],
+      공지사항: [],
+      기숙사: [],
+      대학원: []
+    };
 
-      {showModal && (
-        <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              <ModalHeaderIcon
-                onClick={() => setShowModal(false)}
-                loading="lazy"
-                src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
-              />
-              <ModalHeaderTitle>전체 항목</ModalHeaderTitle>
-            </ModalHeader>
-            {menuItems.map((item, index) => (
-              <MenuItemInModal key={index}>
-                {item.koreanTopic}
-                {item.subscribed ? (
+    items.forEach(item => {
+      if (categories[item.classification]) {
+        categories[item.classification].push(item);
+      }
+    });
+
+    Object.keys(categories).forEach(category => {
+      categories[category].sort((a, b) => a.koreanOrder - b.koreanOrder);
+    });
+
+    return categories;
+  };
+
+  const categorizedItems = categorizeAndSortItems(menuItems);
+
+  return (
+  <Container>
+    <MenuBarContainer>
+      <ViewAllButton isSelected={true} onClick={() => setShowModal(true)}>
+        <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/gear.svg`} />
+        <p>구독 설정</p>
+      </ViewAllButton>
+      <MenuItemContainer>
+        {Array.isArray(subscribeItems) ? (
+          subscribeItems.map((item) => (
+            <MenuItem
+              key={item.id}
+              onClick={() => handleTopicClick(item.englishTopic)}
+      isSelected={selectedTopic === item.englishTopic} // 선택된 토픽인지 확인
+            >
+              {item.koreanTopic}
+            </MenuItem>
+          ))
+        ) : (
+          <p>구독 항목이 없습니다</p>
+        )}
+      </MenuItemContainer>
+    </MenuBarContainer>
+
+    {showModal && (
+      <>
+        <ModalOverlay onClick={() => setShowModal(false)} />
+        <ModalContent>
+          <ModalHeader>
+            <ModalHeaderIcon
+              src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+              onClick={() => setShowModal(false)}
+            />
+            <ModalHeaderTitle>전체 구독 항목</ModalHeaderTitle>
+          </ModalHeader>
+          {Object.keys(categorizedItems).map((category) => (
+            <div key={category}>
+              <CategoryTitle onClick={() => handleCategoryClick(category)}>
+      {category}
+      <img
+        src={
+          openCategory === category
+            ? `${process.env.PUBLIC_URL}/icons/arrow_down.svg`
+            : `${process.env.PUBLIC_URL}/icons/arrow_right.svg`
+        }
+        alt="arrow"
+        style={{ width: '24px', height: '24px' }} // 아이콘 크기 조정
+      />
+    </CategoryTitle>
+              {openCategory === category &&
+                categorizedItems[category].map((item) => (
+                  <MenuItemInModal key={item.id}>
+                    <div>{item.koreanTopic}</div>
+                    <div>
+                      {item.subscribed ? (
                   <ModalHeaderIcon
                     onClick={() => handleUnsubscribe(item)}
                     loading="lazy"
@@ -304,12 +386,15 @@ const SubscribeBar = () => {
                     src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
                   />
                 )}
-              </MenuItemInModal>
-            ))}
-          </ModalContent>
-        </ModalOverlay>
-      )}
-    </Container>
+                    </div>
+                  </MenuItemInModal>
+                ))}
+            </div>
+          ))}
+        </ModalContent>
+      </>
+    )}
+  </Container>
   );
 };
 
