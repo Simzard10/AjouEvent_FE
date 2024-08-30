@@ -35,6 +35,8 @@ const MenuItemContainer = styled.div`
 `;
 
 const MenuItem = styled.div`
+  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : '#ffffff')};
+  color: ${(props) => (props.isSelected ? '#ffffff' : '#000000')};
   display: flex;
   height: fit-content;
   padding: 8px 12px;
@@ -44,7 +46,6 @@ const MenuItem = styled.div`
   gap: 4px;
   border-radius: 600px;
   border: 2px solid #f7f7f7;
-  background-color: #ffffff;
   cursor: pointer;
 `;
 
@@ -56,11 +57,12 @@ const ViewAllButton = styled.div`
   align-items: center;
   gap: 4px;
   border-radius: 600px;
-  border: 2px solid #f7f7f7;
-  background-color: #ffffff;
+  border: 2px solid #f7f7f7;  // 회색 테두리
+  background-color: #e0e0e0;  // 회색 배경
   cursor: pointer;
   p {
     margin: 0;
+    color: #333; // 텍스트 색상 조정
   }
 `;
 
@@ -70,44 +72,46 @@ const ViewAllIcon = styled.img`
   object-fit: cover;
 `;
 
-
-const KeywordBar = () => {
+const KeywordBar = ({ onKeywordSelect, selectedKeyword }) => {
   const [keywords, setKeywords] = useState([]);
   const navigate = useNavigate();
 
-  useEffect (() => {
+  useEffect(() => {
     fetchSubscribeKeywords();
   }, []);
 
-  // 사용자가 설정한 키워드 리스트 가져오기
   const fetchSubscribeKeywords = async () => {
     try {
       const response = await requestWithAccessToken(
         "get",
         `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
       );
-      
       setKeywords(response.data);
     } catch (error) {
       console.error("Error fetching subscribe keywords:", error);
     }
   };
 
-  
-  const handleItemClick = () => {
-    navigate('/subscribe/keywordSubscribe', { state: { keywords } });
+  const handleItemClick = (keyword) => {
+    onKeywordSelect(keyword);
   };
 
   return (
     <Container>
       <MenuBarContainer>
-        <ViewAllButton onClick={() => handleItemClick()}>
+        <ViewAllButton onClick={() => navigate('/subscribe/keywordSubscribe')}>
           <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`} />
           <p>키워드 설정</p>
         </ViewAllButton>
         <MenuItemContainer>
           {keywords.map((item, index) => (
-            <MenuItem key={index}>{item.koreanKeyword}</MenuItem>
+            <MenuItem
+              key={index}
+              isSelected={selectedKeyword?.englishKeyword === item.englishKeyword}
+              onClick={() => handleItemClick(item)}
+            >
+              {item.koreanKeyword}
+            </MenuItem>
           ))}
         </MenuItemContainer>
       </MenuBarContainer>

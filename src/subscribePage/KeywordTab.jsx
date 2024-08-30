@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import useStore from "../store/useStore";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import KeywordBar from "./KeywordBar";
 import SearchBar from "../components/SearchBar";
-import EventCard from "../events/EventCard";
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import KeywordEventCard from "../events/KeywordEventCard";
 
 const AppContainer = styled.div`
   display: flex;
@@ -21,37 +21,77 @@ const KeywordListContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
-export default function SubscribeTab() {
+export default function KeywordTab() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [selectedKeyword, setSelectedKeyword] = useState(null);
 
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-    const [isError, setIsError] = useState(false);
-    const bottomRef = useRef(null);
+  const fetchEvents = async (keyword) => {
+    setLoading(true);
+    setIsError(false);
 
-    return (
-        <AppContainer>
-            <KeywordBar />
-            <div>
-                {/* <KeywordListContainer>
-                    {events.map((event, index) => (
-                        <EventCard
-                            key={`${event.eventId}-${index}`}
-                            id={event.eventId}
-                            title={event.title}
-                            subject={event.subject}
-                            content={event.content}
-                            imgUrl={event.imgUrl}
-                            likesCount={event.likesCount}
-                            viewCount={event.viewCount}
-                            star={event.star}
-                        />
-                    ))}
-                </KeywordListContainer> */}
-                <div ref={bottomRef} style={{ height: "1px" }}></div>
-                {loading && <p>로딩중...</p>}
-                {!hasMore && <p>불러올 이벤트가 없습니다.</p>}
-                {isError && <p>서버 에러</p>}
-            </div>
-        </AppContainer>
-    );
+    try { 
+      const url = keyword
+        ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${encodeURIComponent(keyword.englishKeyword)}`
+        : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword`;
+
+      console.log(`Fetching events from: ${url}`);
+
+      const response = await requestWithAccessToken("get", url);
+      
+      // 응답 데이터가 배열인지 확인
+      setEvents(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      setIsError(true);
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents(selectedKeyword);
+  }, [selectedKeyword]);
+
+  const handleKeywordSelect = (keyword) => {
+    // 선택된 키워드가 이미 선택된 상태라면 해제
+    if (selectedKeyword && selectedKeyword.englishKeyword === keyword.englishKeyword) {
+      console.log('selectedKeyword === keywrod')
+      setSelectedKeyword(null);
+    } else {
+      setSelectedKeyword(keyword);
+    }
+  };
+
+  return (
+    <AppContainer>
+      <KeywordBar
+        onKeywordSelect={handleKeywordSelect}
+        selectedKeyword={selectedKeyword} // 현재 선택된 키워드를 전달
+      />
+      <SearchBar setKeyword={setSelectedKeyword} />
+      <KeywordListContainer>
+        {events.map((event, index) => (
+          <KeywordEventCard
+            key={`${event.eventId}-${index}`}
+            id={event.eventId}
+            title={event.title}
+            subject={event.subject}
+            content={event.content}
+            imgUrl={event.imgUrl}
+            likesCount={event.likesCount}
+            viewCount={event.viewCount}
+            star={event.star}
+            url={event.url}
+            writer={event.writer}
+            createdAt={event.createdAt}
+            keyword={event.keyword}
+          />
+        ))}
+      </KeywordListContainer>
+      {loading && <p>로딩중...</p>}
+      {isError && <p>서버 에러</p>}
+    </AppContainer>
+  );
 }
