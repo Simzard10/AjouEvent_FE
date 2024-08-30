@@ -25,7 +25,7 @@ export default function SubscribeTab() {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState(false); 
+  const [selectedTopic, setSelectedTopic] = useState(null); 
   const pageSize = 10;
   const bottomRef = useRef(null);
 
@@ -65,7 +65,7 @@ export default function SubscribeTab() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, isError, page, keyword, , selectedTopic]);
+  }, [loading, hasMore, isError, page, keyword, selectedTopic]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -115,20 +115,24 @@ export default function SubscribeTab() {
     
 
     const handleTopicSelect = (topic) => {
-    if (selectedTopic === topic) {
-        setSelectedTopic(false);  
-    } else {
+      if (selectedTopic === topic) {
+        setSelectedTopic(null);  
+      } else {
         setSelectedTopic(topic); 
-    }
-    setPage(0); 
-    setEvents([]);
-    setHasMore(true); 
-    fetchData(); 
+      }
+      setPage(0); 
+      setEvents([]);
+      setHasMore(true); 
     };
+
+  useEffect(() => {
+    fetchData(selectedTopic); // Topic이나 페이지 변경 시 데이터 재로드
+  }, [selectedTopic]);
 
     return (
         <AppContainer>
-            <SubscribeBar onTopicSelect={handleTopicSelect} />
+            <SubscribeBar 
+              onTopicSelect={handleTopicSelect} />
           <SearchBar
             keyword={keyword}
             setKeyword={setKeyword}

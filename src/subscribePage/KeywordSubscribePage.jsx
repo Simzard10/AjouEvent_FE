@@ -37,7 +37,7 @@ const TapIcon = styled.img`
   width: 20px;
   object-fit: contain;
   object-position: center;
-  cursor: pointer; /* 클릭 가능한 아이콘 표시 */
+  cursor: pointer;
 `;
 
 const TapTitle = styled.div`
@@ -95,6 +95,9 @@ const SubscribeInput = styled.input`
   border: none;
   outline: none;
   font-size: 1rem;
+  padding: 5px;
+  width: 100%;
+  font-size: clamp(0.7rem, 2.5vw, 1rem); /* 글자 크기 조절 */
 `;
 
 const SubscribeButton = styled.button`
@@ -104,6 +107,7 @@ const SubscribeButton = styled.button`
   border-radius: 12px;
   padding: 7px 15px;
   cursor: pointer;
+  font-size: clamp(0.7rem, 2vw, 1rem); /* 글자 크기 조절 */
 `;
 
 const KeywordListContainer = styled.div`
@@ -166,6 +170,7 @@ const ViewAllButton = styled.div`
   background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')};
   p {
     margin: 0;
+    font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
   }
 `;
 
@@ -240,10 +245,10 @@ const CategoryTitle = styled.h2`
   font-size: 30px;
   font-weight: 700;
   margin-top: 40px;
-  padding-bottom: 10px; /* 제목 아래 여백 추가 */
-  border-bottom: 1px solid #e0e0e0; /* 제목 아래에 줄 추가 */
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
-  justify-content: space-between; /* 아이콘과 텍스트를 양쪽에 배치 */
+  justify-content: space-between;
   align-items: center;
   cursor: pointer;
 `;
@@ -255,18 +260,18 @@ const TopicButton = styled.button`
   padding: 8px 16px;
   margin: 4px;
   cursor: pointer;
+  font-size: clamp(0.7rem, 2vw, 1rem); /* 글자 크기 조절 */
 `;
-
 
 const TopicDisplay = styled.div`
   position: absolute;
-  right: 10px; /* 오른쪽 여백 조정 */
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #f1f1f1;
   border-radius: 4px;
   padding: 5px 10px;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
   color: #333;
 `;
 
