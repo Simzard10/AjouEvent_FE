@@ -9,7 +9,9 @@ const ModalWrapper = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
@@ -18,10 +20,10 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
-  margin: 60% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+  max-width: 500px;
   border-radius: 20px;
   font-family: "Pretendard Variable";
 `;

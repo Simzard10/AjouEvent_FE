@@ -387,12 +387,10 @@ export default function KeywordSubscribePage() {
         text: `${inputValue}를 구독하셨습니다`,
       });
 
-      setKeywords(prevKeywords => [
-        ...prevKeywords,
-        { englishKeyword: englishKeyword, 
-          koreanKeyword: inputValue, 
-          topicName: selectedTopic.koreanTopic } // topicName은 필요에 따라 수정
-      ]);
+      // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
+      await fetchUserKeywords();
+
+      // 구독된 키워드를 바로 리스트에 추가하는 대신, fetchUserKeywords에서 가져온 최신 데이터를 사용합니다.
       
     } catch (error) {
       Swal.fire({
@@ -404,6 +402,20 @@ export default function KeywordSubscribePage() {
     } finally {
       setInputValue(''); // 입력값 초기화
       setIsProcessing(false);
+    }
+  };
+
+  // useEffect 안에 있던 fetchUserKeywords를 밖으로 빼서 다른 곳에서도 호출할 수 있도록 수정합니다.
+  const fetchUserKeywords = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
+      );
+      const userKeywords = response.data;
+      setKeywords(userKeywords); 
+    } catch (error) {
+      console.error("Error fetching user keywords:", error);
     }
   };
 
@@ -472,22 +484,9 @@ export default function KeywordSubscribePage() {
         console.error("Error fetching menu items:", error);
       }
     };
-
-    const fetchUserKeywords = async () => {
-    try {
-      const response = await requestWithAccessToken(
-        "get",
-        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
-      );
-      const userKeywords = response.data;
-      setKeywords(userKeywords); 
-    } catch (error) {
-      console.error("Error fetching user keywords:", error);
-    }
-  };
-
-  fetchMenuItems();
-  fetchUserKeywords();  
+    
+    fetchMenuItems();
+    fetchUserKeywords();  
   }, []);
 
   const handleCategoryClick = (category) => {
