@@ -42,7 +42,8 @@ const GetUserPermission = async (setIsLoading) => {
 
       try {
         await GetFCMToken();
-        const isFCMToken = localStorage.getItem("fcmToken");
+        setIsLoading(false);
+        let isFCMToken = localStorage.getItem("fcmToken");
         if (!isFCMToken) {
           throw new Error("알림 토큰 저장 실패");
         } else {
