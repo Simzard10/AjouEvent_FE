@@ -59,9 +59,11 @@ const GetUserPermission = async (setIsLoading) => {
     } else if (permission === "denied") {
       console.log("Notification permission denied.");
       // 필요에 따라 추가 메시지 처리
+      setIsLoading(false);  // 로딩 해제
     } else {
       console.log("Notification permission was dismissed.");
       // 필요에 따라 추가 메시지 처리
+      setIsLoading(false);  // 로딩 해제
     }
   } catch (error) {
     Toast.fire({
