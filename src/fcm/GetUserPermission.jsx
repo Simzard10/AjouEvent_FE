@@ -48,6 +48,7 @@ const GetUserPermission = async (setIsLoading) => {
         } else {
           console.log("Token setting complete");
         }
+        setIsLoading(false);
       } catch (error) {
         Toast.fire({
           icon: "error",
