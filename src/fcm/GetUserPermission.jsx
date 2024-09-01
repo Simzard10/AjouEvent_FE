@@ -39,17 +39,21 @@ const GetUserPermission = async (setIsLoading) => {
     if (permission === "granted") {
       console.log("Notification permission granted. Ready to send token...");
       setIsLoading(true);
-
       try {
         await GetFCMToken();
         setIsLoading(false);
         let isFCMToken = localStorage.getItem("fcmToken");
         if (!isFCMToken) {
-          throw new Error("알림 토큰 저장 실패");
+          setIsLoading(true);
+          await GetFCMToken();
+          setIsLoading(false);
+          Toast.fire({
+            icon: "error",
+            title: error.message || "알림 토큰 요청 실패",
+          });
         } else {
           console.log("Token setting complete");
         }
-        setIsLoading(false);
       } catch (error) {
         Toast.fire({
           icon: "error",
