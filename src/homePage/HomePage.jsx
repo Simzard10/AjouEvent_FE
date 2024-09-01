@@ -42,6 +42,44 @@ const LoadingOverlay = styled.div`
   z-index: 1000;
 `;
 
+// Style for the push notification prompt
+const PushNotificationPromptContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+`;
+
+const PushNotificationPromptButton = styled.button`
+  background-color: #0A5cA8;  // Changed color to #0A5cA8
+  color: #fff;
+  padding: 15px 50px;  // Increase the padding to make the button longer
+  font-size: 18px;
+  border: none;
+  border-radius: 25px;  // Rounded corners
+  cursor: pointer;
+  margin-top: 20px;
+  width: 80%;  // Make the button take up more horizontal space
+  max-width: 300px;
+`;
+
+const LaterOption = styled.div`
+  margin-top: 20px;
+  color: #808080;  // Gray color for the text
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+const BellIcon = styled.img`
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;  // Add margin to create space between the icon and the heading
+`;
+
 export default function HomePage() {
   const [showModal, setShowModal] = useState(false);
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
@@ -49,6 +87,7 @@ export default function HomePage() {
   const [bannerImages, setBannerImages] = useState([]);
   const [isIOS, setIsIOS] = useState(false); // iOS 장치 여부 상태 추가
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+  const [showPushNotificationPrompt, setShowPushNotificationPrompt] = useState(false); // State for showing push notification prompt
 
   useEffect(() => {
     GetUserPermission(setIsLoading);
@@ -79,6 +118,13 @@ export default function HomePage() {
 
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsPWAInstalled(true);
+
+      // Check if it's the first time opening the PWA
+      const isFirstTimeOpen = localStorage.getItem('isFirstTimeOpen');
+      if (!isFirstTimeOpen) {
+        setShowPushNotificationPrompt(true);
+        localStorage.setItem('isFirstTimeOpen', 'false'); // Mark as opened
+      }
       return;
     }
 
@@ -113,15 +159,39 @@ export default function HomePage() {
     setShowModal(false);
   };
 
+  const handleAllowNotifications = () => {
+    GetUserPermission(setIsLoading);
+    setShowPushNotificationPrompt(false); // Hide the prompt after getting permission
+  };
+
   return (
     <AppContainer>
       {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
-      <MainContentContainer>
-        <HelpBox setIsLoading={setIsLoading} />
-        <HomeBanner images={bannerImages} />
-        <LocationBar location="이번주 인기글" />
-        <HomeHotEvent />
-      </MainContentContainer>
+      
+      {showPushNotificationPrompt ? (
+        <PushNotificationPromptContainer>
+          <BellIcon
+            alt="알람"
+            src={`${process.env.PUBLIC_URL}/icons/notiOn.svg`}
+          />
+          <h1>푸시 알림 받기</h1>
+          <p>푸시 알림 구독하고 릴로 PWA의 소식을 가장 먼저 받아보세요!</p>
+          <PushNotificationPromptButton onClick={handleAllowNotifications}>
+            알림 받기
+          </PushNotificationPromptButton>
+          <LaterOption onClick={() => setShowPushNotificationPrompt(false)}>
+            나중에 받을게요
+          </LaterOption>
+        </PushNotificationPromptContainer>
+      ) : (
+        <MainContentContainer>
+          <HelpBox setIsLoading={setIsLoading} />
+          <HomeBanner images={bannerImages} />
+          <LocationBar location="이번주 인기글" />
+          <HomeHotEvent />
+        </MainContentContainer>
+      )}
+      
       <NavigationBar />
       {showModal && <DailyModal onClose={handleCloseModal} />}
       {/* iOS 장치라면 PWAPrompt 표시 */}
