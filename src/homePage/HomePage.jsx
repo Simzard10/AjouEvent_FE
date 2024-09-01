@@ -53,8 +53,8 @@ const PushNotificationPromptContainer = styled.div`
   position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.8); /* 반투명 배경 */
-  color: #fff; /* 흰색 텍스트 */
+  background-color: #ffffff; /* 흰색 배경 */
+  color: #000; /* 검은색 텍스트 (흰색 배경에 잘 보이도록) */
   z-index: 1000; /* 가장 위에 표시되도록 설정 */
   padding: 20px;
   text-align: center;
