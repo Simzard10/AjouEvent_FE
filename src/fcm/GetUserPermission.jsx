@@ -37,45 +37,36 @@ const GetUserPermission = async (setIsLoading) => {
 
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
+      console.log("Notification permission granted. Ready to send token...");
+      setIsLoading(true);
+
       try {
-        console.log("Notification permission granted. Ready to send token...");
-        setIsLoading(true);
         await GetFCMToken();
-        setIsLoading(false);
-        let isFCMToken = localStorage.getItem("fcmToken");
+        const isFCMToken = localStorage.getItem("fcmToken");
         if (!isFCMToken) {
-          setIsLoading(true);
-          await GetFCMToken();
-          setIsLoading(false);
-          Toast.fire({
-            icon: "error",
-            title: `알림 토큰 저장 실패`,
-          });
+          throw new Error("알림 토큰 저장 실패");
         } else {
-          console.log("token setting complete");
+          console.log("Token setting complete");
         }
-      } catch {
+      } catch (error) {
         Toast.fire({
           icon: "error",
-          title: `알림 토큰 요청 실패`,
+          title: error.message || "알림 토큰 요청 실패",
         });
+      } finally {
+        setIsLoading(false);
       }
     } else if (permission === "denied") {
-      // alert("알림권한이 허용되어 있지않습니다. 권한을 허용해 주십시오.");
-      console.log(
-        "Notification permission not granted. Requesting permission..."
-      );
+      console.log("Notification permission denied.");
+      // 필요에 따라 추가 메시지 처리
     } else {
-      // Toast.fire({
-      //   icon: "warning",
-      //   title: `알림 설정 안함`,
-      //   text: "알림 설정 요청을 원하시면 종아이콘을 클릭해주세요.",
-      // });
+      console.log("Notification permission was dismissed.");
+      // 필요에 따라 추가 메시지 처리
     }
   } catch (error) {
     Toast.fire({
       icon: "error",
-      title: `알림 설정 요청 실패`,
+      title: "알림 설정 요청 실패",
     });
     console.error("Failed to check or request notification permission:", error);
     setIsLoading(false);
