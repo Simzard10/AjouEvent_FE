@@ -44,9 +44,7 @@ const GetUserPermission = async (setIsLoading) => {
         setIsLoading(false);
         let isFCMToken = localStorage.getItem("fcmToken");
         if (!isFCMToken) {
-          setIsLoading(true);
           await GetFCMToken();
-          setIsLoading(false);
           Toast.fire({
             icon: "error",
             title: "알림 토큰 요청 실패",
@@ -64,12 +62,8 @@ const GetUserPermission = async (setIsLoading) => {
       }
     } else if (permission === "denied") {
       console.log("Notification permission denied.");
-      // 필요에 따라 추가 메시지 처리
-      setIsLoading(false);  // 로딩 해제
     } else {
       console.log("Notification permission was dismissed.");
-      // 필요에 따라 추가 메시지 처리
-      setIsLoading(false);  // 로딩 해제
     }
   } catch (error) {
     Toast.fire({
@@ -77,6 +71,9 @@ const GetUserPermission = async (setIsLoading) => {
       title: "알림 설정 요청 실패",
     });
     console.error("Failed to check or request notification permission:", error);
+    setIsLoading(false);
+  } finally {
+    // 예외가 발생하든 아니든 항상 로딩 해제
     setIsLoading(false);
   }
 };
