@@ -49,7 +49,7 @@ const GetUserPermission = async (setIsLoading) => {
           setIsLoading(false);
           Toast.fire({
             icon: "error",
-            title: error.message || "알림 토큰 요청 실패",
+            title: "알림 토큰 요청 실패",
           });
         } else {
           console.log("Token setting complete");
@@ -57,7 +57,7 @@ const GetUserPermission = async (setIsLoading) => {
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: error.message || "알림 토큰 요청 실패",
+          title: "알림 토큰 요청 실패",
         });
       } finally {
         setIsLoading(false);
