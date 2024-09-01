@@ -89,9 +89,9 @@ export default function HomePage() {
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
   const [showPushNotificationPrompt, setShowPushNotificationPrompt] = useState(false); // State for showing push notification prompt
 
-  useEffect(() => {
-    GetUserPermission(setIsLoading);
-  }, []);
+  // useEffect(() => {
+  //   GetUserPermission(setIsLoading);
+  // }, []);
 
   useEffect(() => {
     const fetchBannerImages = async () => {
