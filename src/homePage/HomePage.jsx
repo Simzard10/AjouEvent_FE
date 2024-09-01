@@ -48,8 +48,14 @@ const PushNotificationPromptContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  width: 100%;
+  height: 100vh; /* 전체 화면 높이 */
+  width: 100vw; /* 전체 화면 너비 */
+  position: fixed; /* 화면에 고정 */
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* 반투명 배경 */
+  color: #fff; /* 흰색 텍스트 */
+  z-index: 1000; /* 가장 위에 표시되도록 설정 */
   padding: 20px;
   text-align: center;
 `;
@@ -167,8 +173,7 @@ export default function HomePage() {
   return (
     <AppContainer>
       {/* {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>} */}
-      
-      {showPushNotificationPrompt ? (
+      {showPushNotificationPrompt && (
         <PushNotificationPromptContainer>
           <BellIcon
             alt="알람"
@@ -183,15 +188,14 @@ export default function HomePage() {
             나중에 받을게요
           </LaterOption>
         </PushNotificationPromptContainer>
-      ) : (
-        <MainContentContainer>
+      )}
+      
+      <MainContentContainer>
           <HelpBox setIsLoading={setIsLoading} />
           <HomeBanner images={bannerImages} />
           <LocationBar location="이번주 인기글" />
-          <HomeHotEvent />
-        </MainContentContainer>
-      )}
-      
+          <HomeHotEvent/>
+      </MainContentContainer>
       <NavigationBar />
       {showModal && <DailyModal onClose={handleCloseModal} />}
       {/* iOS 장치라면 PWAPrompt 표시 */}
