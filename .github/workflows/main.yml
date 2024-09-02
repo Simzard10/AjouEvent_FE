@@ -21,7 +21,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.AUTH_TOKEN }} // 변경
         with:
           source-directory: 'output'
-          destination-github-username: Sim Jaeyeop // 변경
+          destination-github-username: Simzard10 // 변경
           destination-repository-name: AjouEvent_FE // 변경
           user-email: ${{ secrets.OFFICIAL_ACCOUNT_EMAIL }} // 변경
           commit-message: ${{ github.event.commits[0].message }}
