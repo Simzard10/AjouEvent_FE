@@ -37,7 +37,7 @@ const TapIcon = styled.img`
   width: 20px;
   object-fit: contain;
   object-position: center;
-  cursor: pointer; /* 클릭 가능한 아이콘 표시 */
+  cursor: pointer;
 `;
 
 const TapTitle = styled.div`
@@ -95,6 +95,9 @@ const SubscribeInput = styled.input`
   border: none;
   outline: none;
   font-size: 1rem;
+  padding: 5px;
+  width: 100%;
+  font-size: clamp(0.7rem, 2.5vw, 1rem); /* 글자 크기 조절 */
 `;
 
 const SubscribeButton = styled.button`
@@ -104,6 +107,7 @@ const SubscribeButton = styled.button`
   border-radius: 12px;
   padding: 7px 15px;
   cursor: pointer;
+  font-size: clamp(0.7rem, 2vw, 1rem); /* 글자 크기 조절 */
 `;
 
 const KeywordListContainer = styled.div`
@@ -166,6 +170,7 @@ const ViewAllButton = styled.div`
   background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')};
   p {
     margin: 0;
+    font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
   }
 `;
 
@@ -240,10 +245,10 @@ const CategoryTitle = styled.h2`
   font-size: 30px;
   font-weight: 700;
   margin-top: 40px;
-  padding-bottom: 10px; /* 제목 아래 여백 추가 */
-  border-bottom: 1px solid #e0e0e0; /* 제목 아래에 줄 추가 */
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
-  justify-content: space-between; /* 아이콘과 텍스트를 양쪽에 배치 */
+  justify-content: space-between;
   align-items: center;
   cursor: pointer;
 `;
@@ -255,18 +260,18 @@ const TopicButton = styled.button`
   padding: 8px 16px;
   margin: 4px;
   cursor: pointer;
+  font-size: clamp(0.7rem, 2vw, 1rem); /* 글자 크기 조절 */
 `;
-
 
 const TopicDisplay = styled.div`
   position: absolute;
-  right: 10px; /* 오른쪽 여백 조정 */
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #f1f1f1;
   border-radius: 4px;
   padding: 5px 10px;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
   color: #333;
 `;
 
@@ -382,12 +387,10 @@ export default function KeywordSubscribePage() {
         text: `${inputValue}를 구독하셨습니다`,
       });
 
-      setKeywords(prevKeywords => [
-        ...prevKeywords,
-        { englishKeyword: englishKeyword, 
-          koreanKeyword: inputValue, 
-          topicName: selectedTopic.koreanTopic } // topicName은 필요에 따라 수정
-      ]);
+      // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
+      await fetchUserKeywords();
+
+      // 구독된 키워드를 바로 리스트에 추가하는 대신, fetchUserKeywords에서 가져온 최신 데이터를 사용합니다.
       
     } catch (error) {
       Swal.fire({
@@ -399,6 +402,20 @@ export default function KeywordSubscribePage() {
     } finally {
       setInputValue(''); // 입력값 초기화
       setIsProcessing(false);
+    }
+  };
+
+  // useEffect 안에 있던 fetchUserKeywords를 밖으로 빼서 다른 곳에서도 호출할 수 있도록 수정합니다.
+  const fetchUserKeywords = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
+      );
+      const userKeywords = response.data;
+      setKeywords(userKeywords); 
+    } catch (error) {
+      console.error("Error fetching user keywords:", error);
     }
   };
 
@@ -467,22 +484,9 @@ export default function KeywordSubscribePage() {
         console.error("Error fetching menu items:", error);
       }
     };
-
-    const fetchUserKeywords = async () => {
-    try {
-      const response = await requestWithAccessToken(
-        "get",
-        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
-      );
-      const userKeywords = response.data;
-      setKeywords(userKeywords); 
-    } catch (error) {
-      console.error("Error fetching user keywords:", error);
-    }
-  };
-
-  fetchMenuItems();
-  fetchUserKeywords();  
+    
+    fetchMenuItems();
+    fetchUserKeywords();  
   }, []);
 
   const handleCategoryClick = (category) => {

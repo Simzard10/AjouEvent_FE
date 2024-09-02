@@ -36,8 +36,8 @@ const MenuItemContainer = styled.div`
 `;
 
 const MenuItem = styled.div`
-  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : 'Blue')};
-  color: ${(props) => (props.isSelected ? 'Blue' : 'black')};
+  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : '#ffffff')};
+  color: ${(props) => (props.isSelected ? '#ffffff' : '#000000')};
   display: flex;
   height: fit-content;
   padding: 8px 12px;
@@ -47,7 +47,6 @@ const MenuItem = styled.div`
   gap: 4px;
   border-radius: 600px;
   border: 2px solid #f7f7f7;
-  background-color: #ffffff;
   cursor: pointer;
 `;
 
@@ -332,7 +331,7 @@ const SubscribeBar = ( { onTopicSelect } ) => {
             <MenuItem
               key={item.id}
               onClick={() => handleTopicClick(item.englishTopic)}
-      isSelected={selectedTopic === item.englishTopic} // 선택된 토픽인지 확인
+              isSelected={selectedTopic === item.englishTopic} // 선택된 토픽인지 확인
             >
               {item.koreanTopic}
             </MenuItem>

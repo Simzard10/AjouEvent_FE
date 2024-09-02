@@ -28,6 +28,7 @@ const TemporaryContaioner = styled.div`
   justify-content: center;
   flex-direction: column;
   background-color: #ffffff;
+  height: 100vh;
 `;
 
 const StyledLink = styled(Link)`

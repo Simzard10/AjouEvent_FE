@@ -9,7 +9,9 @@ const ModalWrapper = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
@@ -18,10 +20,10 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
-  margin: 60% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+  max-width: 500px;
   border-radius: 20px;
   font-family: "Pretendard Variable";
 `;
@@ -54,6 +56,21 @@ const ModalFooter = styled.div`
   align-items: center;
 `;
 
+const EllipticalLink = styled(Link)`
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2366af;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: bold;
+  text-align: center;
+
+  &:hover {
+    background-color: #1a4f8b;
+  }
+`;
+
 const DailyModal = ({ show, onClose }) => {
   const [doNotShowToday, setDoNotShowToday] = useState(false);
 
@@ -84,7 +101,7 @@ const DailyModal = ({ show, onClose }) => {
             공지사항, 이벤트 알림을 받아보세요.
           </p>
         </ModalBody>
-        <Link to="/guide">설치없이 앱으로 열기</Link>
+        <EllipticalLink to="/guide">설치없이 앱으로 열기</EllipticalLink>
         <ModalFooter>
           <label>
             <input
