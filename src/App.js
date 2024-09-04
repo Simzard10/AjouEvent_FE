@@ -13,6 +13,7 @@ import HomePage from "./homePage/HomePage";
 import GuidePage from "./pages/GuidePage";
 import RouteChangeTracker from "./RouteChangeTracker";
 import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
+import { Analytics } from '@vercel/analytics/react';
 
 const ROUTER = createBrowserRouter([
   {
@@ -71,6 +72,7 @@ function App() {
       <RouterProvider router={ROUTER}>
         <RouteChangeTracker />
       </RouterProvider>
+      <Analytics />
     </div>
   );
 }
