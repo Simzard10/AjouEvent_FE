@@ -51,6 +51,7 @@ const KtoECodes = {
   소프트웨어학과: "Software",
   스포츠레저학과: "SportsLeisureStudies",
   교통시스템공학과: "TransportationSystemsEngineering",
+  기숙사: "Dormitory",
   테스트: "Test",
 };
 
@@ -107,6 +108,7 @@ const EtoKCodes = {
   Software: "소프트웨어학과",
   SportsLeisureStudies: "스포츠레저학과",
   TransportationSystemsEngineering: "교통시스템공학과",
+  Dormitory: "기숙사",
   Test: "테스트",
 };
 
