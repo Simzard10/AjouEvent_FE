@@ -10,7 +10,7 @@ import SearchEvent from "./SearchEvent";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import SearchIcon from "../icons/SearchIcon";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -111,7 +111,7 @@ export default function SearchEventPage() {
   }, [loading, hasMore, fetchData]);
 
   return (
-    <AppContaioner>
+    <AppContainer>
       <MainContentContaioner>
         <LocationBar location="전체 이벤트 검색" />
         <SearchDropBox
@@ -145,6 +145,6 @@ export default function SearchEventPage() {
         />
       </MainContentContaioner>
       <NavigationBar />
-    </AppContaioner>
+    </AppContainer>
   );
 }

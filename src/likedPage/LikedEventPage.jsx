@@ -8,7 +8,7 @@ import useStore from "../store/useStore";
 import { Link } from "react-router-dom";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
-const AppContaioner = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
@@ -125,7 +125,7 @@ export default function LikedEventPage() {
   }, [loading, hasMore, fetchData]);
 
   return (
-    <AppContaioner>
+    <AppContainer>
       {accessToken ? (
         <MainContentContaioner>
           <LocationBar location="내가 찜한 이벤트"></LocationBar>
@@ -154,6 +154,6 @@ export default function LikedEventPage() {
         </Contaioner>
       )}
       <NavigationBar />
-    </AppContaioner>
+    </AppContainer>
   );
 }
