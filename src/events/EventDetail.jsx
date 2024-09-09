@@ -257,8 +257,10 @@ const EventDetail = () => {
 
         const response = await axios.get(
           `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          config,
-          { withCredentials: true }
+          {
+            ...config,
+            withCredentials : true,
+          }
         );
 
         if (response.data.content) {
