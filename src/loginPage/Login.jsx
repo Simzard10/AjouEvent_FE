@@ -10,7 +10,7 @@ import {
   faLock,
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { FcGoogle } from "react-icons/fc";
 import GetUserPermission from "../fcm/GetUserPermission";
 import Swal from "sweetalert2";
 
@@ -140,30 +140,43 @@ const Separator = styled.div`
   }
 `;
 
-const GoogleButton = styled.button`
-  display: block;
+const GoogleLoginButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 90%;
   max-width: 680px;
-  margin: 16px auto 0 auto;
   height: 50px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-family: "Pretendard Variable";
+  margin: 16px auto 0;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1); // 테두리 색상 설정
   border-radius: 30px;
-  border: none;
-  line-height: 40px;
-  background: rgb(222, 222, 222);
-  color: #000000;
-
-  .fa {
-    font-size: 20px;
-    padding: 0 5px 0 0;
-  }
+  cursor: pointer;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding-left: 8px; // 왼쪽 여백 8dp
+  padding-right: 8px; // 오른쪽 여백 8dp
 
   &:hover {
-    box-shadow: 0 0 0 rgba(37, 40, 45, 0);
+    background-color: #f0f0f0;
+  }
+
+  .icon {
+    width: 18px; // 로고 크기
+    height: 18px;
+    margin-right: 24px; // 로고와 텍스트 사이 간격 24dp
+  }
+
+  span {
+    text-align: center;
+    color: #000000;
+    color: rgba(0, 0, 0, 0.54); // 폰트 컬러 54% 투명도
+    font-size: 14px;
+    font-family: "Roboto", system-ui;
+    font-weight: 500;
+    font-style: normal;
   }
 `;
+
 
 const BottomSignUpWapper = styled.div`
   display: flex;
@@ -362,10 +375,10 @@ const Login = () => {
         </button>
       </Form>
       <Separator></Separator>
-      <GoogleButton onClick={handleGoogleButtonClicked}>
-        <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faGoogle} />
-        구글 소셜 LOGIN
-      </GoogleButton>
+      <GoogleLoginButton onClick={handleGoogleButtonClicked}>
+        <FcGoogle className="icon" />
+        <span>Google 계정으로 로그인</span>
+      </GoogleLoginButton>
       <Separator></Separator>
 
       <BottomSignUpWapper>
