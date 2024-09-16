@@ -260,9 +260,9 @@ const SignUp = () => {
     if (!name) errors.name = "* 이름을 입력해주세요.";
     if (!major) errors.major = "* 학과를 입력해주세요.";
     if (!email) {
-      errors.email = "* 아주 G-mail을 입력해주세요.";
+      errors.email = "* @ajou.ac.kr 이메일을 입력해주세요.";
     } else if (!emailPattern.test(email)) {
-      errors.email = "* 아주 G-mail 형식에 맞지 않습니다.";
+      errors.email = "* @ajou.ac.kr 이메일 형식에 맞지 않습니다.";
     }
     if (!password) {
       errors.password = "* 비밀번호를 입력해주세요.";
@@ -289,7 +289,7 @@ const SignUp = () => {
 
     // 이메일 형식 검사
     if (!emailPattern.test(inputEmail)) {
-      setEmailError("* 아주 G-mail 형식에 맞지 않습니다.");
+      setEmailError("* @ajou.ac.kr 이메일을 입력해주세요."); // 오류 메시지를 수정
     } else {
       setEmailError("");
     }
@@ -489,13 +489,13 @@ const SignUp = () => {
         <InputWrapper>
           <LabelWrapper>
             <InputLabel>이메일</InputLabel>
-            {formErrors.email && <Error>{formErrors.email}</Error>}
+            {emailError && <Error>{emailError}</Error>}
           </LabelWrapper>
           <EmailInputWrapper>
             <InputField style={{ flex: 1 }}>
               <input
                 type="email"
-                placeholder="아주 G-mail"
+                placeholder="example@ajou.ac.kr"
                 className="input"
                 id="email"
                 name="email"
