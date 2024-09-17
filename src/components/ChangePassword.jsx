@@ -6,6 +6,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 
+const Title = styled.h2`
+  padding-top: 5%;
+  font-size: 1.5em;
+  margin-bottom: 1rem;
+  text-align: center;
+`;
+
+const Subtitle = styled.p`
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+
+  span {
+    color: #1a73e8;
+    font-weight: bold;
+  }
+`;
+
 const Container = styled.div`
   z-index: 1;
   display: flex;
@@ -214,6 +233,10 @@ const ChangePasswordPage = () => {
 
   return (
     <Container>
+      <Title>비밀번호 재설정</Title>
+      <Subtitle>
+        아이디 <span>{email}</span>의 <br></br>새 비밀번호를 등록해주세요
+      </Subtitle>
       <Form onSubmit={handleSubmit}>
         <InputWrapper>
           <LabelWrapper>
