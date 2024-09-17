@@ -13,7 +13,9 @@ import HomePage from "./homePage/HomePage";
 import GuidePage from "./pages/GuidePage";
 import RouteChangeTracker from "./RouteChangeTracker";
 import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
+import FindPasswordPage from "./pages/FindPasswordPage";
 import { Analytics } from '@vercel/analytics/react';
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -63,6 +65,14 @@ const ROUTER = createBrowserRouter([
   {
     path: "/guide",
     element: <GuidePage />,
+  },
+  {
+    path: "/findPassword",
+    element: <FindPasswordPage />,
+  },
+  {
+    path: "/change-password",
+    element: <ChangePasswordPage />,
   },
 ]);
 

@@ -66,12 +66,12 @@ const Form = styled.form`
     max-width: 680px;
     height: 50px;
     border-radius: 30px;
-    width: 90%;
+    width: 100%;
     background: rgba(255, 255, 255);
     border: #6f6f6f solid 1px;
     input {
       display: inline-block;
-      width: 80%;
+      width: 100%;
       border: none;
       color: rgba(0, 0, 0);
       padding: 0 0 0 15px;
@@ -178,16 +178,32 @@ const GoogleLoginButton = styled.button`
 `;
 
 
-const BottomSignUpWapper = styled.div`
+const BottomLinks = styled.div`
   display: flex;
-  justify-content: right;
-  width: 90%;
+  justify-content: center;
   align-items: center;
-  p {
-    color: black;
-    font-size: 1rem;
-    margin: 0;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #6f6f6f;
+
+  a {
+    color: #6f6f6f;
+    text-decoration: none;
+    padding: 0 10px;
   }
+
+  span {
+    padding: 0 10px;
+  }
+`;
+
+const Description = styled.p`
+  color: #999999;
+  margin: 40px 0 20px 0;
+  font-size: 14px;
+  width: 100%;
+  text-align: center;
+  line-height: 1.8;
 `;
 
 const LoadingOverlay = styled.div`
@@ -309,7 +325,8 @@ const Login = () => {
 
       <Form onSubmit={handleSignIn}>
         <HeadingWapper>
-          <Heading>로그인하기</Heading>
+          <Heading>로그인</Heading>
+          
         </HeadingWapper>
 
         <Separator></Separator>
@@ -325,7 +342,7 @@ const Login = () => {
           <div className="signup-input__block">
             <input
               type="email"
-              placeholder="AJOU G-Mail"
+              placeholder="example@ajou.ac.kr"
               className="input"
               id="email"
               name="email"
@@ -371,37 +388,25 @@ const Login = () => {
         </div>
 
         <button type="submit" className="signin__btn">
-          로그인하기
+          로그인
         </button>
       </Form>
-      <Separator></Separator>
       <GoogleLoginButton onClick={handleGoogleButtonClicked}>
         <FcGoogle className="icon" />
         <span>Google 계정으로 로그인</span>
       </GoogleLoginButton>
       <Separator></Separator>
-
-      <BottomSignUpWapper>
-        <p>
-          계정이 없나요? <SignUpStyledLink to="/privacy-agreement">가입</SignUpStyledLink>
-          하세요.
-        </p>
-      </BottomSignUpWapper>
-      {/* <div style={{ display: "flex" }}>
-        <SignUpStyledLink
-          to="/login"
-          style={{ marginLeft: "20px" }}
-          onClick={() => {
-            Swal.fire({
-              icon: "question",
-              title: "존재하지 않는 페이지입니다",
-              text: "기능 개발 중입니다",
-            });
-          }}
-        >
-          비밀번호를 잊어버리셨나요?
-        </SignUpStyledLink>
-      </div> */}
+      <BottomLinks>
+        <Link to="/privacy-agreement">회원가입</Link>
+        <span>|</span>
+        <Link to="/findPassword">비밀번호 찾기</Link>
+      </BottomLinks>
+      <Description>
+        * AjouEvent는 2024-1학기 아주대학교 파란학기제에서<br />
+        진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
+        * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다. <br />
+        서비스 문의: jysim0326@ajou.ac.kr
+      </Description>
     </Container>
   );
 };
