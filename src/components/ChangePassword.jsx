@@ -51,7 +51,6 @@ const Form = styled.form`
     margin: 0.3rem 0 0.1rem 0.5rem;
     font-weight: 600;
   }
-
 `;
 
 const InputField = styled.div`
@@ -141,13 +140,18 @@ const ChangePasswordPage = () => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false); // 새 필드 추가
   const [passwordError, setPasswordError] = useState("");
-  const [passwordValidityError, setPasswordValidityError] = useState(""); 
+  const [passwordValidityError, setPasswordValidityError] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
 
   const email = state?.email;
@@ -159,7 +163,7 @@ const ChangePasswordPage = () => {
     if (!password) {
       errors.password = "* 비밀번호를 입력해주세요.";
     } else if (!passwordRegEx.test(password)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); // 회원가입 폼에서 가입하기 버튼 클릭시 
+      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); 
     } else {
       setPasswordValidityError("");
     }
@@ -173,11 +177,10 @@ const ChangePasswordPage = () => {
     return errors;
   };
 
-  // 비밀번호 및 확인 입력 시 실시간으로 일치 여부 체크
   const handlePasswordChange = (e) => {
     setNewPassword(e.target.value);
     if (!passwordRegEx.test(e.target.value)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); // 사용자가 비밀번호를 입력할 때마다 실시간으로
+      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다.");
     } else {
       setPasswordValidityError("");
     }
@@ -185,17 +188,16 @@ const ChangePasswordPage = () => {
     if (confirmPassword && e.target.value !== confirmPassword) {
       setPasswordError("* 비밀번호가 일치하지 않습니다.");
     } else {
-      setPasswordError(""); // 일치하면 에러 메시지 제거
+      setPasswordError(""); 
     }
   };
 
-  // 비밀번호 확인 입력 시 실시간으로 비밀번호 일치 여부 체크
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
     if (newPassword !== e.target.value) {
       setPasswordError("* 비밀번호가 일치하지 않습니다.");
     } else {
-      setPasswordError(""); // 일치하면 에러 메시지 제거
+      setPasswordError("");
     }
   };
 
@@ -275,7 +277,7 @@ const ChangePasswordPage = () => {
           </LabelWrapper>
           <InputField>
             <input
-              type={isPasswordVisible ? "text" : "password"}
+              type={isConfirmPasswordVisible ? "text" : "password"}
               placeholder="비밀번호 확인"
               className="input"
               id="confirmPassword"
@@ -283,6 +285,15 @@ const ChangePasswordPage = () => {
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
             />
+            <span onClick={toggleConfirmPasswordVisibility}>
+              <FontAwesomeIcon
+                icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
+                style={{
+                  marginRight: "20px",
+                  opacity: "0.5",
+                }}
+              />
+            </span>
           </InputField>
         </InputWrapper>
         <Button type="submit">비밀번호 재설정</Button>

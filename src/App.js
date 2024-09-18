@@ -16,6 +16,9 @@ import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
 import FindPasswordPage from "./pages/FindPasswordPage";
 import { Analytics } from '@vercel/analytics/react';
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import PasswordConfirmationPage from "./pages/PasswordConfirmationPage";
+import ProfileModificationPage from "./pages/ProfileModificationPage";
+import DeleteAccountPage from "./pages/DeleteAccountPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -73,6 +76,18 @@ const ROUTER = createBrowserRouter([
   {
     path: "/change-password",
     element: <ChangePasswordPage />,
+  },
+  {
+    path: "/password-confirmation",
+    element: <PasswordConfirmationPage />,
+  },
+  {
+    path: "/profile-modification",
+    element: <ProfileModificationPage />,
+  },
+  {
+    path: "/delete-account",
+    element: <DeleteAccountPage />,
   },
 ]);
 
