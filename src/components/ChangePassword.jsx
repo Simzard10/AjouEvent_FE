@@ -78,18 +78,24 @@ const InputField = styled.div`
 `;
 
 const Button = styled.button`
-  width: 100%;
-  background: rgb(0, 102, 179);
-  border-radius: 5px;
-  color: white;
-  font-weight: 600;
-  border: none;
-  padding: 0.75rem;
-  cursor: pointer;
-  font-size: 1em;
-  &:hover {
-    background: rgb(0, 90, 150);
-  }
+    width: 100%;
+    max-width: 680px;
+    background: rgb(0, 102, 179);
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    border: none;
+    height: 3rem;
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    cursor: pointer;
+    opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+    margin-top: 0.5rem;
+    &:hover {
+        opacity: ${(props) => (props.disabled ? 1 : 0.8)};
+    }
 `;
 
 const Error = styled.div`
@@ -99,7 +105,7 @@ const Error = styled.div`
   color: red;
   padding-left: 10px;
   font-size: 0.8em;
-  min-height: 20px; /* 최소 높이를 설정하여 화면 내려가는 현상을 줄임 */
+  min-height: 20px;
 `;
 
 const InputWrapper = styled.div`
@@ -114,7 +120,7 @@ const InputWrapper = styled.div`
 const LabelWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   width: 100%;
 `;
 
@@ -122,8 +128,8 @@ const InputLabel = styled.p`
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  flex-grow: 1; 
-  white-space : nowrap
+  flex-grow: 1;
+  white-space: nowrap;
 `;
 
 const PasswordError = styled.div`
@@ -140,11 +146,12 @@ const ChangePasswordPage = () => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false); // 새 필드 추가
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordValidityError, setPasswordValidityError] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -163,7 +170,7 @@ const ChangePasswordPage = () => {
     if (!password) {
       errors.password = "* 비밀번호를 입력해주세요.";
     } else if (!passwordRegEx.test(password)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); 
+      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다.");
     } else {
       setPasswordValidityError("");
     }
@@ -174,38 +181,27 @@ const ChangePasswordPage = () => {
       setPasswordError("");
     }
 
+    if (password && confirmPassword && password === confirmPassword && passwordRegEx.test(password)) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+
     return errors;
   };
 
   const handlePasswordChange = (e) => {
     setNewPassword(e.target.value);
-    if (!passwordRegEx.test(e.target.value)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다.");
-    } else {
-      setPasswordValidityError("");
-    }
-
-    if (confirmPassword && e.target.value !== confirmPassword) {
-      setPasswordError("* 비밀번호가 일치하지 않습니다.");
-    } else {
-      setPasswordError(""); 
-    }
+    validateForm(e.target.value, confirmPassword);
   };
 
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
-    if (newPassword !== e.target.value) {
-      setPasswordError("* 비밀번호가 일치하지 않습니다.");
-    } else {
-      setPasswordError("");
-    }
+    validateForm(newPassword, e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const newPassword = e.target.elements.newPassword.value;
-    const confirmPassword = e.target.elements.confirmPassword.value;
 
     const errors = validateForm(newPassword, confirmPassword);
     if (Object.keys(errors).length > 0) {
@@ -237,7 +233,7 @@ const ChangePasswordPage = () => {
     <Container>
       <Title>비밀번호 재설정</Title>
       <Subtitle>
-        아이디 <span>{email}</span>의 <br></br>새 비밀번호를 등록해주세요
+        아이디 <span>{email}</span>의 <br />새 비밀번호를 등록해주세요
       </Subtitle>
       <Form onSubmit={handleSubmit}>
         <InputWrapper>
@@ -296,7 +292,9 @@ const ChangePasswordPage = () => {
             </span>
           </InputField>
         </InputWrapper>
-        <Button type="submit">비밀번호 재설정</Button>
+        <Button type="submit" disabled={!isFormValid}>
+          비밀번호 재설정
+        </Button>
       </Form>
     </Container>
   );
