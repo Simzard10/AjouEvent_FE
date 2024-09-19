@@ -314,6 +314,11 @@ const EventDetail = () => {
       }
     } catch (error) {
       console.error("Error toggling like:", error);
+      Swal.fire({
+        icon: "error",
+        title: "좋아요 에러",
+        text: "로그인이 필요한 기능입니다.",
+      });
     }
   };
 
