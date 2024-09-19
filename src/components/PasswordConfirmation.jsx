@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
@@ -11,6 +11,31 @@ const PasswordConfirmContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  width: 100%;
+`;
+
+const TapWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 0px 16px 0px;
+  gap: 8px;
+`;
+
+const TapIcon = styled.img`
+  aspect-ratio: 1;
+  width: 20px;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+`;
+
+const TapTitle = styled.div`
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
 `;
 
 const Title = styled.h2`
@@ -25,10 +50,14 @@ const InputContainer = styled.div`
   width: 120%;
 `;
 
-const Label = styled.label`
-  font-family: "Pretendard Variable";
-  margin-bottom: 5px;
+const InputLabel = styled.p`
+  margin: 2px 0 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  flex-grow: 1; 
+  white-space : nowrap
 `;
+
 const Input = styled.input`
   padding: 10px;
   border: 1px solid #ccc;
@@ -40,8 +69,14 @@ const Input = styled.input`
 const InputWrapper = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
+  margin: 5px 0 5px 0;
+`;
+
+const PasswordWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const TogglePasswordVisibility = styled.span`
@@ -64,13 +99,41 @@ const Button = styled.button`
   }
 `;
 
+// 추가된 비밀번호 확인 기능용 에러 표시
+const PasswordError = styled.div`
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  color: red;
+  padding-left: 20px;
+  font-size: 0.8em;
+`;
+
+const LabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  width: 100%;
+`;
+
+const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // 비밀번호 정규식
 
 const PasswordConfirmation = ({ onConfirm }) => {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [passwordError, setPasswordError] = useState(''); // 비밀번호 유효성 에러 메시지
   const navigate = useNavigate();
   const { state } = useLocation();
   const email = state?.email;
+
+  useEffect(() => {
+    // 비밀번호가 입력될 때마다 유효성 검사
+    if (password.length > 0 && !passwordRegEx.test(password)) {
+      setPasswordError('* 비밀번호 형식을 확인해주세요.');
+    } else {
+      setPasswordError(''); // 유효한 비밀번호일 때는 에러 메시지 제거
+    }
+  }, [password]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -84,7 +147,7 @@ const PasswordConfirmation = ({ onConfirm }) => {
       });
       return;
     }
-    
+
     const userData = {
       email: email,
       password: password,
@@ -137,16 +200,32 @@ const PasswordConfirmation = ({ onConfirm }) => {
     }
   };
 
+  // 뒤로가기 클릭 시 구독 페이지로 이동
+  const arrowBackClicked = () => {
+    navigate("/mypage");
+  };
+
   return (
     <PasswordConfirmContainer>
+      <TapWrapper>
+        <TapIcon
+          onClick={arrowBackClicked}
+          loading="lazy"
+          src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+        />
+        <TapTitle>마이페이지</TapTitle>
+      </TapWrapper>
       <Title>비밀번호 재확인</Title>
-      <InputContainer>
-        <Label>이메일</Label>
+      <InputWrapper>
+        <InputLabel>이메일</InputLabel>
         <Input type="text" placeholder="example@ajou.ac.kr" value={email} readOnly />
-      </InputContainer>
-      <InputContainer>
-        <Label>비밀번호</Label>
-        <InputWrapper>
+      </InputWrapper>
+      <InputWrapper>
+        <LabelWrapper>
+          <InputLabel>비밀번호</InputLabel>
+          {passwordError && <PasswordError>{passwordError}</PasswordError>}
+        </LabelWrapper>
+        <PasswordWrapper>
           <Input
             type={isPasswordVisible ? "text" : "password"}
             placeholder="비밀번호"
@@ -160,8 +239,9 @@ const PasswordConfirmation = ({ onConfirm }) => {
               <FontAwesomeIcon icon={faEyeSlash} />
             )}
           </TogglePasswordVisibility>
-        </InputWrapper>
-      </InputContainer>
+        </PasswordWrapper>
+      </InputWrapper>
+
       <Button onClick={handleSignIn}>다음</Button>
     </PasswordConfirmContainer>
   );

@@ -93,7 +93,7 @@ const InputField = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    min-width: 20px;
     cursor: pointer;
   }
 `;
@@ -205,6 +205,9 @@ const SignUpButton = styled.button`
   font-size: 14px;
   font-family: "Pretendard Variable";
   padding: 0 4px;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)}; /* 비활성화 시 투명도 조정 */
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; /* 비활성화 시 클릭 금지 */
+
 
   &:hover {
     box-shadow: 0 0 0 rgba(233, 30, 99, 0);
@@ -244,7 +247,10 @@ const SignUp = () => {
   const [emailError, setEmailError] = useState(""); // 이메일 형식 에러 메시지
   const navigate = useNavigate();
 
+  const [isFormValid, setIsFormValid] = useState(false);
   const [number, setNumber] = useState("");
+  const [isNameValid, setIsNameValid] = useState(false);
+  const [isMajorValid, setIsMajorValid] = useState(false);
   const [password, setPassword] = useState(""); // 비밀번호 상태 저장
   const [confirmPassword, setConfirmPassword] = useState(""); // 비밀번호 확인 상태 저장
   const [emailCheck, setEmailCheck] = useState(false);
@@ -252,6 +258,31 @@ const SignUp = () => {
   const [emailRequestLoading, setEmailRequestLoading] = useState(false);
   const [email, setEmail] = useState("");
   const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
+
+  useEffect (() => {
+    if (
+      isNameValid &&
+      isMajorValid &&
+      password &&
+      password === confirmPassword &&
+      !passwordValidityError &&
+      emailCheck
+    ) {
+      setIsFormValid(true); // 모든 조건이 만족될 때만 버튼을 활성화
+    } else {
+      setIsFormValid(false); // 그렇지 않으면 비활성화
+    }
+  }, [isNameValid, isMajorValid, password, confirmPassword, passwordValidityError, emailCheck]);
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setIsNameValid(value.length > 0);
+  };
+
+  const handleMajorChange = (e) => {
+    const value = e.target.value;
+    setIsMajorValid(value.length > 0);
+  };
 
   const validateForm = (name, major, email, password, confirmPassword) => {
     const errors = {};
@@ -478,7 +509,7 @@ const SignUp = () => {
             {formErrors.name && <Error>{formErrors.name}</Error>}
           </LabelWrapper>
           <InputField>
-            <input type="text" placeholder="이름" className="input" id="name" name="name" />
+            <input type="text" placeholder="이름" className="input" id="name" name="name" onChange={handleNameChange} />
           </InputField>
         </InputWrapper>
 
@@ -488,7 +519,7 @@ const SignUp = () => {
             {formErrors.major && <Error>{formErrors.major}</Error>}
           </LabelWrapper>
           <InputField>
-            <input type="text" placeholder="학과" className="input" id="major" name="major" />
+            <input type="text" placeholder="학과" className="input" id="major" name="major" onChange={handleMajorChange}/>
           </InputField>
         </InputWrapper>
 
@@ -542,7 +573,7 @@ const SignUp = () => {
                 />
               </InputField>
               {emailCheck ? (
-                <div style={{ width: "30%" }}>
+                <div>
                   인증 <br /> 완료
                 </div>
               ) : (
@@ -581,7 +612,6 @@ const SignUp = () => {
               <FontAwesomeIcon
                 icon={isPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  marginRight: "20px",
                   opacity: "0.5",
                 }}
               />
@@ -608,14 +638,13 @@ const SignUp = () => {
               <FontAwesomeIcon
                 icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  marginRight: "20px",
                   opacity: "0.5",
                 }}
               />
             </span>
           </InputField>
         </InputWrapper>
-        <SignUpButton type="submit">가입하기</SignUpButton>
+        <SignUpButton type="submit" disabled={!isFormValid}>가입하기</SignUpButton>
       </Form>
     </Container>
   </>
