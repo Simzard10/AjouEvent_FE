@@ -237,14 +237,12 @@ const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [passwordError, setPasswordError] = useState(""); // 비밀번호 확인 에러 메시지
   const [passwordValidityError, setPasswordValidityError] = useState(""); // 비밀번호 유효성 에러 메시지
   const [emailError, setEmailError] = useState(""); // 이메일 형식 에러 메시지
   const navigate = useNavigate();
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
 
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState(""); // 비밀번호 상태 저장
@@ -293,6 +291,14 @@ const SignUp = () => {
     } else {
       setEmailError("");
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
 
   // 비밀번호 및 확인 입력 시 실시간으로 일치 여부 체크
@@ -598,9 +604,17 @@ const SignUp = () => {
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
             />
+            <span onClick={toggleConfirmPasswordVisibility}>
+              <FontAwesomeIcon
+                icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
+                style={{
+                  marginRight: "20px",
+                  opacity: "0.5",
+                }}
+              />
+            </span>
           </InputField>
         </InputWrapper>
-
         <SignUpButton type="submit">가입하기</SignUpButton>
       </Form>
     </Container>
