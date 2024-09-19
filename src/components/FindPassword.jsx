@@ -273,7 +273,7 @@ const PasswordRecovery = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BE_URL}/api/users/accountExists?email=${email}&name=${name}`
       );
-      
+
       const isEmailExists = response.data;
 
       if (!isEmailExists) {
@@ -361,87 +361,87 @@ const PasswordRecovery = () => {
       <HeadingWapper>
         <Heading>비밀번호 찾기</Heading>
       </HeadingWapper>
+      <InputWrapper>
+        <LabelWrapper>
+          <InputLabel>이름</InputLabel>
+          {formErrors.name && <Error>{formErrors.name}</Error>}
+        </LabelWrapper>
+        <InputField>
+          <input type="text" placeholder="이름" value={name} onChange={handleNameChange} />
+        </InputField>
+      </InputWrapper>
+
+      <InputWrapper>
+        <LabelWrapper>
+          <InputLabel>이메일</InputLabel>
+          {emailError && <Error>{emailError}</Error>}
+        </LabelWrapper>
+        <EmailInputWrapper>
+          <InputField style={{ flex: 1 }}>
+            <input
+              type="email"
+              placeholder="example@ajou.ac.kr"
+              className="input"
+              id="email"
+              name="email"
+              onChange={handleEmailChange}
+            />
+          </InputField>
+          {emailRequestLoading ? (
+            <LoadingWrapper>
+              <LoadingImage src="Spinner.gif" alt="loading" />
+            </LoadingWrapper>
+          ) : (
+            <RequestButton
+              type="button"
+              onClick={() => emailRequest(email)}
+              disabled={!emailPattern.test(email) || emailCheck}
+            >
+              {emailRequested ? "재요청" : "인증\n요청"}
+            </RequestButton>
+          )}
+
+        </EmailInputWrapper>
+      </InputWrapper>
+
+
+      {emailRequested && (
         <InputWrapper>
           <LabelWrapper>
-            <InputLabel>이름</InputLabel>
-            {formErrors.name && <Error>{formErrors.name}</Error>}
+            <InputLabel>인증번호</InputLabel>
           </LabelWrapper>
-          <InputField>
-            <input type="text" placeholder="이름" value={name} onChange={handleNameChange} />
-          </InputField>
-        </InputWrapper>
-
-        <InputWrapper>   
-          <LabelWrapper>
-            <InputLabel>이메일</InputLabel>
-            {emailError && <Error>{emailError}</Error>}
-          </LabelWrapper>
-          <EmailInputWrapper>
+          <VerificationWrapper>
             <InputField style={{ flex: 1 }}>
               <input
-                type="email"
-                placeholder="example@ajou.ac.kr"
+                type="text"
+                placeholder="인증번호"
                 className="input"
-                id="email"
-                name="email"
-                onChange={handleEmailChange}
+                id="number"
+                name="number"
+                onChange={handleNumberChange}
               />
             </InputField>
-            </EmailInputWrapper>
-          </InputWrapper>
-            {emailRequestLoading ? (
-              <LoadingWrapper>
-                <LoadingImage src="Spinner.gif" alt="loading" />
-              </LoadingWrapper>
+            {emailCheck ? (
+              <CheckIcon icon={faCheck} />
             ) : (
-              <RequestButton
+              <Button
                 type="button"
-                onClick={() => emailRequest(email)}
-                disabled={!emailPattern.test(email) || emailCheck}
+                disabled={!emailRequested || number.length !== 6}
+                onClick={(e) => handleEmailCheck(email, e)}
               >
-                {emailRequested ? "재요청" : "인증\n요청"}
-              </RequestButton>
+                인증 확인
+              </Button>
             )}
-          
-        
-
-        {emailRequested && (
-          <InputWrapper>
-            <LabelWrapper>
-              <InputLabel>인증번호</InputLabel>  
-            </LabelWrapper>
-            <VerificationWrapper> 
-              <InputField style={{ flex: 1 }}>
-                <input
-                  type="text"
-                  placeholder="인증번호"
-                  className="input"
-                  id="number"
-                  name="number"
-                  onChange={handleNumberChange}
-                />
-              </InputField>
-              {emailCheck ? (
-                <CheckIcon icon={faCheck} />
-              ) : (
-                <Button
-                  type="button"
-                  disabled={!emailRequested || number.length !== 6}
-                  onClick={(e) => handleEmailCheck(email, e)}
-                >
-                  인증 확인
-                </Button>
-              )}
-              </VerificationWrapper>
-            </InputWrapper>
-          )}  
-          {emailCheck && (
-          <InputWrapper>
-            <PasswordResetButton onClick={handleResetPasswordPage}>
-              비밀번호 재설정
-            </PasswordResetButton>
-          </InputWrapper>
-        )}
+          </VerificationWrapper>
+        </InputWrapper>
+      )}
+      {emailCheck && (
+        <InputWrapper>
+          <PasswordResetButton onClick={handleResetPasswordPage}>
+            비밀번호 재설정
+          </PasswordResetButton>
+        </InputWrapper>
+      )}
     </Container>
   );
 };

@@ -68,7 +68,7 @@ const InputField = styled.div`
     border-radius: 5px;
   }
 
-  span {
+  div {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -163,7 +163,7 @@ const ChangePasswordPage = () => {
 
   const email = state?.email;
 
-  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+  const passwordRegEx = /^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
   const validateForm = (password, confirmPassword) => {
     const errors = {};
@@ -258,7 +258,6 @@ const ChangePasswordPage = () => {
               <FontAwesomeIcon
                 icon={isPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  marginRight: "20px",
                   opacity: "0.5",
                 }}
               />
@@ -285,7 +284,6 @@ const ChangePasswordPage = () => {
               <FontAwesomeIcon
                 icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  marginRight: "20px",
                   opacity: "0.5",
                 }}
               />
