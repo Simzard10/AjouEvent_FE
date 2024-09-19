@@ -11,11 +11,35 @@ const ProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  width: 100%;
+`;
+
+const TapWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 0px 16px 0px;
+  gap: 8px;
+`;
+
+const TapIcon = styled.img`
+  aspect-ratio: 1;
+  width: 20px;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+`;
+
+const TapTitle = styled.div`
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
 `;
 
 const Title = styled.h2`
   font-family: "Pretendard Variable";
-  margin-bottom: 20px;
 `;
 
 const InputContainer = styled.div`
@@ -59,7 +83,7 @@ const TogglePasswordVisibility = styled.span`
   cursor: pointer;
 `;
 
-const Button = styled.button`
+const ChangeButton = styled.button`
   padding: 10px 20px;
   background: rgb(0, 102, 179);
   color: white;
@@ -73,8 +97,29 @@ const Button = styled.button`
   }
 `;
 
+const PasswordChangeButton = styled.button`
+    width: 100%;
+    max-width: 680px;
+    background: rgb(0, 102, 179);
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    border: none;
+    height: 3rem;
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    cursor: pointer;
+    opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+    margin-top: 0.5rem;
+    &:hover {
+        opacity: ${(props) => (props.disabled ? 1 : 0.8)};
+    }
+`;
+
 const PasswordChangeSection = styled.div`
-  margin-top: 20px;
+  margin-top: 40px;
   width: 100%;
 `;
 
@@ -167,6 +212,7 @@ const ProfileModification = () => {
   const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false); // 추가
   const navigate = useNavigate();
   const { state } = useLocation();
   const accessToken = localStorage.getItem("accessToken");
@@ -194,6 +240,13 @@ const ProfileModification = () => {
     if (password !== confirmPassword) {
       setPasswordError("* 비밀번호가 일치하지 않습니다.");
       return false;
+    }
+
+    // 유효성 통과 시 버튼 활성화
+    if (password && confirmPassword && password === confirmPassword && passwordRegEx.test(password)) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
     }
     
     setPasswordError('');
@@ -256,12 +309,25 @@ const ProfileModification = () => {
     }
   };
 
+  // 뒤로가기 클릭 시 마이페이지 페이지로 이동
+  const arrowBackClicked = () => {
+    navigate("/mypage");
+  };
+
   const handleDeleteAccount = () => {
     navigate("/delete-account");  // "회원 탈퇴하기" 클릭 시 DeleteAccountPage로 이동
   };
 
   return (
     <ProfileContainer>
+      <TapWrapper>
+        <TapIcon
+            onClick={arrowBackClicked}
+            loading="lazy"
+            src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+        />
+        <TapTitle>마이페이지</TapTitle>
+      </TapWrapper>
       <Title>회원정보 수정</Title>
       <Separator></Separator>
       <Heading>로그인 정보</Heading>
@@ -274,9 +340,9 @@ const ProfileModification = () => {
         <InputLabel>비밀번호</InputLabel>
         <InputRow>
           <Input type="password" value="********" readOnly />
-          <Button onClick={() => setIsEditing(!isEditing)}>
+          <ChangeButton onClick={() => setIsEditing(!isEditing)}>
             {isEditing ? '변경 취소' : '변경'}
-          </Button>
+          </ChangeButton>
         </InputRow>
       </InputContainer>
 
@@ -345,8 +411,9 @@ const ProfileModification = () => {
             </InputWrapper>
             
           </InputContainer>
-
-          <Button onClick={handleUpdate}>비밀번호 변경</Button>
+          <PasswordChangeButton type="submit" disabled={!isFormValid} onClick={handleUpdate}>
+            비밀번호 재설정
+          </PasswordChangeButton>
         </PasswordChangeSection>
       )}
 
