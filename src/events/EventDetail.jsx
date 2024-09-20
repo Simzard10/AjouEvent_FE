@@ -227,55 +227,56 @@ const EventDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        // const response = await requestWithAccessToken(
-        //   "get",
-        //   `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
-        // );
-        const accessToken = localStorage.getItem("accessToken");
-        const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
+  const fetchEvent = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
+      console.log(alreadyViewClubEventNum);
+      let response;
 
-        console.log(alreadyViewClubEventNum);
-        let config;
-
-        if (accessToken) {
-          config = {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          };
-        } else if (alreadyViewClubEventNum) {
-          config = {
-            headers: {
-              Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
-            },
-          };
-        } else {
-          config = {};
-        }
-
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          {
-            ...config,
-            withCredentials : true,
-          }
+      if (accessToken) {
+        // accessToken이 있을 경우
+        response = await requestWithAccessToken(
+          "get",
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
         );
+      } else {
+        // 쿠키가 있을 경우 또는 기본 요청
+        const config = alreadyViewClubEventNum
+          ? {
+              headers: {
+                Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
+              },
+              withCredentials: true,
+            }
+          : { withCredentials: true };
 
-        if (response.data.content) {
-          let sliceContent = response.data.content.split("\\n");
-          setContent(sliceContent);
-        }
-
-        setEvent(response.data);
-      } catch (error) {
-        console.error("Error fetching event:", error);
+        response = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+          config
+        );
       }
-    };
 
-    fetchEvent();
-  }, [id]);
+      // 응답 처리
+      if (response.data.content) {
+        setContent(response.data.content.split("\\n"));
+      }
+      setEvent(response.data);
+
+    } catch (error) {
+      console.error("Error fetching event:", error);
+      if (error.response && error.response.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "세션 만료",
+          text: "다시 로그인 해주세요.",
+        });
+      }
+    }
+  };
+
+  fetchEvent();
+}, [id]);
 
   const handleRedirect = () => {
     if (event && event.url) {
