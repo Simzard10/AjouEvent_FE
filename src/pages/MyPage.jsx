@@ -125,7 +125,9 @@ const MyPage = () => {
       title: "로그아웃 성공",
       text: "로그아웃 했습니다.",
     });
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("email");
     localStorage.removeItem("id");
     localStorage.removeItem("name");
     localStorage.removeItem("major");
