@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useStore from "../store/useStore";
 
 const Container = styled.div`
   z-index: 1;
@@ -33,23 +34,13 @@ const HeadingWapper = styled.div`
   margin: 0 auto 0;
 `;
 
-const Form = styled.form`
-  width: 100%;
-  margin: 10px auto 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
   gap: 5px;
   width: 100%;
-  margin : 5px
+  margin: 5px;
 `;
 
 const LabelWrapper = styled.div`
@@ -155,7 +146,6 @@ const PasswordResetButton = styled.button`
   }
 `;
 
-
 const Error = styled.div`
   display: flex;
   justify-content: start;
@@ -191,54 +181,20 @@ const CheckIcon = styled(FontAwesomeIcon)`
   font-size: 1.5rem;
 `;
 
-const PasswordRecovery = () => {
+const FindPassword = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
-  const [verificationSuccess, setVerificationSuccess] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
-  const navigate = useNavigate();
-
   const [number, setNumber] = useState("");
-  const [password, setPassword] = useState(""); // 비밀번호 상태 저장
   const [emailCheck, setEmailCheck] = useState(false);
   const [emailRequested, setEmailRequested] = useState(false);
   const [emailRequestLoading, setEmailRequestLoading] = useState(false);
-  const [passwordValidityError, setPasswordValidityError] = useState(""); // 비밀번호 유효성 에러 메시지
+  const { setIsAuthorized } = useStore((state) => ({
+    setIsAuthorized: state.setIsAuthorized,
+  }));
+  const navigate = useNavigate();
 
   const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
-  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
-  const validateForm = (name, major, email, password, confirmPassword) => {
-    const errors = {};
-    if (!name) errors.name = "* 이름을 입력해주세요.";
-    if (!major) errors.major = "* 학과를 입력해주세요.";
-    if (!email) {
-      errors.email = "* @ajou.ac.kr 이메일을 입력해주세요.";
-    } else if (!emailPattern.test(email)) {
-      errors.email = "* @ajou.ac.kr 이메일 형식에 맞지 않습니다.";
-    }
-    if (!password) {
-      errors.password = "* 비밀번호를 입력해주세요.";
-    } else if (!passwordRegEx.test(password)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); // 회원가입 폼에서 가입하기 버튼 클릭시 
-    } else {
-      setPasswordValidityError(""); // 유효성 검사가 통과되면 에러 메시지를 지웁니다.
-    }
-
-    if (password !== confirmPassword) {
-      setPasswordError("* 비밀번호가 일치하지 않습니다.");
-    } else {
-      setPasswordError(""); // 실시간 업데이트로 일치하는 경우 에러 메시지 제거
-    }
-
-    return errors;
-  };
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -250,15 +206,6 @@ const PasswordRecovery = () => {
       setEmailError("* @ajou.ac.kr 이메일 형식에 맞지 않습니다.");
     } else {
       setEmailError("");
-    }
-  };
-
-  const handlePasswordChange = (e) => {
-    setNewPassword(e.target.value);
-    if (newPassword !== confirmPassword) {
-      setPasswordError("* 비밀번호가 일치하지 않습니다.");
-    } else {
-      setPasswordError("");
     }
   };
 
@@ -339,6 +286,7 @@ const PasswordRecovery = () => {
         text: "이메일 인증이 완료되었습니다.",
       });
       setEmailCheck(true);
+      setIsAuthorized();
     } catch (e) {
       Swal.fire({
         icon: "error",
@@ -349,10 +297,10 @@ const PasswordRecovery = () => {
   };
 
   const handleResetPasswordPage = () => {
-    navigate('/change-password', {
+    navigate("/change-password", {
       state: {
         email,
-      }
+      },
     });
   };
 
@@ -364,10 +312,14 @@ const PasswordRecovery = () => {
       <InputWrapper>
         <LabelWrapper>
           <InputLabel>이름</InputLabel>
-          {formErrors.name && <Error>{formErrors.name}</Error>}
         </LabelWrapper>
         <InputField>
-          <input type="text" placeholder="이름" value={name} onChange={handleNameChange} />
+          <input
+            type="text"
+            placeholder="이름"
+            value={name}
+            onChange={handleNameChange}
+          />
         </InputField>
       </InputWrapper>
 
@@ -400,10 +352,8 @@ const PasswordRecovery = () => {
               {emailRequested ? "재요청" : "인증\n요청"}
             </RequestButton>
           )}
-
         </EmailInputWrapper>
       </InputWrapper>
-
 
       {emailRequested && (
         <InputWrapper>
@@ -446,4 +396,4 @@ const PasswordRecovery = () => {
   );
 };
 
-export default PasswordRecovery;
+export default FindPassword;

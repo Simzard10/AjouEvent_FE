@@ -7,7 +7,7 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center
+  justify-content: center;
   background-color: #ffffff;
   width: 100vw;
   overflow-x: hidden;
@@ -16,8 +16,8 @@ const AppContainer = styled.div`
 export default function PrivacyAgreementPage() {
   return (
     <AppContainer>
-        <PrivacyAgreement />
-        <NavigationBar></NavigationBar>
+      <PrivacyAgreement />
+      <NavigationBar></NavigationBar>
     </AppContainer>
   );
 }

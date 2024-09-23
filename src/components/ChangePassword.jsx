@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
+import useStore from "../store/useStore";
 
 const Title = styled.h2`
   padding-top: 5%;
@@ -78,24 +79,24 @@ const InputField = styled.div`
 `;
 
 const Button = styled.button`
-    width: 100%;
-    max-width: 680px;
-    background: rgb(0, 102, 179);
-    border-radius: 10px;
-    color: white;
-    font-weight: 700;
-    border: none;
-    height: 3rem;
-    font-size: 16px;
-    outline: none;
-    text-align: center;
-    cursor: pointer;
-    opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-    margin-top: 0.5rem;
-    &:hover {
-        opacity: ${(props) => (props.disabled ? 1 : 0.8)};
-    }
+  width: 100%;
+  max-width: 680px;
+  background: rgb(0, 102, 179);
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  border: none;
+  height: 3rem;
+  font-size: 16px;
+  outline: none;
+  text-align: center;
+  cursor: pointer;
+  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  margin-top: 0.5rem;
+  &:hover {
+    opacity: ${(props) => (props.disabled ? 1 : 0.8)};
+  }
 `;
 
 const Error = styled.div`
@@ -146,12 +147,27 @@ const ChangePasswordPage = () => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordValidityError, setPasswordValidityError] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const { isAuthorized } = useStore((state) => ({
+    isAuthorized: state.isAuthorized,
+  }));
+
+  useEffect(() => {
+    if (!isAuthorized) {
+      Swal.fire({
+        icon: "warning",
+        title: "이메일 인증을 먼저 진행해 주세요",
+        text: "이메일 인증 창으로 이동합니다.",
+      });
+      navigate("/findPassword");
+    }
+  }, [isAuthorized, navigate]);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -163,14 +179,17 @@ const ChangePasswordPage = () => {
 
   const email = state?.email;
 
-  const passwordRegEx = /^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+  const passwordRegEx =
+    /^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
   const validateForm = (password, confirmPassword) => {
     const errors = {};
     if (!password) {
       errors.password = "* 비밀번호를 입력해주세요.";
     } else if (!passwordRegEx.test(password)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다.");
+      setPasswordValidityError(
+        "* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
+      );
     } else {
       setPasswordValidityError("");
     }
@@ -181,7 +200,12 @@ const ChangePasswordPage = () => {
       setPasswordError("");
     }
 
-    if (password && confirmPassword && password === confirmPassword && passwordRegEx.test(password)) {
+    if (
+      password &&
+      confirmPassword &&
+      password === confirmPassword &&
+      passwordRegEx.test(password)
+    ) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
@@ -202,7 +226,15 @@ const ChangePasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!isAuthorized) {
+      Swal.fire({
+        icon: "warning",
+        title: "이메일 인증을 먼저 진행해 주세요",
+        text: "이메일 인증 창으로 이동합니다.",
+      });
+      navigate("/findPassword");
+      return;
+    }
     const errors = validateForm(newPassword, confirmPassword);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -210,10 +242,13 @@ const ChangePasswordPage = () => {
     }
 
     try {
-      await axios.patch(`${process.env.REACT_APP_BE_URL}/api/users/reset-password`, {
-        email,
-        newPassword,
-      });
+      await axios.patch(
+        `${process.env.REACT_APP_BE_URL}/api/users/reset-password`,
+        {
+          email,
+          newPassword,
+        }
+      );
       Swal.fire({
         icon: "success",
         title: "비밀번호 재설정 성공",
