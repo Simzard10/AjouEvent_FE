@@ -42,14 +42,6 @@ const HeadingWapper = styled.div`
   padding-left: 1rem;
 `;
 
-const SignUpStyledLink = styled(Link)`
-  text-decoration: none;
-  font-size: 1.2rem;
-  color: rgb(0, 102, 179);
-  border-bottom: solid white 1px;
-  cursor: pointer;
-`;
-
 const Form = styled.form`
   width: 100%;
   margin: 10px auto 10px;
@@ -177,7 +169,6 @@ const GoogleLoginButton = styled.button`
   }
 `;
 
-
 const BottomLinks = styled.div`
   display: flex;
   justify-content: center;
@@ -245,26 +236,31 @@ const Login = () => {
       return;
     }
     const redirect_uri_origin = window.location.origin;
-    // console.log(
-    //   `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri_origin}/loginSuccess&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar`
-    // );
-    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri_origin}/loginSuccess&response_type=code&prompt=consent&access_type=offline&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar`;
+    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri_origin}/loginSuccess&response_type=code&prompt=consent&access_type=offline&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar&hd=ajou.ac.kr`;
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
 
+    // Prevent multiple requests if already loading
+    if (isLoading) return;
+
+    setIsLoading(true); // Set loading to true
+
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const fcmToken = localStorage.getItem("fcmToken");
+
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
         title: "알림허용안됨",
         text: "홈화면의 알림아이콘을 터치해주세요",
       });
+      setIsLoading(false); // Reset loading state
       return;
     }
+
     const userData = {
       email: email,
       password: password,
@@ -279,11 +275,10 @@ const Login = () => {
 
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
-
-      // 응답 로그
       localStorage.setItem("id", response.data.id);
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("major", response.data.major);
+
       Swal.fire({
         icon: "success",
         title: "로그인 성공",
@@ -291,31 +286,33 @@ const Login = () => {
       });
       navigate("/");
     } catch (error) {
-      // 에러를 처리
       if (error.response) {
-        console.error("응답 에러:", error.response.data);
         Swal.fire({
           icon: "error",
           title: "로그인 실패",
           text: "이메일과 비밀번호를 다시 확인해주세요",
         });
+        console.log("응답 에러:", error.response.data);
       } else if (error.request) {
-        console.error("응답 없음:", error.request);
         Swal.fire({
           icon: "warning",
           title: "응답없음",
           text: error.request,
         });
+        console.log("응답 없음:", error.request);
         navigate("/login");
       } else {
-        console.error("요청 설정 에러:", error.message);
         Swal.fire({
           icon: "warning",
           title: "요청 설정 에러",
           text: error.message,
         });
+        console.error("요청 설정 에러:", error.message);
+
         navigate("/login");
       }
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
 
@@ -326,7 +323,6 @@ const Login = () => {
       <Form onSubmit={handleSignIn}>
         <HeadingWapper>
           <Heading>로그인</Heading>
-          
         </HeadingWapper>
 
         <Separator></Separator>
@@ -402,7 +398,8 @@ const Login = () => {
         <Link to="/findPassword">비밀번호 찾기</Link>
       </BottomLinks>
       <Description>
-        * AjouEvent는 2024-1학기 아주대학교 파란학기제에서<br />
+        * AjouEvent는 2024-1학기 아주대학교 파란학기제에서
+        <br />
         진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
         * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다. <br />
         서비스 문의: jysim0326@ajou.ac.kr
