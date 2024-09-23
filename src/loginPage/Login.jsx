@@ -42,14 +42,6 @@ const HeadingWapper = styled.div`
   padding-left: 1rem;
 `;
 
-const SignUpStyledLink = styled(Link)`
-  text-decoration: none;
-  font-size: 1.2rem;
-  color: rgb(0, 102, 179);
-  border-bottom: solid white 1px;
-  cursor: pointer;
-`;
-
 const Form = styled.form`
   width: 100%;
   margin: 10px auto 10px;
