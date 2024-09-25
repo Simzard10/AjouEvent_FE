@@ -19,6 +19,14 @@ const CarouselItemImage = styled.img`
   object-fit: contain;
 `;
 
+const StyledCarouselControlPrevIcon = styled.span`
+  filter: invert(50%);
+`;
+
+const StyledCarouselControlNextIcon = styled.span`
+  filter: invert(50%);
+`;
+
 export default function EventBanner({ images }) {
   const [index, setIndex] = useState(0);
 
@@ -35,6 +43,8 @@ export default function EventBanner({ images }) {
         interval={null}
         touch={true}
         style={{ width: "100vw", height: "100vw" }}
+        prevIcon={<StyledCarouselControlPrevIcon className="carousel-control-prev-icon" />}
+        nextIcon={<StyledCarouselControlNextIcon className="carousel-control-next-icon" />}
       >
         {images.map((src, idx) => (
           <Carousel.Item key={idx}>
