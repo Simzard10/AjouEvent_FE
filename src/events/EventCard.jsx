@@ -195,7 +195,7 @@ const EventCard = ({
     navigate(`/event/${id}`);
   };
 
-  const formattedContent = content.replace(/\\n/g, " ");
+  const formattedContent = content ? content.replace(/\\n/g, " ") : "";
 
   return (
     <CardContainer onClick={handleCardClick}>
