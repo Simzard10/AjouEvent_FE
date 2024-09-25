@@ -41,8 +41,6 @@ export default function KeywordTab() {
         ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${encodeURIComponent(keyword.englishKeyword)}?page=${page}&size=${pageSize}`
         : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword?page=${page}&size=${pageSize}`;
 
-      console.log(`Fetching events from: ${url}`);
-
       const response = await requestWithAccessToken("get", url);
       const newEvents = response.data.result;
 
