@@ -194,6 +194,9 @@ const EventCard = ({
   const handleCardClick = () => {
     navigate(`/event/${id}`);
   };
+
+  const formattedContent = content.replace(/\\n/g, " ");
+
   return (
     <CardContainer onClick={handleCardClick}>
       <CardImageWapper>
@@ -203,7 +206,7 @@ const EventCard = ({
         <TitleContainer>
           <Subject>{subject}</Subject>
           <TitleText>{title}</TitleText>
-          <SubDetailContainer>{content}</SubDetailContainer>
+          <SubDetailContainer>{formattedContent}</SubDetailContainer>
         </TitleContainer>
         <TagContaioner>
           <Stats>

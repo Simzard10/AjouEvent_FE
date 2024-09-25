@@ -22,7 +22,8 @@ const CarouselWrapper = styled.div`
 const StyledCarousel = styled(Carousel)`
   .carousel-control-prev-icon,
   .carousel-control-next-icon {
-    background-color: #2366AF; /* 화살표 색상 변경 */
+    color: #434a52;
+    background-color: #434a52; /* 화살표 색상 변경 */
     background-size: 100%, 100%; /* 화살표 아이콘의 크기 조정 */
     border-radius: 50%; /* 원형으로 만들기 */
     width: 30px;
@@ -52,9 +53,9 @@ const StyledCarousel = styled(Carousel)`
   }
 
   .carousel-indicators .active {
-    background-color: #2366AF; /* 활성 인디케이터 색상 */
+    background-color: #434a52; /* 활성 인디케이터 색상 */
     opacity: 1; /* 활성 인디케이터의 투명도 */
-    width: 40px; /* 활성 인디케이터의 너비 */
+    width: 20px; /* 활성 인디케이터의 너비 */
     height: 15px; /* 활성 인디케이터의 높이 */
     border-radius: 50px; /* 타원형으로 만들기 */
   }
