@@ -63,7 +63,6 @@ const LoginSuccess = () => {
         };
 
         try {
-          console.log("loginData: " + loginData);
           const response = await axios.post(
             `${process.env.REACT_APP_BE_URL}/api/users/oauth`,
             loginData

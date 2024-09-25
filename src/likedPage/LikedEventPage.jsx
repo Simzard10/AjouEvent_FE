@@ -71,9 +71,6 @@ export default function LikedEventPage() {
     setLoading(true);
 
     try {
-      console.log(
-        `api call: ${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`
-      );
 
       const response = await requestWithAccessToken(
         "get",

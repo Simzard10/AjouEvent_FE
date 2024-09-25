@@ -200,15 +200,6 @@ const formatDate = (dateString) => {
   return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
 };
 
-// // 쿠키 값을 가져오는 함수
-// function getCookie(name) {
-//   const value = `; ${document.cookie}`;
-//   console.log(value);
-//   const parts = value.split(`; ${name}=`);
-//   if (parts.length === 2) return parts.pop().split(";").shift();
-//   return null; // 쿠키가 없을 때 null 반환
-// }
-
 const getCookie = (name) => {
   const nameEQ = name + "=";
   const ca = document.cookie.split(";");
