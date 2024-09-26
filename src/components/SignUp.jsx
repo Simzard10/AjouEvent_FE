@@ -236,7 +236,7 @@ const PasswordError = styled.div`
   font-size: 0.8em;
 `;
 
-const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // 영문 대소문자, 숫자, 특수문자 포함, 8~24자
+const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

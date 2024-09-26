@@ -220,7 +220,7 @@ const ProfileModification = () => {
   const user = state?.user;
   const email = user?.email;
 
-  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
   const validatePassword = (password) => {
     if (!passwordRegEx.test(password)) {

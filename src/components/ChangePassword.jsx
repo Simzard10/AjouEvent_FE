@@ -179,8 +179,7 @@ const ChangePasswordPage = () => {
 
   const email = state?.email;
 
-  const passwordRegEx =
-    /^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
   const validateForm = (password, confirmPassword) => {
     const errors = {};
