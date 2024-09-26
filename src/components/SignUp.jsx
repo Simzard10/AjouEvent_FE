@@ -47,7 +47,6 @@ const Form = styled.form`
     margin: 0.3rem 0 0.1rem 0.5rem;
     font-weight: 600;
   }
-
 `;
 
 const InputWrapper = styled.div`
@@ -62,7 +61,7 @@ const InputWrapper = styled.div`
 const LabelWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   width: 100%;
 `;
 
@@ -70,8 +69,8 @@ const InputLabel = styled.p`
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  flex-grow: 1; 
-  white-space : nowrap
+  flex-grow: 1;
+  white-space: nowrap;
 `;
 
 const InputField = styled.div`
@@ -205,9 +204,10 @@ const SignUpButton = styled.button`
   font-size: 14px;
   font-family: "Pretendard Variable";
   padding: 0 4px;
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)}; /* 비활성화 시 투명도 조정 */
-  pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; /* 비활성화 시 클릭 금지 */
-
+  opacity: ${(props) =>
+    props.disabled ? 0.5 : 1}; /* 비활성화 시 투명도 조정 */
+  pointer-events: ${(props) =>
+    props.disabled ? "none" : "auto"}; /* 비활성화 시 클릭 금지 */
 
   &:hover {
     box-shadow: 0 0 0 rgba(233, 30, 99, 0);
@@ -236,11 +236,13 @@ const PasswordError = styled.div`
   font-size: 0.8em;
 `;
 
-const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
+const passwordRegEx =
+  /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [passwordError, setPasswordError] = useState(""); // 비밀번호 확인 에러 메시지
   const [passwordValidityError, setPasswordValidityError] = useState(""); // 비밀번호 유효성 에러 메시지
@@ -259,7 +261,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const emailPattern = /^[^\s@]+@ajou\.ac\.kr$/;
 
-  useEffect (() => {
+  useEffect(() => {
     if (
       isNameValid &&
       isMajorValid &&
@@ -272,7 +274,14 @@ const SignUp = () => {
     } else {
       setIsFormValid(false); // 그렇지 않으면 비활성화
     }
-  }, [isNameValid, isMajorValid, password, confirmPassword, passwordValidityError, emailCheck]);
+  }, [
+    isNameValid,
+    isMajorValid,
+    password,
+    confirmPassword,
+    passwordValidityError,
+    emailCheck,
+  ]);
 
   const handleNameChange = (e) => {
     const value = e.target.value;
@@ -296,7 +305,9 @@ const SignUp = () => {
     if (!password) {
       errors.password = "* 비밀번호를 입력해주세요.";
     } else if (!passwordRegEx.test(password)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); // 회원가입 폼에서 가입하기 버튼 클릭시 
+      setPasswordValidityError(
+        "* 비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
+      ); // 회원가입 폼에서 가입하기 버튼 클릭시
     } else {
       setPasswordValidityError(""); // 유효성 검사가 통과되면 에러 메시지를 지웁니다.
     }
@@ -336,7 +347,9 @@ const SignUp = () => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
     if (!passwordRegEx.test(e.target.value)) {
-      setPasswordValidityError("* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."); // 사용자가 비밀번호를 입력할 때마다 실시간으로
+      setPasswordValidityError(
+        "* 비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
+      ); // 사용자가 비밀번호를 입력할 때마다 실시간으로
     } else {
       setPasswordValidityError("");
     }
@@ -496,158 +509,173 @@ const SignUp = () => {
   };
 
   return (
-  <>
-    <Container>
-      <HeadingWapper>
-        <Heading>가입하기</Heading>
-      </HeadingWapper>
-      <Separator />
-      <Form onSubmit={handleSignUp}>
-        <InputWrapper>
-          <LabelWrapper>
-            <InputLabel>이름</InputLabel>
-            {formErrors.name && <Error>{formErrors.name}</Error>}
-          </LabelWrapper>
-          <InputField>
-            <input type="text" placeholder="이름" className="input" id="name" name="name" onChange={handleNameChange} />
-          </InputField>
-        </InputWrapper>
-
-        <InputWrapper>
-          <LabelWrapper>
-            <InputLabel>학과</InputLabel>
-            {formErrors.major && <Error>{formErrors.major}</Error>}
-          </LabelWrapper>
-          <InputField>
-            <input type="text" placeholder="학과" className="input" id="major" name="major" onChange={handleMajorChange}/>
-          </InputField>
-        </InputWrapper>
-
-        <InputWrapper>
-          <LabelWrapper>
-            <InputLabel>이메일</InputLabel>
-            {emailError && <Error>{emailError}</Error>}
-          </LabelWrapper>
-          <EmailInputWrapper>
-            <InputField style={{ flex: 1 }}>
-              <input
-                type="email"
-                placeholder="example@ajou.ac.kr"
-                className="input"
-                id="email"
-                name="email"
-                onChange={handleEmailChange}
-              />
-            </InputField>
-            {emailRequestLoading ? (
-              <LoadingWrapper>
-                <LoadingImage src="Spinner.gif" alt="loading" />
-              </LoadingWrapper>
-            ) : (
-              <Button
-                type="button"
-                onClick={() => emailRequest(email)}
-                disabled={!emailPattern.test(email) || emailCheck}
-              >
-                {emailRequested ? "재요청" : "인증\n요청"}
-              </Button>
-            )}
-          </EmailInputWrapper>
-        </InputWrapper>
-        
-        {emailRequested && (
+    <>
+      <Container>
+        <HeadingWapper>
+          <Heading>가입하기</Heading>
+        </HeadingWapper>
+        <Separator />
+        <Form onSubmit={handleSignUp}>
           <InputWrapper>
             <LabelWrapper>
-              <InputLabel>인증번호</InputLabel>
-              {formErrors.email && <Error>{formErrors.email}</Error>}
+              <InputLabel>이름</InputLabel>
+              {formErrors.name && <Error>{formErrors.name}</Error>}
             </LabelWrapper>
-            <VerificationWrapper>
+            <InputField>
+              <input
+                type="text"
+                placeholder="이름"
+                className="input"
+                id="name"
+                name="name"
+                onChange={handleNameChange}
+              />
+            </InputField>
+          </InputWrapper>
+
+          <InputWrapper>
+            <LabelWrapper>
+              <InputLabel>학과</InputLabel>
+              {formErrors.major && <Error>{formErrors.major}</Error>}
+            </LabelWrapper>
+            <InputField>
+              <input
+                type="text"
+                placeholder="학과"
+                className="input"
+                id="major"
+                name="major"
+                onChange={handleMajorChange}
+              />
+            </InputField>
+          </InputWrapper>
+
+          <InputWrapper>
+            <LabelWrapper>
+              <InputLabel>이메일</InputLabel>
+              {emailError && <Error>{emailError}</Error>}
+            </LabelWrapper>
+            <EmailInputWrapper>
               <InputField style={{ flex: 1 }}>
                 <input
-                  type="text"
-                  placeholder="인증번호"
+                  type="email"
+                  placeholder="example@ajou.ac.kr"
                   className="input"
-                  id="number"
-                  name="number"
-                  onChange={handleNumberChange}
+                  id="email"
+                  name="email"
+                  onChange={handleEmailChange}
                 />
               </InputField>
-              {emailCheck ? (
-                <div>
-                  인증 <br /> 완료
-                </div>
+              {emailRequestLoading ? (
+                <LoadingWrapper>
+                  <LoadingImage src="Spinner.gif" alt="loading" />
+                </LoadingWrapper>
               ) : (
                 <Button
                   type="button"
-                  disabled={!emailRequested || number.length !== 6}
-                  onClick={(e) => handleEmailCheck(email, e)}
+                  onClick={() => emailRequest(email)}
+                  disabled={!emailPattern.test(email) || emailCheck}
                 >
-                  인증 확인
+                  {emailRequested ? "재요청" : "인증\n요청"}
                 </Button>
               )}
-            </VerificationWrapper>
+            </EmailInputWrapper>
           </InputWrapper>
-        )}
 
+          {emailRequested && (
+            <InputWrapper>
+              <LabelWrapper>
+                <InputLabel>인증번호</InputLabel>
+                {formErrors.email && <Error>{formErrors.email}</Error>}
+              </LabelWrapper>
+              <VerificationWrapper>
+                <InputField style={{ flex: 1 }}>
+                  <input
+                    type="text"
+                    placeholder="인증번호"
+                    className="input"
+                    id="number"
+                    name="number"
+                    onChange={handleNumberChange}
+                  />
+                </InputField>
+                {emailCheck ? (
+                  <div>
+                    인증 <br /> 완료
+                  </div>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled={!emailRequested || number.length !== 6}
+                    onClick={(e) => handleEmailCheck(email, e)}
+                  >
+                    인증 확인
+                  </Button>
+                )}
+              </VerificationWrapper>
+            </InputWrapper>
+          )}
 
-        <InputWrapper>
-          <LabelWrapper>
-            <InputLabel>비밀번호</InputLabel>
-            {!password && formErrors.password ? (
-              <Error>{formErrors.password}</Error>
-            ) : (
-              passwordValidityError && <Error>{passwordValidityError}</Error>
-            )}
-          </LabelWrapper>
-          <InputField>
-            <input
-              type={isPasswordVisible ? "text" : "password"}
-              name="password"
-              placeholder="비밀번호"
-              id="password"
-              autoComplete="off"
-              onChange={handlePasswordChange}
-            />
-            <span onClick={togglePasswordVisibility}>
-              <FontAwesomeIcon
-                icon={isPasswordVisible ? faEye : faEyeSlash}
-                style={{
-                  opacity: "0.5",
-                }}
+          <InputWrapper>
+            <LabelWrapper>
+              <InputLabel>비밀번호</InputLabel>
+              {!password && formErrors.password ? (
+                <Error>{formErrors.password}</Error>
+              ) : (
+                passwordValidityError && <Error>{passwordValidityError}</Error>
+              )}
+            </LabelWrapper>
+            <InputField>
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                name="password"
+                placeholder="영어, 숫자, 특수문자를 포함 8~24자"
+                id="password"
+                autoComplete="off"
+                onChange={handlePasswordChange}
               />
-            </span>
-          </InputField>
-        </InputWrapper>
+              <span onClick={togglePasswordVisibility}>
+                <FontAwesomeIcon
+                  icon={isPasswordVisible ? faEye : faEyeSlash}
+                  style={{
+                    opacity: "0.5",
+                  }}
+                />
+              </span>
+            </InputField>
+          </InputWrapper>
 
-        <InputWrapper>
-          <LabelWrapper>
-            <InputLabel>비밀번호 확인</InputLabel>
-            {passwordError && <PasswordError>{passwordError}</PasswordError>}
-          </LabelWrapper>
-          <InputField>
-            <input
-              type={isPasswordVisible ? "text" : "password"}
-              placeholder="비밀번호 확인"
-              className="input"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-            />
-            <span onClick={toggleConfirmPasswordVisibility}>
-              <FontAwesomeIcon
-                icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
-                style={{
-                  opacity: "0.5",
-                }}
+          <InputWrapper>
+            <LabelWrapper>
+              <InputLabel>비밀번호 확인</InputLabel>
+              {passwordError && <PasswordError>{passwordError}</PasswordError>}
+            </LabelWrapper>
+            <InputField>
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="비밀번호 확인"
+                className="input"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
               />
-            </span>
-          </InputField>
-        </InputWrapper>
-        <SignUpButton type="submit" disabled={!isFormValid}>가입하기</SignUpButton>
-      </Form>
-    </Container>
-  </>
+              <span onClick={toggleConfirmPasswordVisibility}>
+                <FontAwesomeIcon
+                  icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
+                  style={{
+                    opacity: "0.5",
+                  }}
+                />
+              </span>
+            </InputField>
+          </InputWrapper>
+          <SignUpButton type="submit" disabled={!isFormValid}>
+            가입하기
+          </SignUpButton>
+        </Form>
+      </Container>
+    </>
   );
 };
 

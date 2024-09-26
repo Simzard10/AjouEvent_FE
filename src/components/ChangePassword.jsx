@@ -179,7 +179,8 @@ const ChangePasswordPage = () => {
 
   const email = state?.email;
 
-  const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
+  const passwordRegEx =
+    /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
   const validateForm = (password, confirmPassword) => {
     const errors = {};
@@ -187,7 +188,7 @@ const ChangePasswordPage = () => {
       errors.password = "* 비밀번호를 입력해주세요.";
     } else if (!passwordRegEx.test(password)) {
       setPasswordValidityError(
-        "* 비밀번호는 영문 대소문자, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
+        "* 비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
       );
     } else {
       setPasswordValidityError("");
@@ -283,7 +284,7 @@ const ChangePasswordPage = () => {
             <input
               type={isPasswordVisible ? "text" : "password"}
               name="newPassword"
-              placeholder="8~24자 / 영문 대소문자, 숫자, 특수문자 혼합"
+              placeholder="8~24자 / 영문, 숫자, 특수문자 혼합"
               id="newPassword"
               autoComplete="off"
               onChange={handlePasswordChange}
