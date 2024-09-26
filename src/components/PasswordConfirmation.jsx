@@ -116,7 +116,7 @@ const LabelWrapper = styled.div`
   width: 100%;
 `;
 
-const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // 비밀번호 정규식
+const passwordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
 const PasswordConfirmation = ({ onConfirm }) => {
   const [password, setPassword] = useState('');
