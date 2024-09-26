@@ -22,11 +22,7 @@ const CarouselWrapper = styled.div`
 const StyledCarousel = styled(Carousel)`
   .carousel-control-prev-icon,
   .carousel-control-next-icon {
-    background-color: #2366AF; /* 화살표 색상 변경 */
-    background-size: 100%, 100%; /* 화살표 아이콘의 크기 조정 */
-    border-radius: 50%; /* 원형으로 만들기 */
-    width: 30px;
-    height: 30px;
+    filter: invert(50%); /* 아이콘을 회색으로 */
   }
 
   .carousel-indicators {
@@ -52,9 +48,9 @@ const StyledCarousel = styled(Carousel)`
   }
 
   .carousel-indicators .active {
-    background-color: #2366AF; /* 활성 인디케이터 색상 */
+    background-color: #434a52; /* 활성 인디케이터 색상 */
     opacity: 1; /* 활성 인디케이터의 투명도 */
-    width: 40px; /* 활성 인디케이터의 너비 */
+    width: 20px; /* 활성 인디케이터의 너비 */
     height: 15px; /* 활성 인디케이터의 높이 */
     border-radius: 50px; /* 타원형으로 만들기 */
   }
@@ -65,6 +61,17 @@ const CarouselItemImage = styled.img`
   height: 100vw;
   object-fit: contain;
   cursor: pointer;
+`;
+
+const SlideCount = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
 `;
 
 export default function HomeBanner({ images }) {
@@ -84,9 +91,10 @@ export default function HomeBanner({ images }) {
         <StyledCarousel
           activeIndex={index}
           onSelect={handleSelect}
-          controls={true}
-          interval={null}
+          controls={true} // 화살표 비활성화
+          interval={3000} // 3초마다 자동으로 넘김
           touch={true}
+          indicators={false} // 인디케이터 비활성화
         >
           {images.map((image, idx) => (
             <Carousel.Item key={idx} onClick={() => handleClick(image.siteUrl)}>
@@ -94,6 +102,9 @@ export default function HomeBanner({ images }) {
             </Carousel.Item>
           ))}
         </StyledCarousel>
+        <SlideCount>
+          {index + 1} / {images.length} {/* Current slide / Total slides */}
+        </SlideCount>
       </CarouselWrapper>
     </BannerContainer>
   );

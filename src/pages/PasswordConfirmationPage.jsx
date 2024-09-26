@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
-import PrivacyAgreement from "../components/PrivacyAgreement";
+import PasswordConfirmation from "../components/PasswordConfirmation";
 
 const AppContainer = styled.div`
   display: flex;
@@ -13,10 +13,10 @@ const AppContainer = styled.div`
   overflow-x: hidden;
 `;
 
-export default function PrivacyAgreementPage() {
+export default function PasswordConfirmationPage() {
   return (
     <AppContainer>
-      <PrivacyAgreement />
+      <PasswordConfirmation></PasswordConfirmation>
       <NavigationBar></NavigationBar>
     </AppContainer>
   );

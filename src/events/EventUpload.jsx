@@ -46,7 +46,6 @@ const EventUpload = () => {
       );
 
       const urls = data.map((item) => item.url.split("?")[0]);
-      console.log("URLs without query params:", urls);
     } catch (error) {
       console.error("Error:", error);
     }

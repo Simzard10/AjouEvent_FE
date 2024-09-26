@@ -1,25 +1,25 @@
 import React from "react";
-import TopBar from "../components/TopBar";
 import styled from "styled-components";
-import PwRecovery from "../components/PwRecovery";
+import FindPassword from "../components/FindPassword"
+import NavigationBar from "../components/NavigationBar";
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: black;
+  background-color: white;
   height: 100vh;
   overflow-y: hidden;
   width: 100vw;
   overflow-x: hidden;
 `;
 
-export default function PwRecoveryPage() {
+export default function FindPasswordPage() {
   return (
     <AppContainer>
-      <TopBar></TopBar>
-      <PwRecovery></PwRecovery>
+      <FindPassword></FindPassword>
+      <NavigationBar></NavigationBar>
     </AppContainer>
   );
 }

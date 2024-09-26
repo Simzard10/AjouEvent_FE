@@ -141,6 +141,7 @@ const KeywordText = styled.span`
   font-size: 1rem;
   display: flex;
   align-items: center;
+  white-space: pre-wrap;
 `;
 
 const KeywordTag = styled.span`
@@ -275,6 +276,61 @@ const TopicDisplay = styled.div`
   color: #333;
 `;
 
+const KeywordError = styled.div`
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  color: red;
+  padding-left: 20px;
+  font-size: 0.8em;
+`;
+
+const handleError = (error) => {
+  console.log('Error object:', error); // Error 객체 확인
+  const { status, data} = error;
+
+  console.log('Status:', status); // Status 확인
+  console.log('StatusMessage:', data.statusMessage); // StatusMessage 확인
+  console.log('Message:', data.message); // Message 확인
+
+  switch (status) {
+    case 409: 
+      Swal.fire({
+        icon: 'error',
+        title: '이미 구독한 키워드',
+        text: data.statusMessage,
+      });
+      break;
+    case 400:
+      Swal.fire({
+        icon: 'error',
+        title: '키워드 개수 초과',
+        text: data.statusMessage,
+      });
+      break;
+    case 404:
+      Swal.fire({
+        icon: 'error',
+        title: '찾을 수 없음',
+        text: data.message || '찾을 수 없는 항목입니다.',
+      });
+      break;
+    case 500:
+      Swal.fire({
+        icon: 'error',
+        title: '서버 오류',
+        text: data.message || '서버 오류가 발생했습니다.',
+      });
+      break;
+    default:
+      Swal.fire({
+        icon: 'error',
+        title: '오류',
+        text: data.message || '알 수 없는 오류가 발생했습니다.',
+      });
+  }
+};
+
 const Toast = Swal.mixin({
   toast: true,
   position: "center-center",
@@ -310,100 +366,97 @@ export default function KeywordSubscribePage() {
     }
   };
 
-  // 입력값 변화 처리
+   // 입력값 변화 처리
   const handleChange = (event) => {
-    const value = event.target.value;
-    setInputValue(value);
+    let value = event.target.value;
 
-    // 한글 입력 검사 및 에러 메시지 설정
-    const koreanPattern = /^[가-힣]+$/;
-    if (!koreanPattern.test(value)) {
-      setErrorMessage('한글만 입력해주세요');
+    // 앞쪽 공백 제거
+    value = value.replace(/^\s+/, '');
+    
+    // 한글만 입력 허용
+    const koreanAndSpacePattern = /^[가-힣\s]*$/; // 한글과 공백만 허용
+    if (!koreanAndSpacePattern.test(value)) {
+      setErrorMessage('특수문자와 영어는 입력할 수 없습니다. 한글만 입력해 주세요.');
     } else if (value.length === 0) {
       setErrorMessage('');
     } else if (value.length < 2) {
-      setErrorMessage('한 글자 이상 입력해주세요');
+      setErrorMessage('두 글자 이상 입력해 주세요.');
+    } else {
+      setErrorMessage('');
     }
+
+    setInputValue(value);
   };
 
   // 구독 버튼 클릭 시
   const handleClick = async () => {
-    const koreanPattern = /^[가-힣]+$/;
+  const koreanAndSpacePattern = /^[가-힣\s]*$/;
 
-    // 한글 그대로 출력
-    var inko = new Inko();
-    var ko2en = inko.ko2en(inputValue)
+  // 뒤 공백 제거
+  const finalInputValue = inputValue.trimEnd();
 
-    console.log('한글 그대로:', inputValue);
-    // 한글을 영타로 변환하여 출력
-    console.log('영타로 변환:', ko2en);
+  // 한글 그대로 출력
+  var inko = new Inko();
+  var ko2en = inko.ko2en(finalInputValue);
 
-    // 토픽이 선택되지 않은 경우
-    if (!selectedTopic) {
-      Swal.fire({
-        icon: 'warning',
-        title: '게시판 선택',
-        text: '키워드를 구독하기 전에 게시판을 선택해 주세요.',
-      });
-      return;
-    }
+  // 토픽이 선택되지 않은 경우
+  if (!selectedTopic) {
+    Swal.fire({
+      icon: 'warning',
+      title: '게시판 선택',
+      text: '키워드를 구독하기 전에 게시판을 선택해 주세요.',
+    });
+    return;
+  }
 
+  if (finalInputValue.length <= 1 || !koreanAndSpacePattern.test(inputValue)) {
+    Swal.fire({
+      icon: 'error',
+      title: '입력 오류',
+      text: '2글자 이상, 한글만 입력해주세요',
+    });
+    setInputValue(''); // 입력값 초기화
+    return;
+  }
 
-    if (inputValue.length <= 1 || !koreanPattern.test(inputValue)) {
-      Swal.fire({
-        icon: 'error',
-        title: '입력 오류',
-        text: '1글자 이상, 한글만 입력해주세요',
-      });
-      setInputValue(''); // 입력값 초기화
-      return;
-    }
+  setIsProcessing(true);
+  try {
+    // 한글을 영타로 변환
+    const inko = new Inko();
+    const englishKeyword = inko.ko2en(finalInputValue);
 
-    setIsProcessing(true);
-    try {
-      // 한글을 영타로 변환
-      const inko = new Inko();
-      const englishKeyword = inko.ko2en(inputValue);
+    Toast.fire({
+      icon: "info",
+      title: `키워드 '${finalInputValue}' 구독 중`,
+    });
 
-      Toast.fire({
-        icon: "info",
-        title: `키워드 '${inputValue}' 구독 중`,
-      });
+    await requestWithAccessToken(
+      "post",
+      `${process.env.REACT_APP_BE_URL}/api/keyword/subscribe`,
+      {
+        englishKeyword: englishKeyword,
+        koreanKeyword: finalInputValue,
+        topicName: selectedTopic.englishTopic,
+      }
+    );
 
-      console.log('구독하는 Topic:', selectedTopic)
-      console.log('백엔드로 보내는 TopicName', selectedTopic.englishTopic )
+    Swal.fire({
+      icon: "success",
+      title: "구독 성공",
+      text: `${finalInputValue}를 구독하셨습니다`,
+    });
 
-      await requestWithAccessToken(
-        "post",
-        `${process.env.REACT_APP_BE_URL}/api/keyword/subscribe`,
-        { englishKeyword: englishKeyword, 
-          koreanKeyword: inputValue, 
-          topicName: selectedTopic.englishTopic }
-      );
+    // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
+    await fetchUserKeywords();
 
-      Swal.fire({
-        icon: "success",
-        title: "구독 성공",
-        text: `${inputValue}를 구독하셨습니다`,
-      });
-
-      // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
-      await fetchUserKeywords();
-
-      // 구독된 키워드를 바로 리스트에 추가하는 대신, fetchUserKeywords에서 가져온 최신 데이터를 사용합니다.
-      
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "구독 실패",
-        text: "서버 에러",
-      });
-      console.error("Error subscribing to keyword:", error);
-    } finally {
-      setInputValue(''); // 입력값 초기화
-      setIsProcessing(false);
-    }
-  };
+  } catch (error) {
+    handleError(error.response);
+    console.error("Error subscribing to keyword:", error);
+  } finally {
+    setInputValue(''); // 입력값 초기화
+    setIsProcessing(false);
+  }
+};
 
   // useEffect 안에 있던 fetchUserKeywords를 밖으로 빼서 다른 곳에서도 호출할 수 있도록 수정합니다.
   const fetchUserKeywords = async () => {
@@ -546,7 +599,7 @@ export default function KeywordSubscribePage() {
                 구독
               </SubscribeButton>
             </SubscribeInputContainer>
-            {errorMessage && <div>{errorMessage}</div>}
+            {errorMessage && <KeywordError>{errorMessage}</KeywordError>}
             <KeywordHeader>
               알림 설정한 키워드 {keywords.length} / 10
             </KeywordHeader>

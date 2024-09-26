@@ -63,14 +63,13 @@ const LoginSuccess = () => {
         };
 
         try {
-          console.log("loginData: " + loginData);
           const response = await axios.post(
             `${process.env.REACT_APP_BE_URL}/api/users/oauth`,
             loginData
           );
 
           if (response.status === 200) {
-            const { id, accessToken, refreshToken, email, name, major } =
+            const { id, accessToken, refreshToken, email, name, major, isNewMember } =
               response.data;
 
             localStorage.setItem("id", id);
@@ -84,7 +83,13 @@ const LoginSuccess = () => {
               title: "로그인 성공",
               text: "로그인이 완료되었습니다!",
             });
-            navigate("/");
+
+            if(isNewMember) {
+              navigate("/register-info", { state: {email, name} });
+            } else {
+              navigate("/");
+            }
+           
           }
         } catch (error) {
           if (error.response) {

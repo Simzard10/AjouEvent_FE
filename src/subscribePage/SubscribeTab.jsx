@@ -41,8 +41,6 @@ export default function SubscribeTab() {
         ? `${process.env.REACT_APP_BE_URL}/api/event/${encodeURIComponent(selectedTopic)}?page=${page}&size=${pageSize}&keyword=${keyword}`
         : `${process.env.REACT_APP_BE_URL}/api/event/subscribed?page=${page}&size=${pageSize}&keyword=${keyword}`;
 
-      console.log(`api call: ${url}`);
-
       const response = await requestWithAccessToken("get", url);
       const newEvents = response.data.result;
 
