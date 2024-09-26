@@ -113,9 +113,9 @@ const MyPage = () => {
   }, [accessToken, navigate]);
 
   const handleEditClick = () => {
-    navigate('/password-confirmation', {
+    navigate('/profile-modification', {
       state: {
-        email: user.email,
+        user
       },
     });
   };
