@@ -17,12 +17,12 @@ export default function GuidePage() {
     <AppContainer>
       <TabBar Title={`사용 가이드 ver.0.1.3`} />
       <img
-        alt="IOSInstall"
-        src={`${process.env.PUBLIC_URL}/image/installIOS.svg`}
-      ></img>
-      <img
         alt="AndroidInstall"
         src={`${process.env.PUBLIC_URL}/image/installAndriod.svg`}
+      ></img>
+      <img
+        alt="IOSInstall"
+        src={`${process.env.PUBLIC_URL}/image/installIOS.svg`}
       ></img>
       <hr />
     </AppContainer>
