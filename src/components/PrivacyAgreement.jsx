@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import privacyPolicy from './privacyPolicy.json';
 
 const Container = styled.div`
     z-index: 1;
@@ -23,6 +22,7 @@ const Heading = styled.h1`
     font-weight: 700;
     text-align: left;
     width: 100%;
+    max-width: 680px;
     margin-bottom: 20px;
 `;
 
@@ -30,6 +30,7 @@ const Description = styled.p`
     color: #999999;
     font-size: 14px;
     margin: 0 0 20px 0;
+    max-width: 680px;
     width: 100%;
 `;
 
@@ -152,6 +153,8 @@ const Modal = styled.div`
   z-index: 1000;
   max-width: 500px;
   width: 90%;
+  max-height: 80vh; /* 모달의 최대 높이 설정 */
+  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 활성화 */
 `;
 
 const Overlay = styled.div`
@@ -199,7 +202,7 @@ const PrivacyAgreement = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (isChecked14 && isCheckedTerms && isCheckedPrivacy) {
-      navigate("/signup");
+      navigate("/signUp/select");
     } else {
       Swal.fire({
         icon: "warning",
@@ -209,11 +212,23 @@ const PrivacyAgreement = () => {
     }
   };
 
-  const openModal = (e, content, setter) => {
+  // Fetch HTML file content and open the modal
+  const openModal = async (e, filePath, setter) => {
     e.preventDefault();
-    setModalContent(content);
-    setCurrentSetter(() => setter);
-    setIsModalOpen(true);
+    try {
+      const response = await fetch(filePath);
+      const content = await response.text();
+      setModalContent(content);
+      setCurrentSetter(() => setter);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error loading policy:", error);
+      Swal.fire({
+        icon: "error",
+        title: "문서 로드 오류",
+        text: "약관을 불러오는데 문제가 발생했습니다.",
+      });
+    }
   };
 
   const closeModal = () => {
@@ -222,14 +237,14 @@ const PrivacyAgreement = () => {
 
   const handleModalConfirm = () => {
     if (currentSetter) {
-        currentSetter(true);
-      }
+      currentSetter(true);
+    }
     closeModal();
   };
 
   return (
     <Container>
-      <Heading>AjouEvent 서비스 이용 약관에 동의해주세요</Heading>
+      <Heading>AjouEvent 서비스 이용 약관에 <br></br>동의해주세요</Heading>
       <Description>
         * AjouEvent는 2024-1학기 아주대학교 파란학기제로 진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
         * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다.
@@ -262,7 +277,8 @@ const PrivacyAgreement = () => {
             onChange={handleCheckboxChange(setIsCheckedTerms)}
           />
           <label htmlFor="terms-agreement">
-            (필수) 서비스 이용약관에 동의 <span onClick={(e) => openModal(e, privacyPolicy.privacyPolicy, setIsCheckedTerms)}>보기</span>
+            (필수) 서비스 이용약관에 동의{" "}
+            <span onClick={(e) => openModal(e, "/terms_of_service.html", setIsCheckedTerms)}>보기</span>
           </label>
         </CheckboxBlock>
         <CheckboxBlock>
@@ -273,7 +289,8 @@ const PrivacyAgreement = () => {
             onChange={handleCheckboxChange(setIsCheckedPrivacy)}
           />
           <label htmlFor="privacy-agreement">
-            (필수) 개인정보 수집이용에 동의 <span onClick={(e) => openModal(e, privacyPolicy.privacyPolicy, setIsCheckedPrivacy)}>보기</span>
+            (필수) 개인정보 수집이용에 동의{" "}
+            <span onClick={(e) => openModal(e, "/privacy_consent_form.html", setIsCheckedPrivacy)}>보기</span>
           </label>
         </CheckboxBlock>
         <Button type="submit" disabled={!isChecked14 || !isCheckedTerms || !isCheckedPrivacy}>
@@ -284,8 +301,9 @@ const PrivacyAgreement = () => {
         <>
           <Overlay onClick={closeModal} />
           <Modal>
-            <h2>개인정보 처리 방침</h2>
-            <p>{modalContent}</p>
+            <h2></h2>
+            {/* Render HTML content in the modal */}
+            <div dangerouslySetInnerHTML={{ __html: modalContent }} />
             <Button onClick={handleModalConfirm}>확인</Button>
           </Modal>
         </>

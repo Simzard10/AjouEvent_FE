@@ -174,6 +174,9 @@ function SearchDropBox({
 
   useEffect(() => {
     const fetchDataAndUpdateState = async () => {
+      // option2가 선택되지 않았으면 API 요청을 하지 않음
+      if (!option2) return;
+
       await Promise.all([
         setPage(0),
         setHasMore(true),

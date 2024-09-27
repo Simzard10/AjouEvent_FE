@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import GetUserPermission from "../fcm/GetUserPermission";
@@ -94,7 +95,8 @@ export default function HomePage() {
   const [isIOS, setIsIOS] = useState(false); // iOS 장치 여부 상태 추가
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
   const [showPushNotificationPrompt, setShowPushNotificationPrompt] = useState(false); // State for showing push notification prompt
-
+  
+  const navigate = useNavigate(); // useNavigate 훅 사용
   useEffect(() => {
     GetUserPermission(setIsLoading);
   }, []);
@@ -168,6 +170,7 @@ export default function HomePage() {
   const handleAllowNotifications = () => {
     GetUserPermission(setIsLoading);
     setShowPushNotificationPrompt(false);
+    navigate("/privacy-agreement"); // 푸시 알림 설정 후 페이지 이동
   };
 
   return (
