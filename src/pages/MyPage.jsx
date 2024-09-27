@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import LocationBar from "../components/LocationBar";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AppContainer = styled.div`
@@ -33,7 +32,7 @@ const UserInfo = styled.div`
   justify-content: flex-start;
   align-items: start;
   font-family: "Pretendard Variable";
-  padding: 20px 40px; /* 패딩을 줄여 위로 올림 */
+  padding: 20px 40px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 `;
 
@@ -44,7 +43,6 @@ const LogoutBtnWapper = styled.div`
   width: 100%;
 `;
 
-// 임시 로그아웃 버튼
 const StyledLink = styled(Link)`
   display: flex;
   flex-wrap: wrap;
@@ -65,12 +63,12 @@ const MenuList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
-  padding: 20px 0; /* 메뉴 간격을 줄이기 위한 패딩 설정 */
+  padding: 20px 0;
 `;
 
 const MenuItem = styled.li`
   border-bottom: 1px solid #eee;
-  padding: 10px 20px; /* 패딩 조정 */
+  padding: 10px 20px;
   font-family: "Pretendard Variable";
   font-size: 1rem;
   display: flex;
@@ -94,8 +92,12 @@ const MyPage = () => {
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
     const fetchUserInfo = async () => {
-      if (!accessToken) return;
       try {
         const response = await requestWithAccessToken(
           "get",
@@ -108,17 +110,16 @@ const MyPage = () => {
     };
 
     fetchUserInfo();
-  }, [accessToken]);
+  }, [accessToken, navigate]);
 
   const handleEditClick = () => {
-    navigate('/password-confirmation', {
+    navigate('/profile-modification', {
       state: {
-        email: user.email,  // Pass email as state
+        user
       },
     });
   };
 
-  //임시 로그아웃
   const handleLogoutBtnClick = () => {
     Swal.fire({
       icon: "success",
@@ -135,55 +136,45 @@ const MyPage = () => {
 
   return (
     <AppContainer>
-      {accessToken ? (
-        <Container>
-          <LocationBar location="마이페이지" />
-          <UserInfo>
-            <h3>회원정보</h3>
-            <p>이름: {user.name}</p>
-            <p>전공: {user.major}</p>
-            <p>이메일: {user.email}</p>
-          </UserInfo>
-          
-          <MenuList>
-            <MenuItem onClick={handleEditClick}>
-              회원정보 수정 <ArrowIcon>›</ArrowIcon>
-            </MenuItem>
-            <MenuItem>
-              자주묻는질문 <ArrowIcon>›</ArrowIcon>
-            </MenuItem>
-            <MenuItem>
-              FAQ <ArrowIcon>›</ArrowIcon>
-            </MenuItem>
-            <MenuItem>
-              공지사항 <ArrowIcon>›</ArrowIcon>
-            </MenuItem>
-            <MenuItem>
-              버전 <ArrowIcon>›</ArrowIcon>
-            </MenuItem>
-          </MenuList>
+      <Container>
+        <LocationBar location="마이페이지" />
+        <UserInfo>
+          <h3>회원정보</h3>
+          <p>이름: {user.name}</p>
+          <p>전공: {user.major}</p>
+          <p>이메일: {user.email}</p>
+        </UserInfo>
+        
+        <MenuList>
+          <MenuItem onClick={handleEditClick}>
+            회원정보 수정 <ArrowIcon>›</ArrowIcon>
+          </MenuItem>
+          <MenuItem>
+            자주묻는질문 <ArrowIcon>›</ArrowIcon>
+          </MenuItem>
+          <MenuItem>
+            FAQ <ArrowIcon>›</ArrowIcon>
+          </MenuItem>
+          <MenuItem>
+            공지사항 <ArrowIcon>›</ArrowIcon>
+          </MenuItem>
+          <MenuItem>
+            버전 <ArrowIcon>›</ArrowIcon>
+          </MenuItem>
+        </MenuList>
 
-
-          <LogoutBtnWapper>
-            <StyledLink
-              onClick={handleLogoutBtnClick}
-              bgcolor={"white"}
-              color={"black"}
-              to="/login"
-            >
-              로그아웃
-            </StyledLink>
-          </LogoutBtnWapper>
-
-        </Container>
-      ) : (
-        <>
-          <p>로그인이 필요한 서비스입니다</p>
-          <StyledLink bgcolor={"white"} color={"black"} to="/login">
-            로그인
+        <LogoutBtnWapper>
+          <StyledLink
+            onClick={handleLogoutBtnClick}
+            bgcolor={"white"}
+            color={"black"}
+            to="/login"
+          >
+            로그아웃
           </StyledLink>
-        </>
-      )}
+        </LogoutBtnWapper>
+
+      </Container>
       <NavigationBar />
     </AppContainer>
   );

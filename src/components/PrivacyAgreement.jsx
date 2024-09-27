@@ -22,6 +22,7 @@ const Heading = styled.h1`
     font-weight: 700;
     text-align: left;
     width: 100%;
+    max-width: 680px;
     margin-bottom: 20px;
 `;
 
@@ -29,6 +30,7 @@ const Description = styled.p`
     color: #999999;
     font-size: 14px;
     margin: 0 0 20px 0;
+    max-width: 680px;
     width: 100%;
 `;
 
@@ -200,7 +202,7 @@ const PrivacyAgreement = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (isChecked14 && isCheckedTerms && isCheckedPrivacy) {
-      navigate("/signup");
+      navigate("/signUp/select");
     } else {
       Swal.fire({
         icon: "warning",
@@ -242,7 +244,7 @@ const PrivacyAgreement = () => {
 
   return (
     <Container>
-      <Heading>AjouEvent 서비스 이용 약관에 동의해주세요</Heading>
+      <Heading>AjouEvent 서비스 이용 약관에 <br></br>동의해주세요</Heading>
       <Description>
         * AjouEvent는 2024-1학기 아주대학교 파란학기제로 진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
         * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다.

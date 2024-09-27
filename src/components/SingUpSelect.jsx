@@ -160,27 +160,18 @@ const Description = styled.p`
   line-height: 1.8;
 `;
 
-const LoadingOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  z-index: 1000;
-`;
-
 const Login = () => {
+  
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     GetUserPermission(setIsLoading);
   }, []);
+
+  const handelSignUpButtonClicked = () => {
+    navigate("/signUp");
+  };
 
   const handleGoogleButtonClicked = () => {
     const fcmToken = localStorage.getItem("fcmToken");
@@ -198,28 +189,33 @@ const Login = () => {
 
   return (
     <Container>
-      {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
-
       <Form>
         <HeadingWrapper>
-          <Heading>로그인</Heading>
+          <Heading>회원가입</Heading>
         </HeadingWrapper>
       </Form>
+
+
+      {/* <SingUpButton onClick= {handelSignUpButtonClicked} type="submit" className="signin__btn">
+         @ajou.ac.kr 이메일로 회원가입
+      </SingUpButton> */}
       <GoogleLoginButton onClick={handleGoogleButtonClicked}>
         <FcGoogle className="icon" />
-        <span>Google 계정으로 로그인</span>
+        <span>Google 계정으로 가입</span>
       </GoogleLoginButton>
       <Separator></Separator>
       <BottomLinks>
-        <span>아직 회원이 아니신가요?</span>
-        <Link to="/privacy-agreement">회원가입</Link>
+        <span>이미 회원이신가요?</span>
+        <Link to="/login">로그인</Link>
+          {/* <span>|</span>
+          <Link to="/findPassword">비밀번호 찾기</Link> */}
       </BottomLinks>
       <Description>
         * AjouEvent는 2024-1학기 아주대학교 파란학기제에서
         <br />
         진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
         * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다. <br />
-        서비스 문의: jysim0326@ajou.ac.kr
+        서비스 문의: jysim0326@ajou.ac.kr <br />
       </Description>
       <LogoWrapper>
           <Logo />

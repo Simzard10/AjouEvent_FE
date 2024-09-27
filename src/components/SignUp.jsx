@@ -236,6 +236,30 @@ const PasswordError = styled.div`
   font-size: 0.8em;
 `;
 
+const TapWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 0px 16px 0px;
+  gap: 8px;
+`;
+
+const TapIcon = styled.img`
+  aspect-ratio: 1;
+  width: 20px;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+`;
+
+const TapTitle = styled.div`
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+`;
+
 const passwordRegEx =
   /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%+\^&()\+=\-~`*]).{8,24}$/;
 
@@ -508,9 +532,21 @@ const SignUp = () => {
     }
   };
 
+  const arrowBackClicked = () => {
+    navigate("/signUp/select");
+  };
+
   return (
     <>
       <Container>
+        <TapWrapper>
+        <TapIcon
+          onClick={arrowBackClicked}
+          loading="lazy"
+          src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+        />
+        <TapTitle>회원가입</TapTitle>
+        </TapWrapper>
         <HeadingWapper>
           <Heading>가입하기</Heading>
         </HeadingWapper>
