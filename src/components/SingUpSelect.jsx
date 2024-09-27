@@ -178,8 +178,8 @@ const Login = () => {
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
-        title: "알림허용안됨",
-        text: "홈화면의 알림아이콘을 터치해주세요",
+        title: "앱을 설치해주세요",
+        text: "브라우저 메뉴에서 '홈 화면에 추가'를 통해 설치해주세요",
       });
       return;
     }

@@ -50,6 +50,20 @@ const HeadingWrapper = styled.div`
   padding-left: 1rem;
 `;
 
+// 새로 추가된 스타일
+const StyledParagraph = styled.p`
+  color: #000;
+  font-size: 15px;
+  font-family: "Pretendard Variable";
+  margin-top: 10px; /* 상단 여백 추가 */
+  margin-bottom: 10px; /* 하단 여백 추가 */
+`;
+
+const HighlightedText = styled.span`
+  color: red;
+  font-weight: bold;
+`;
+
 const Form = styled.form`
   width: 100%;
   margin: 10px auto 10px;
@@ -187,8 +201,8 @@ const Login = () => {
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
-        title: "알림허용안됨",
-        text: "홈화면의 알림아이콘을 터치해주세요",
+        title: "앱을 설치해주세요",
+        text: "브라우저 메뉴에서 '홈 화면에 추가'를 통해 설치해주세요",
       });
       return;
     }
@@ -203,6 +217,11 @@ const Login = () => {
       <Form>
         <HeadingWrapper>
           <Heading>로그인</Heading>
+        </HeadingWrapper>
+        <HeadingWrapper>
+          <StyledParagraph>
+            기본 로그인이 <HighlightedText>구글 로그인</HighlightedText>으로 통합되었습니다. 
+          </StyledParagraph>
         </HeadingWrapper>
       </Form>
       <GoogleLoginButton onClick={handleGoogleButtonClicked}>
