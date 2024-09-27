@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
@@ -61,7 +61,7 @@ const ViewAllButton = styled.div`
   border: 2px solid #f7f7f7;
   background-color: #ffffff;
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')}; /* 항상 회색 유지 */
+  background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')}; 
   p {
     margin: 0;
   }
@@ -103,6 +103,98 @@ const ModalHeaderIcon = styled.img`
   width: 20px;
   object-fit: contain;
   object-position: center;
+`;
+
+const BellIcon = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: ${(props) => (props.isProcessing ? "#e0e0e0" : "#f5f5f5")};
+  color: #000000;
+  font-family: "Pretendard Variable", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50px;
+  border: none;
+  cursor: ${(props) => (props.isProcessing ? "not-allowed" : "pointer")};
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) => (props.isProcessing ? "#e0e0e0" : "#e6e6e6")};
+  }
+
+  animation: ${(props) => (props.ringing ? gradientChange : "none")} 2s ease-in-out;
+
+  img {
+    animation: ${(props) => (props.ringing ? ring : "none")} 1s ease-in-out;
+  }
+
+  span {
+    animation: ${(props) => (props.ringing ? ringText : "none")} 1s ease-in-out; 
+  }
+  
+`;
+
+const gradientChange = keyframes`
+  0% { background-color: #f5f5f5; }
+  10% { background-color: #e0edf8; }
+  20% { background-color: #c9e0f2; }
+  30% { background-color: #b3d3ec; }
+  40% { background-color: #9cc7e6; }
+  50% { background-color: #92C1E9; }
+  60% { background-color: #9cc7e6; }
+  70% { background-color: #b3d3ec; }
+  80% { background-color: #c9e0f2; }
+  90% { background-color: #e0edf8; }
+  100% { background-color: #f5f5f5; }
+`;
+
+const IconImage = styled.img`
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+`;
+
+// Keyframes for bell ringing animation
+const ring = keyframes`
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+  100% { transform: rotate(0); }
+`;
+
+// Keyframes for text animation
+const ringText = keyframes`
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+  100% { transform: rotate(0); }
+`;
+
+const SubscribeButton = styled.button`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #0072CE; 
+  color: #ffffff; 
+  font-family: "Pretendard Variable", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50px; 
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+  gap: 8px; 
+  &:hover {
+    background-color: #e0e0e0;
+  }
 `;
 
 const ModalHeaderTitle = styled.h1`
@@ -165,6 +257,7 @@ const SubscribeBar = ( { onTopicSelect } ) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const [ringingTopics, setRingingTopics] = useState({}); 
 
   const handleTopicClick = (topic) => {
     if (selectedTopic === topic) {
@@ -231,12 +324,25 @@ const SubscribeBar = ( { onTopicSelect } ) => {
         { topic: topic.englishTopic }
       );
 
-      Swal.fire({
-        icon: "success",
-        title: "구독 성공",
-        text: `${topic.koreanTopic}를 구독하셨습니다`,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "구독 성공",
+      //   text: `${topic.koreanTopic}를 구독하셨습니다`,
+      // });
 
+      // 클릭한 토픽에만 애니메이션 효과 적용
+      setRingingTopics((prevState) => ({
+        ...prevState,
+        [topic.id]: true, // 해당 토픽의 아이콘에 애니메이션 적용
+      }));
+
+      setTimeout(() => {
+        setRingingTopics((prevState) => ({
+          ...prevState,
+          [topic.id]: false, 
+        }));
+      }, 1000);
+      
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>
           item.koreanTopic === topic.koreanTopic ? { ...item, subscribed: true } : item
@@ -331,7 +437,7 @@ const SubscribeBar = ( { onTopicSelect } ) => {
             <MenuItem
               key={item.id}
               onClick={() => handleTopicClick(item.englishTopic)}
-              isSelected={selectedTopic === item.englishTopic} // 선택된 토픽인지 확인
+              isSelected={selectedTopic === item.englishTopic}
             >
               {item.koreanTopic}
             </MenuItem>
@@ -364,7 +470,7 @@ const SubscribeBar = ( { onTopicSelect } ) => {
             : `${process.env.PUBLIC_URL}/icons/arrow_right.svg`
         }
         alt="arrow"
-        style={{ width: '24px', height: '24px' }} // 아이콘 크기 조정
+        style={{ width: '24px', height: '24px' }} 
       />
     </CategoryTitle>
               {openCategory === category &&
@@ -372,18 +478,20 @@ const SubscribeBar = ( { onTopicSelect } ) => {
                   <MenuItemInModal key={item.id}>
                     <div>{item.koreanTopic}</div>
                     <div>
-                      {item.subscribed ? (
-                  <ModalHeaderIcon
-                    onClick={() => handleUnsubscribe(item)}
-                    loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
-                  />
-                ) : (
-                  <ModalHeaderIcon
-                    onClick={() => handleSubscribe(item)}
-                    loading="lazy"
-                    src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
-                  />
+{item.subscribed ? (
+  <BellIcon
+    onClick={() => handleUnsubscribe(item)}
+    loading="lazy"
+    ringing={ringingTopics[item.id]} 
+  >
+    <IconImage src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`} alt="구독중 아이콘" />
+    <span>구독중</span> 
+  </BellIcon>
+) : (
+  <SubscribeButton
+    onClick={() => handleSubscribe(item)}
+    loading="lazy"
+  >구독</SubscribeButton>
                 )}
                     </div>
                   </MenuItemInModal>
