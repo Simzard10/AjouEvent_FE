@@ -12,11 +12,9 @@ import PWAPrompt from 'react-ios-pwa-prompt';
 
 const AppContainer = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: column;
   background-color: #ffffff;
-  height: 100vh;
-  width: 100%;
 `;
 
 const MainContentContainer = styled.div`
