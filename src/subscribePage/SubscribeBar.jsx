@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, {keyframes} from "styled-components";
+import useStore from "../store/useStore"; 
 import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
@@ -238,6 +239,16 @@ const CategoryTitle = styled.h2`
   cursor: pointer;
 `;
 
+const NotificationBadge = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: ${({ isRead }) => {
+    return isRead === false ? "inline-block" : "none";
+  }};
+`;
+
 const Toast = Swal.mixin({
   toast: true,
   position: "center-center",
@@ -251,6 +262,7 @@ const Toast = Swal.mixin({
 });
 
 const SubscribeBar = ( { onTopicSelect } ) => {
+  const { isTopicTabRead, setIsTopicTabRead } = useStore(); 
   const [menuItems, setMenuItems] = useState([]);
   const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -267,28 +279,41 @@ const SubscribeBar = ( { onTopicSelect } ) => {
       setSelectedTopic(topic); 
       onTopicSelect(topic);  
     }
+    
+    // 클릭한 토픽의 읽음 상태를 반영
+    setSubscribeItems((prevItems) =>
+      prevItems.map((item) =>
+        item.englishTopic === topic ? { ...item, isRead: true } : item
+      )
+    );
+
   };
 
   const handleCategoryClick = (category) => {
     setOpenCategory(openCategory === category ? null : category);
   };
 
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
-        );
-        const datas = response.data;
-        setMenuItems(datas);
-      } catch (error) {
-        console.error("Error fetching menu items:", error);
-      }
-    };
+  // 구독 설정 데이터 불러오기 함수
+  const fetchMenuItems = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
+      );
+      const datas = response.data;
+      setMenuItems(datas);
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+    }
+  };
 
-    fetchMenuItems();
-  }, []);
+  // 구독 설정 버튼 클릭 시 API 호출 및 모달 열기
+  const handleShowModal = async () => {
+    if (!showModal) {
+      await fetchMenuItems(); // 메뉴 아이템을 불러옴
+    }
+    setShowModal(!showModal);
+  };
 
   useEffect(() => {
     const fetchSubscribeItems = async () => {
@@ -427,7 +452,7 @@ const SubscribeBar = ( { onTopicSelect } ) => {
   return (
   <Container>
     <MenuBarContainer>
-      <ViewAllButton isSelected={true} onClick={() => setShowModal(true)}>
+      <ViewAllButton isSelected={true} onClick={handleShowModal}>
         <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/gear.svg`} />
         <p>구독 설정</p>
       </ViewAllButton>
@@ -439,7 +464,8 @@ const SubscribeBar = ( { onTopicSelect } ) => {
               onClick={() => handleTopicClick(item.englishTopic)}
               isSelected={selectedTopic === item.englishTopic}
             >
-              {item.koreanTopic}
+              <span>{item.koreanTopic}</span>
+              <NotificationBadge isRead={item.isRead} />
             </MenuItem>
           ))
         ) : (

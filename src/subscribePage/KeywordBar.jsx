@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components"; 
 import { useNavigate } from "react-router-dom";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import useStore from "../store/useStore"; 
 
 const Container = styled.div`
   display: flex;
@@ -72,7 +73,18 @@ const ViewAllIcon = styled.img`
   object-fit: cover;
 `;
 
+const NotificationBadge = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: ${({ isRead }) => {
+    return isRead === false ? "inline-block" : "none";
+  }};
+`;
+
 const KeywordBar = ({ onKeywordSelect, selectedKeyword }) => {
+  const { isKeywordTabRead, setIsKeywordTabRead } = useStore(); 
   const [keywords, setKeywords] = useState([]);
   const navigate = useNavigate();
 
@@ -94,6 +106,15 @@ const KeywordBar = ({ onKeywordSelect, selectedKeyword }) => {
 
   const handleItemClick = (keyword) => {
     onKeywordSelect(keyword);
+    
+      setKeywords((prevItems) =>
+        prevItems.map((item) =>
+          item.encodedKeyword === keyword.encodedKeyword
+            ? { ...item, isRead: true }
+            : item
+        )
+      );
+   
   };
 
   return (
@@ -107,10 +128,11 @@ const KeywordBar = ({ onKeywordSelect, selectedKeyword }) => {
           {keywords.map((item, index) => (
             <MenuItem
               key={index}
-              isSelected={selectedKeyword?.englishKeyword === item.englishKeyword}
+              isSelected={selectedKeyword?.encodedKeyword === item.encodedKeyword}
               onClick={() => handleItemClick(item)}
             >
               {item.koreanKeyword}
+              <NotificationBadge isRead={item.isRead} />
             </MenuItem>
           ))}
         </MenuItemContainer>
