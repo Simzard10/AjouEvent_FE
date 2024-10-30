@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { EtoKCodes, priorityOrder } from "../departmentCodes";
+import styled, { keyframes } from "styled-components";
+import useStore from "../store/useStore";
+import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 
@@ -106,6 +107,99 @@ const ModalHeaderIcon = styled.img`
   object-position: center;
 `;
 
+const BellIcon = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: ${(props) => (props.isProcessing ? "#e0e0e0" : "#f5f5f5")};
+  color: #000000;
+  font-family: "Pretendard Variable", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50px;
+  border: none;
+  cursor: ${(props) => (props.isProcessing ? "not-allowed" : "pointer")};
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) =>
+      props.isProcessing ? "#e0e0e0" : "#e6e6e6"};
+  }
+
+  animation: ${(props) => (props.ringing ? gradientChange : "none")} 2s
+    ease-in-out;
+
+  img {
+    animation: ${(props) => (props.ringing ? ring : "none")} 1s ease-in-out;
+  }
+
+  span {
+    animation: ${(props) => (props.ringing ? ringText : "none")} 1s ease-in-out;
+  }
+`;
+
+const gradientChange = keyframes`
+  0% { background-color: #f5f5f5; }
+  10% { background-color: #e0edf8; }
+  20% { background-color: #c9e0f2; }
+  30% { background-color: #b3d3ec; }
+  40% { background-color: #9cc7e6; }
+  50% { background-color: #92C1E9; }
+  60% { background-color: #9cc7e6; }
+  70% { background-color: #b3d3ec; }
+  80% { background-color: #c9e0f2; }
+  90% { background-color: #e0edf8; }
+  100% { background-color: #f5f5f5; }
+`;
+
+const IconImage = styled.img`
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+`;
+
+// Keyframes for bell ringing animation
+const ring = keyframes`
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+  100% { transform: rotate(0); }
+`;
+
+// Keyframes for text animation
+const ringText = keyframes`
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+  100% { transform: rotate(0); }
+`;
+
+const SubscribeButton = styled.button`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #0072ce;
+  color: #ffffff;
+  font-family: "Pretendard Variable", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 8px;
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
 const ModalHeaderTitle = styled.h1`
   color: #000;
   font-family: "Pretendard Variable";
@@ -147,6 +241,16 @@ const CategoryTitle = styled.h2`
   cursor: pointer;
 `;
 
+const NotificationBadge = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: ${({ isRead }) => {
+    return isRead === false ? "inline-block" : "none";
+  }};
+`;
+
 const Toast = Swal.mixin({
   toast: true,
   position: "center-center",
@@ -166,6 +270,7 @@ const SubscribeBar = ({ onTopicSelect }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const [ringingTopics, setRingingTopics] = useState({});
 
   const handleTopicClick = (topic) => {
     if (selectedTopic === topic) {
@@ -175,28 +280,40 @@ const SubscribeBar = ({ onTopicSelect }) => {
       setSelectedTopic(topic);
       onTopicSelect(topic);
     }
+
+    // 클릭한 토픽의 읽음 상태를 반영
+    setSubscribeItems((prevItems) =>
+      prevItems.map((item) =>
+        item.englishTopic === topic ? { ...item, isRead: true } : item
+      )
+    );
   };
 
   const handleCategoryClick = (category) => {
     setOpenCategory(openCategory === category ? null : category);
   };
 
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
-        );
-        const datas = response.data;
-        setMenuItems(datas);
-      } catch (error) {
-        console.error("Error fetching menu items:", error);
-      }
-    };
+  // 구독 설정 데이터 불러오기 함수
+  const fetchMenuItems = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        "get",
+        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
+      );
+      const datas = response.data;
+      setMenuItems(datas);
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+    }
+  };
 
-    fetchMenuItems();
-  }, []);
+  // 구독 설정 버튼 클릭 시 API 호출 및 모달 열기
+  const handleShowModal = async () => {
+    if (!showModal) {
+      await fetchMenuItems(); // 메뉴 아이템을 불러옴
+    }
+    setShowModal(!showModal);
+  };
 
   useEffect(() => {
     const fetchSubscribeItems = async () => {
@@ -232,11 +349,24 @@ const SubscribeBar = ({ onTopicSelect }) => {
         { topic: topic.englishTopic }
       );
 
-      Swal.fire({
-        icon: "success",
-        title: "구독 성공",
-        text: `${topic.koreanTopic}를 구독하셨습니다`,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "구독 성공",
+      //   text: `${topic.koreanTopic}를 구독하셨습니다`,
+      // });
+
+      // 클릭한 토픽에만 애니메이션 효과 적용
+      setRingingTopics((prevState) => ({
+        ...prevState,
+        [topic.id]: true, // 해당 토픽의 아이콘에 애니메이션 적용
+      }));
+
+      setTimeout(() => {
+        setRingingTopics((prevState) => ({
+          ...prevState,
+          [topic.id]: false,
+        }));
+      }, 1000);
 
       setMenuItems((prevMenuItems) =>
         prevMenuItems.map((item) =>

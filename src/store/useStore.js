@@ -1,4 +1,3 @@
-// ../store/useStore.js
 import { create } from "zustand";
 
 const useStore = create((set) => ({
@@ -6,6 +5,9 @@ const useStore = create((set) => ({
   savedOption1: "",
   savedOption2: "아주대학교-일반",
   isAuthorized: false,
+  isTopicTabRead: true, 
+  isKeywordTabRead: true, 
+  isSubscribedTabRead: true, 
 
   setSavedKeyword: (savedKeyword) => {
     set({ savedKeyword });
@@ -17,8 +19,17 @@ const useStore = create((set) => ({
     set({ savedOption2 });
   },
   setIsAuthorized: () => {
-    set(true);
+    set({ isAuthorized: true });
   },
+  setIsTopicTabRead: (isRead) => {
+    set({ isTopicTabRead: isRead });
+  },
+  setIsKeywordTabRead: (isRead) => {
+    set({ isKeywordTabRead: isRead });
+  },
+  setIsSubscribedTabRead: (isRead) => {
+    set({ isSubscribedTabRead: isRead });
+  }
 }));
 
 export default useStore;

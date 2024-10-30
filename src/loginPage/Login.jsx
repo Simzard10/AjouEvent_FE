@@ -28,7 +28,7 @@ const LogoWrapper = styled.div`
 const Logo = styled.div`
   width: 100px;
   height: 100px;
-  background: url('../image/AjouUniversity-logo.png') no-repeat center center;
+  background: url("../image/AjouUniversity-logo.png") no-repeat center center;
   background-size: contain;
 `;
 
@@ -48,6 +48,20 @@ const HeadingWrapper = styled.div`
   align-items: start;
   justify-content: baseline;
   padding-left: 1rem;
+`;
+
+// 새로 추가된 스타일
+const StyledParagraph = styled.p`
+  color: #000;
+  font-size: 15px;
+  font-family: "Pretendard Variable";
+  margin-top: 10px; /* 상단 여백 추가 */
+  margin-bottom: 10px; /* 하단 여백 추가 */
+`;
+
+const HighlightedText = styled.span`
+  color: red;
+  font-weight: bold;
 `;
 
 const Form = styled.form`
@@ -131,21 +145,21 @@ const GoogleLoginButton = styled.button`
 
 const BottomLinks = styled.div`
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   margin: 20px auto;
   margin-top: 20px;
   font-size: 14px;
   color: #6f6f6f;
-  width: 90%; 
-  max-width: 680px;  
+  width: 90%;
+  max-width: 680px;
 
   span {
     color: #000;
   }
 
   a {
-    color: #0072CE; 
+    color: #0072ce;
     text-decoration: none;
     font-weight: 700;
   }
@@ -187,8 +201,8 @@ const Login = () => {
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
-        title: "알림허용안됨",
-        text: "홈화면의 알림아이콘을 터치해주세요",
+        title: "알림토큰 미등록",
+        text: "브라우저 메뉴에서 '홈 화면에 추가'를 통해 설치 / 모바일 ios 최신 버전으로 업데이트해주세요",
       });
       return;
     }
@@ -203,6 +217,12 @@ const Login = () => {
       <Form>
         <HeadingWrapper>
           <Heading>로그인</Heading>
+        </HeadingWrapper>
+        <HeadingWrapper>
+          <StyledParagraph>
+            기본 로그인이 <HighlightedText>구글 로그인</HighlightedText>으로
+            통합되었습니다.
+          </StyledParagraph>
         </HeadingWrapper>
       </Form>
       <GoogleLoginButton onClick={handleGoogleButtonClicked}>
@@ -222,7 +242,7 @@ const Login = () => {
         서비스 문의: jysim0326@ajou.ac.kr
       </Description>
       <LogoWrapper>
-          <Logo />
+        <Logo />
       </LogoWrapper>
     </Container>
   );

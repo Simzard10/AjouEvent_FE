@@ -28,7 +28,7 @@ const GetUserPermission = async (setIsLoading) => {
 
     if (!("Notification" in window)) {
       alert(
-        "본 기기는 웹에서 알림설정을 지원하지 않는 기기입니다. 바탕화면에 바로가기 추가 후, 홈페이지 상단에 종모양아이콘 클릭하여 꼭 수동으로 알림설정요청을 해주세요."
+        "알림 서비스를 원활하게 사용하시려면 바탕화면에 바로가기 추가 후, 홈페이지에 종모양아이콘 클릭하여 알림 허용을 해주세요."
       );
       return;
     }

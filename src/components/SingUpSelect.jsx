@@ -28,7 +28,7 @@ const LogoWrapper = styled.div`
 const Logo = styled.div`
   width: 100px;
   height: 100px;
-  background: url('../image/AjouUniversity-logo.png') no-repeat center center;
+  background: url("../image/AjouUniversity-logo.png") no-repeat center center;
   background-size: contain;
 `;
 
@@ -131,21 +131,21 @@ const GoogleLoginButton = styled.button`
 
 const BottomLinks = styled.div`
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   margin: 20px auto;
   margin-top: 20px;
   font-size: 14px;
   color: #6f6f6f;
-  width: 90%; 
-  max-width: 680px;  
+  width: 90%;
+  max-width: 680px;
 
   span {
     color: #000;
   }
 
   a {
-    color: #0072CE; 
+    color: #0072ce;
     text-decoration: none;
     font-weight: 700;
   }
@@ -161,7 +161,6 @@ const Description = styled.p`
 `;
 
 const Login = () => {
-  
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -178,8 +177,8 @@ const Login = () => {
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
-        title: "알림허용안됨",
-        text: "홈화면의 알림아이콘을 터치해주세요",
+        title: "알림토큰 미등록",
+        text: "브라우저 메뉴에서 '홈 화면에 추가'를 통해 설치 / 모바일 ios 최신 버전으로 업데이트해주세요",
       });
       return;
     }
@@ -195,7 +194,6 @@ const Login = () => {
         </HeadingWrapper>
       </Form>
 
-
       {/* <SingUpButton onClick= {handelSignUpButtonClicked} type="submit" className="signin__btn">
          @ajou.ac.kr 이메일로 회원가입
       </SingUpButton> */}
@@ -207,7 +205,7 @@ const Login = () => {
       <BottomLinks>
         <span>이미 회원이신가요?</span>
         <Link to="/login">로그인</Link>
-          {/* <span>|</span>
+        {/* <span>|</span>
           <Link to="/findPassword">비밀번호 찾기</Link> */}
       </BottomLinks>
       <Description>
@@ -218,7 +216,7 @@ const Login = () => {
         서비스 문의: jysim0326@ajou.ac.kr <br />
       </Description>
       <LogoWrapper>
-          <Logo />
+        <Logo />
       </LogoWrapper>
     </Container>
   );
