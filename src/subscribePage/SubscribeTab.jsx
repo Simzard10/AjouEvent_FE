@@ -14,9 +14,10 @@ const AppContainer = styled.div`
 `;
 
 export default function SubscribeTab() {
-  const { savedKeyword, setSavedKeyword, setIsTopicTabRead } = useStore((state) => ({
+  const { savedKeyword, setSavedKeyword } = useStore((state) => ({
     savedKeyword: state.savedKeyword,
     setSavedKeyword: state.setSavedKeyword,
+    isTopicTabRead: state.isTopicTabRead,
     setIsTopicTabRead: state.setIsTopicTabRead,
   }));
 
@@ -89,52 +90,11 @@ export default function SubscribeTab() {
   }, [loading, hasMore, fetchData]);
 
 
-
-    // Handle infinite scroll
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !loading && hasMore) {
-                    fetchData();
-                }
-            },
-            { threshold: 1 }
-        );
-
-        if (bottomRef.current) {
-            observer.observe(bottomRef.current);
-        }
-
-        return () => {
-            if (bottomRef.current) {
-                observer.unobserve(bottomRef.current);
-            }
-        };
-    }, [loading, hasMore, fetchData]);
-
-  const fetchReadStatus = async () => {
-    try {
-      const response = await requestWithAccessToken("get", `${process.env.REACT_APP_BE_URL}/api/event/readStatus`);
-      setIsTopicTabRead(response.data.isTopicTabRead);  // 서버에서 온 데이터로 상태 업데이트
-    } catch (error) {
-      console.error("Error fetching read status", error);
-    }
-  };  
-    
-
   const handleTopicSelect = (topic) => {
     if (selectedTopic === topic) {
       setSelectedTopic(null);  
     } else {
       setSelectedTopic(topic); 
-      // 토픽 선택 시 읽음 상태 갱신
-      requestWithAccessToken("post", `${process.env.REACT_APP_BE_URL}/api/event/updateTopicTabRead`)
-        .then(() => {
-          fetchReadStatus();
-        })
-        .catch((error) => {
-          console.error("Error updating topic read status:", error);
-        });
     }
     setPage(0); 
     setEvents([]);

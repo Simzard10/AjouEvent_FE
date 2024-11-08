@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, {keyframes} from "styled-components";
 import useStore from "../store/useStore"; 
-import { EtoKCodes } from "../departmentCodes";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 
@@ -262,9 +261,8 @@ const Toast = Swal.mixin({
 });
 
 const SubscribeBar = ( { onTopicSelect } ) => {
-  const { isTopicTabRead, setIsTopicTabRead } = useStore(); 
+  const { isTopicTabRead, setIsTopicTabRead, markTopicAsRead, subscribeItems, fetchSubscribeItems } = useStore(); 
   const [menuItems, setMenuItems] = useState([]);
-  const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
@@ -280,13 +278,8 @@ const SubscribeBar = ( { onTopicSelect } ) => {
       onTopicSelect(topic);  
     }
     
-    // 클릭한 토픽의 읽음 상태를 반영
-    setSubscribeItems((prevItems) =>
-      prevItems.map((item) =>
-        item.englishTopic === topic ? { ...item, isRead: true } : item
-      )
-    );
-
+    // 클릭한 토픽의 읽음 상태를 업데이트
+    markTopicAsRead(topic);
   };
 
   const handleCategoryClick = (category) => {
@@ -316,21 +309,22 @@ const SubscribeBar = ( { onTopicSelect } ) => {
   };
 
   useEffect(() => {
-    const fetchSubscribeItems = async () => {
-      try {
-        const response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`
-        );
-        const topics = response.data;
-        setSubscribeItems(topics);
-      } catch (error) {
-        console.error("Error fetching subscribe items:", error);
-      }
-    };
-
     fetchSubscribeItems();
   }, [menuItems]);
+
+
+  useEffect(() => {
+   const allTopicsRead = subscribeItems.length > 0 && subscribeItems.every(item => item.isRead === true);
+
+    // 모든 항목이 읽음 상태가 되었을 때만 isTopicTabRead를 업데이트
+    if (allTopicsRead && !isTopicTabRead) {
+      setIsTopicTabRead(true);
+    } else if (!allTopicsRead && !isTopicTabRead) {
+      // 읽지 않은 항목이 있는 경우, isTopicTabRead를 false로 설정
+      setIsTopicTabRead(false);
+    }
+  }, [subscribeItems, isTopicTabRead]);
+
 
   const handleSubscribe = async (topic) => {
     if (isProcessing) return;
@@ -348,6 +342,12 @@ const SubscribeBar = ( { onTopicSelect } ) => {
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
         { topic: topic.englishTopic }
       );
+
+      // 구독에 성공한 후 subscribeItems를 새로 불러오기
+      await fetchSubscribeItems();
+
+      // 구독에 성공하면 isTopicTabRead를 false로 설정하여 읽지 않은 항목이 있음을 표시
+      setIsTopicTabRead(false);
 
       // Swal.fire({
       //   icon: "success",

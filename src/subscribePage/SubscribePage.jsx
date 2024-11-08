@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import useStore from "../store/useStore";
 import NavigationBar from "../components/NavigationBar";
@@ -81,36 +81,18 @@ const SubscribeContainer = styled.div`
 `;
 
 export default function SubscribePage() {
-  const {
-    isTopicTabRead, isKeywordTabRead, setIsTopicTabRead, setIsKeywordTabRead, setIsSubscribedTabRead
-  } = useStore(); 
-  const [activeTab, setActiveTab] = useState("subscribe");
+  const location = useLocation();
+  const { isTopicTabRead, isKeywordTabRead, fetchMemberStatus } = useStore();
+  const [activeTab, setActiveTab] = useState(location.state?.activeTab || "subscribe");
 
   const accessToken = localStorage.getItem("accessToken");
 
-  const fetchReadStatus = async () => {
-    try {
-      const response = await requestWithAccessToken("get", `${process.env.REACT_APP_BE_URL}/api/event/readStatus`);
-      setIsTopicTabRead(response.data.isTopicTabRead);  
-      setIsKeywordTabRead(response.data.isKeywordTabRead);
-      setIsSubscribedTabRead(response.data.isSubscribedTabRead);  
-    } catch (error) {
-      console.error("Error fetching read status", error);
-    }
-  };
-
   useEffect(() => {
-    fetchReadStatus(); 
+    fetchMemberStatus();
   }, []);
 
   const handleTabClick = async (tabName) => {
     setActiveTab(tabName);
-    if (tabName === "subscribe") {
-      await requestWithAccessToken("post", `${process.env.REACT_APP_BE_URL}/api/event/updateTopicTabRead`);
-      
-    } else if (tabName === "keyword") {
-      await requestWithAccessToken("post", `${process.env.REACT_APP_BE_URL}/api/event/updateKeywordTabRead`);
-    }
   };
 
   return (
