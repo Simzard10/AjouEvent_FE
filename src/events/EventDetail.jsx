@@ -7,6 +7,20 @@ import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 import EventBanner from "./EventBanner";
 import axios from "axios";
+import ImageModal from "./ImageModal"; 
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -216,6 +230,7 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null);
   const [content, setContent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
   const fetchEvent = async () => {
@@ -281,6 +296,11 @@ const EventDetail = () => {
     }
   };
 
+  const handleImageClick = (index) => {
+    setCurrentImageIndex(index);
+    setIsModalOpen(true);
+  };
+
   const handleStarClick = async () => {
     try {
       if (event.star) {
@@ -319,7 +339,10 @@ const EventDetail = () => {
       {event ? (
         <EventContainer>
           <TabBar Title={"공지사항"} />
-          <EventBanner images={event.imgUrl} />
+          <EventBanner
+            images={event.imgUrl}
+            onImageClick={handleImageClick}
+          />
           <ContentContaioner>
             <TitleContainer>
               <Subject>{event.subject}</Subject>
@@ -368,16 +391,14 @@ const EventDetail = () => {
             )}
 
             <BottomBody>
-              <Button onClick={() => setIsModalOpen(true)}>
-                캘린더에 추가
-              </Button>
+              <Button onClick={() => setIsModalOpen(true)}>캘린더에 추가</Button>
             </BottomBody>
           </BottomContainer>
           {isModalOpen && (
-            <CalendarModal
-              setIsModalOpen={setIsModalOpen}
-              title={event.title}
-              content={content}
+            <ImageModal
+              images={event.imgUrl}
+              currentIndex={currentImageIndex}
+              onClose={() => setIsModalOpen(false)}
             />
           )}
         </EventContainer>

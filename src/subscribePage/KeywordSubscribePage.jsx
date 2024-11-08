@@ -6,6 +6,7 @@ import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 import Inko from 'inko'; // 한타를 영어로 변환해주는 라이브러리
+import useStore from "../store/useStore";
 
 const AppContainer = styled.div`
   display: flex;
@@ -343,6 +344,9 @@ const Toast = Swal.mixin({
 });
 
 export default function KeywordSubscribePage() {
+  const { setSubscribedKeywords } = useStore((state) => ({
+    setSubscribedKeywords: state.setSubscribedKeywords,
+  }));
   const accessToken = localStorage.getItem("accessToken");
   const navigate = useNavigate();
   const [keywords, setKeywords] = useState([]);
@@ -356,13 +360,8 @@ export default function KeywordSubscribePage() {
   const [menuItems, setMenuItems] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
 
-  // 뒤로가기 클릭 시 구독 페이지로 이동
   const arrowBackClicked = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      navigate("/subscribe");
-    }
+    navigate("/subscribe", { state: { activeTab: "keyword" } });
   };
 
    // 입력값 변화 처리
@@ -438,8 +437,7 @@ export default function KeywordSubscribePage() {
       text: `${finalInputValue}를 구독하셨습니다`,
     });
 
-    // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
-    await fetchUserKeywords();
+    fetchUserKeywords();
 
   } catch (error) {
     handleError(error.response);
@@ -450,7 +448,6 @@ export default function KeywordSubscribePage() {
   }
 };
 
-  // useEffect 안에 있던 fetchUserKeywords를 밖으로 빼서 다른 곳에서도 호출할 수 있도록 수정합니다.
   const fetchUserKeywords = async () => {
     try {
       const response = await requestWithAccessToken(
@@ -459,6 +456,7 @@ export default function KeywordSubscribePage() {
       );
       const userKeywords = response.data;
       setKeywords(userKeywords); 
+      setSubscribedKeywords(userKeywords);
     } catch (error) {
       console.error("Error fetching user keywords:", error);
     }

@@ -23,7 +23,11 @@ const KeywordListContainer = styled.div`
 `;
 
 export default function KeywordTab() {
-  const { isKeywordTabRead, setIsKeywordTabRead } = useStore();  
+
+  const { setIsKeywordTabRead } = useStore((state) => ({
+    setIsKeywordTabRead: state.setIsKeywordTabRead,
+  }));
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -32,6 +36,9 @@ export default function KeywordTab() {
   const [selectedKeyword, setSelectedKeyword] = useState(null);
   const pageSize = 10;
   const bottomRef = useRef(null);
+
+  
+
 
   const fetchEvents = useCallback(async (keyword) => {
     if (loading || !hasMore) return;
@@ -59,7 +66,7 @@ export default function KeywordTab() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, selectedKeyword, isKeywordTabRead, setIsKeywordTabRead]);
+  }, [loading, hasMore, page, selectedKeyword]);
 
   // Infinite Scroll
   useEffect(() => {
@@ -93,24 +100,25 @@ export default function KeywordTab() {
   };  
 
   const handleKeywordSelect = async (keyword) => {
-    if (selectedKeyword && selectedKeyword.encodedKeyword === keyword.encodedKeyword) {
-      setSelectedKeyword(null);
-    } else {
-      setSelectedKeyword(keyword);
 
-      // 토픽 선택 시 읽음 상태 갱신
-      requestWithAccessToken("post", `${process.env.REACT_APP_BE_URL}/api/event/updateKeywordTabRead`)
-        .then(() => {
-          fetchReadStatus();
-        })
-        .catch((error) => {
-          console.error("Error updating keyword read status:", error);
-        });
-    }
-    setEvents([]);
-    setPage(0);
-    setHasMore(true);
-  };
+  // keyword가 null이 아닌지 확인하고 처리
+  if (selectedKeyword && selectedKeyword.encodedKeyword === keyword?.encodedKeyword) {
+    setSelectedKeyword(null);
+  } else {
+    setSelectedKeyword(keyword);
+  }
+  
+  setEvents([]);
+  setPage(0);
+  setHasMore(true);
+
+  // 선택된 키워드가 null이 아닐 때만 fetchEvents 호출
+  if (keyword) {
+    fetchEvents(keyword);
+  } else {
+    fetchEvents(); // 키워드가 null이면 전체 목록 호출
+  }
+};
 
   useEffect(() => {
     fetchEvents(selectedKeyword); // selectedKeyword나 페이지 변경 시 데이터 로드
@@ -118,7 +126,7 @@ export default function KeywordTab() {
 
   return (
     <AppContainer>
-      <KeywordBar onKeywordSelect={handleKeywordSelect} selectedKeyword={selectedKeyword} />
+      <KeywordBar onKeywordSelect={handleKeywordSelect}/>
       <SearchBar setKeyword={setSelectedKeyword} />
       <KeywordListContainer>
         {events.map((event, index) => (

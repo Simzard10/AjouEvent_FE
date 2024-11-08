@@ -83,53 +83,54 @@ const NotificationBadge = styled.div`
   }};
 `;
 
-const KeywordBar = ({ onKeywordSelect, selectedKeyword }) => {
-  const { isKeywordTabRead, setIsKeywordTabRead } = useStore(); 
-  const [keywords, setKeywords] = useState([]);
+const KeywordBar = ({ onKeywordSelect }) => {
+  const { isKeywordTabRead, setIsKeywordTabRead, subscribedKeywords, markKeywordAsRead, fetchSubscribedKeywords } = useStore(); 
   const navigate = useNavigate();
+  const [selectedKeyword, setSelectedKeyword] = useState(null);
 
   useEffect(() => {
-    fetchSubscribeKeywords();
+    fetchSubscribedKeywords();
   }, []);
 
-  const fetchSubscribeKeywords = async () => {
-    try {
-      const response = await requestWithAccessToken(
-        "get",
-        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`
-      );
-      setKeywords(response.data);
-    } catch (error) {
-      console.error("Error fetching subscribe keywords:", error);
-    }
-  };
+  useEffect(() => {
+  const allKeywordsRead = subscribedKeywords.length > 0 && subscribedKeywords.every(item => item.isRead === true);
 
-  const handleItemClick = (keyword) => {
-    onKeywordSelect(keyword);
+  // 모든 항목이 읽음 상태가 되었을 때만 isKeywordTabRead를 업데이트
+  if (allKeywordsRead && !isKeywordTabRead) {
+    setIsKeywordTabRead(true);
+  } else if (!allKeywordsRead && isKeywordTabRead) {
+    setIsKeywordTabRead(false);
+    }
+  }, [subscribedKeywords, isKeywordTabRead, setIsKeywordTabRead]);
+
+  
+
+
+  const handleKeywordClick = (keyword) => {
+    if (selectedKeyword?.encodedKeyword === keyword.encodedKeyword) {
+      setSelectedKeyword(null); 
+      onKeywordSelect(null);    
+    } else {
+      setSelectedKeyword(keyword); 
+      onKeywordSelect(keyword);  
+    }
     
-      setKeywords((prevItems) =>
-        prevItems.map((item) =>
-          item.encodedKeyword === keyword.encodedKeyword
-            ? { ...item, isRead: true }
-            : item
-        )
-      );
-   
+    markKeywordAsRead(keyword);
   };
 
   return (
     <Container>
       <MenuBarContainer>
-        <ViewAllButton onClick={() => navigate('/subscribe/keywordSubscribe')}>
+        <ViewAllButton onClick={() => navigate('/subscribe/keywordSubscribe', { state: { tab: "keyword" } })}>
           <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`} />
           <p>키워드 설정</p>
         </ViewAllButton>
         <MenuItemContainer>
-          {keywords.map((item, index) => (
+          {subscribedKeywords.map((item, index) => (
             <MenuItem
               key={index}
               isSelected={selectedKeyword?.encodedKeyword === item.encodedKeyword}
-              onClick={() => handleItemClick(item)}
+              onClick={() => handleKeywordClick(item)}
             >
               {item.koreanKeyword}
               <NotificationBadge isRead={item.isRead} />
