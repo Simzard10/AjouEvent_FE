@@ -119,6 +119,7 @@ function NavigationBar() {
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
 
   useEffect(() => {
+    fetchMemberStatus(); // 페이지 로드 시 사용자 구독 상태 가져오기
     // iOS 장치인지 확인
     const isDeviceIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
     setIsIOS(isDeviceIOS);
