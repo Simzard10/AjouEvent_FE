@@ -16,14 +16,19 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   position: relative;
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  overflow: auto;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: auto;
-  max-height: 100%; 
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
   object-fit: contain; 
   border-radius: 8px;
 `;
@@ -43,15 +48,24 @@ const ArrowButton = styled.button`
 `;
 
 const PrevButton = styled(ArrowButton)`
-  left: -30px;
+  left: 10px;
+  z-index: 10;
+  filter: invert(50%);
 `;
 
 const NextButton = styled(ArrowButton)`
-  right: -30px;
+  right: 10px; 
+  z-index: 10;
 `;
 
 function ImageModal({ images, currentIndex, onClose }) {
   const [index, setIndex] = useState(currentIndex);
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : images.length - 1));
@@ -62,8 +76,8 @@ function ImageModal({ images, currentIndex, onClose }) {
   };
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay onClick={handleOverlayClick}>
+      <ModalContent>
         <Image src={images[index]} alt={`Image ${index + 1}`} />
         {images.length > 1 && (
           <>
