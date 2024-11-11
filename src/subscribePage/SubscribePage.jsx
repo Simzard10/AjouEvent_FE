@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import useStore from "../store/useStore";
 import NavigationBar from "../components/NavigationBar";
 import LocationBar from "../components/LocationBar";
 import SubscribeTab from "./SubscribeTab";
 import KeywordTab from './KeywordTab';
+import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
 const AppContainer = styled.div`
   display: flex;
@@ -61,6 +63,17 @@ const Tab = styled.div`
   color: ${(props) => (props.active ? "#000" : "#333")};
   font-weight: ${(props) => (props.active ? "bold" : "normal")};
   transition: background-color 0.3s ease;
+  position: relative;
+`;
+
+const Badge = styled.div`
+  position: absolute;
+  top: 0;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
 `;
 
 const SubscribeContainer = styled.div`
@@ -68,9 +81,19 @@ const SubscribeContainer = styled.div`
 `;
 
 export default function SubscribePage() {
-  const [activeTab, setActiveTab] = useState("subscribe");
+  const location = useLocation();
+  const { isTopicTabRead, isKeywordTabRead, fetchMemberStatus } = useStore();
+  const [activeTab, setActiveTab] = useState(location.state?.activeTab || "subscribe");
 
   const accessToken = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    fetchMemberStatus();
+  }, []);
+
+  const handleTabClick = async (tabName) => {
+    setActiveTab(tabName);
+  };
 
   return (
     <AppContainer>
@@ -78,11 +101,13 @@ export default function SubscribePage() {
         <MainContentContaioner>
           <LocationBar location="구독" />
           <TabContainer>
-            <Tab active={activeTab === "subscribe"} onClick={() => setActiveTab("subscribe")}>
+            <Tab active={activeTab === "subscribe"} onClick={() => handleTabClick("subscribe")}>
               구독 알림
+              {!isTopicTabRead && <Badge />} {/* 읽지 않은 상태면 뱃지 표시 */}
             </Tab>
-            <Tab active={activeTab === "keyword"} onClick={() => setActiveTab("keyword")}>
+            <Tab active={activeTab === "keyword"} onClick={() => handleTabClick("keyword")}>
               키워드 알림
+              {!isKeywordTabRead && <Badge />} {/* 읽지 않은 상태면 뱃지 표시 */}
             </Tab>
           </TabContainer>
           {activeTab === "subscribe" && (

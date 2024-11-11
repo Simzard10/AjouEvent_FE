@@ -4,6 +4,7 @@ import KeywordBar from "./KeywordBar";
 import SearchBar from "../components/SearchBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import KeywordEventCard from "../events/KeywordEventCard";
+import useStore from "../store/useStore"; 
 
 const AppContainer = styled.div`
   display: flex;
@@ -22,6 +23,11 @@ const KeywordListContainer = styled.div`
 `;
 
 export default function KeywordTab() {
+
+  const { setIsKeywordTabRead } = useStore((state) => ({
+    setIsKeywordTabRead: state.setIsKeywordTabRead,
+  }));
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -31,6 +37,9 @@ export default function KeywordTab() {
   const pageSize = 10;
   const bottomRef = useRef(null);
 
+  
+
+
   const fetchEvents = useCallback(async (keyword) => {
     if (loading || !hasMore) return;
     setLoading(true);
@@ -38,7 +47,7 @@ export default function KeywordTab() {
 
     try {
       const url = keyword
-        ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${encodeURIComponent(keyword.englishKeyword)}?page=${page}&size=${pageSize}`
+        ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${keyword.encodedKeyword}?page=${page}&size=${pageSize}`
         : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword?page=${page}&size=${pageSize}`;
 
       const response = await requestWithAccessToken("get", url);
@@ -81,16 +90,35 @@ export default function KeywordTab() {
     };
   }, [hasMore, fetchEvents]);
 
-  const handleKeywordSelect = (keyword) => {
-    if (selectedKeyword && selectedKeyword.englishKeyword === keyword.englishKeyword) {
-      setSelectedKeyword(null);
-    } else {
-      setSelectedKeyword(keyword);
+  const fetchReadStatus = async () => {
+    try {
+      const response = await requestWithAccessToken("get", `${process.env.REACT_APP_BE_URL}/api/event/readStatus`);
+      setIsKeywordTabRead(response.data.isKeywordTabRead);
+    } catch (error) {
+      console.error("Error fetching read status", error);
     }
-    setEvents([]);
-    setPage(0);
-    setHasMore(true);
-  };
+  };  
+
+  const handleKeywordSelect = async (keyword) => {
+
+  // keyword가 null이 아닌지 확인하고 처리
+  if (selectedKeyword && selectedKeyword.encodedKeyword === keyword?.encodedKeyword) {
+    setSelectedKeyword(null);
+  } else {
+    setSelectedKeyword(keyword);
+  }
+  
+  setEvents([]);
+  setPage(0);
+  setHasMore(true);
+
+  // 선택된 키워드가 null이 아닐 때만 fetchEvents 호출
+  if (keyword) {
+    fetchEvents(keyword);
+  } else {
+    fetchEvents(); // 키워드가 null이면 전체 목록 호출
+  }
+};
 
   useEffect(() => {
     fetchEvents(selectedKeyword); // selectedKeyword나 페이지 변경 시 데이터 로드
@@ -98,7 +126,7 @@ export default function KeywordTab() {
 
   return (
     <AppContainer>
-      <KeywordBar onKeywordSelect={handleKeywordSelect} selectedKeyword={selectedKeyword} />
+      <KeywordBar onKeywordSelect={handleKeywordSelect}/>
       <SearchBar setKeyword={setSelectedKeyword} />
       <KeywordListContainer>
         {events.map((event, index) => (

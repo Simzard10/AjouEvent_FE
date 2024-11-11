@@ -14,10 +14,12 @@ const AppContainer = styled.div`
 `;
 
 export default function SubscribeTab() {
-    const { savedKeyword, setSavedKeyword } = useStore((state) => ({
-        savedKeyword: state.savedKeyword,
-        setSavedKeyword: state.setSavedKeyword,
-    }));
+  const { savedKeyword, setSavedKeyword } = useStore((state) => ({
+    savedKeyword: state.savedKeyword,
+    setSavedKeyword: state.setSavedKeyword,
+    isTopicTabRead: state.isTopicTabRead,
+    setIsTopicTabRead: state.setIsTopicTabRead,
+  }));
 
   const [keyword, setKeyword] = useState(savedKeyword);
   const [events, setEvents] = useState([]);
@@ -88,40 +90,16 @@ export default function SubscribeTab() {
   }, [loading, hasMore, fetchData]);
 
 
-
-    // Handle infinite scroll
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !loading && hasMore) {
-                    fetchData();
-                }
-            },
-            { threshold: 1 }
-        );
-
-        if (bottomRef.current) {
-            observer.observe(bottomRef.current);
-        }
-
-        return () => {
-            if (bottomRef.current) {
-                observer.unobserve(bottomRef.current);
-            }
-        };
-    }, [loading, hasMore, fetchData]);
-    
-
-    const handleTopicSelect = (topic) => {
-      if (selectedTopic === topic) {
-        setSelectedTopic(null);  
-      } else {
-        setSelectedTopic(topic); 
-      }
-      setPage(0); 
-      setEvents([]);
-      setHasMore(true); 
-    };
+  const handleTopicSelect = (topic) => {
+    if (selectedTopic === topic) {
+      setSelectedTopic(null);  
+    } else {
+      setSelectedTopic(topic); 
+    }
+    setPage(0); 
+    setEvents([]);
+    setHasMore(true); 
+  };
 
   useEffect(() => {
     fetchData(selectedTopic); // Topic이나 페이지 변경 시 데이터 재로드
