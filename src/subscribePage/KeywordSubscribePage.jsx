@@ -6,6 +6,7 @@ import NavigationBar from "../components/NavigationBar";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 import Inko from 'inko'; // 한타를 영어로 변환해주는 라이브러리
+import useStore from "../store/useStore";
 
 const AppContainer = styled.div`
   display: flex;
@@ -343,6 +344,9 @@ const Toast = Swal.mixin({
 });
 
 export default function KeywordSubscribePage() {
+  const { setSubscribedKeywords } = useStore((state) => ({
+    setSubscribedKeywords: state.setSubscribedKeywords,
+  }));
   const accessToken = localStorage.getItem("accessToken");
   const navigate = useNavigate();
   const [keywords, setKeywords] = useState([]);
@@ -356,13 +360,8 @@ export default function KeywordSubscribePage() {
   const [menuItems, setMenuItems] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
 
-  // 뒤로가기 클릭 시 구독 페이지로 이동
   const arrowBackClicked = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      navigate("/subscribe");
-    }
+    navigate("/subscribe", { state: { activeTab: "keyword" } });
   };
 
    // 입력값 변화 처리
@@ -372,10 +371,10 @@ export default function KeywordSubscribePage() {
     // 앞쪽 공백 제거
     value = value.replace(/^\s+/, '');
     
-    // 한글만 입력 허용
-    const koreanAndSpacePattern = /^[가-힣\s]*$/; // 한글과 공백만 허용
-    if (!koreanAndSpacePattern.test(value)) {
-      setErrorMessage('특수문자와 영어는 입력할 수 없습니다. 한글만 입력해 주세요.');
+    // 한글, 영어, 공백만 입력 허용
+    const koreanEnglishAndSpacePattern = /^[가-힣a-zA-Z\s]*$/;
+    if (!koreanEnglishAndSpacePattern.test(value)) {
+      setErrorMessage('특수문자는 입력할 수 없습니다. 한글과 영어만 입력해 주세요.');
     } else if (value.length === 0) {
       setErrorMessage('');
     } else if (value.length < 2) {
@@ -389,14 +388,11 @@ export default function KeywordSubscribePage() {
 
   // 구독 버튼 클릭 시
   const handleClick = async () => {
-  const koreanAndSpacePattern = /^[가-힣\s]*$/;
+  const koreanEnglishAndSpacePattern = /^[가-힣a-zA-Z\s]*$/;
 
   // 뒤 공백 제거
   const finalInputValue = inputValue.trimEnd();
 
-  // 한글 그대로 출력
-  var inko = new Inko();
-  var ko2en = inko.ko2en(finalInputValue);
 
   // 토픽이 선택되지 않은 경우
   if (!selectedTopic) {
@@ -408,7 +404,7 @@ export default function KeywordSubscribePage() {
     return;
   }
 
-  if (finalInputValue.length <= 1 || !koreanAndSpacePattern.test(inputValue)) {
+  if (finalInputValue.length <= 1 || !koreanEnglishAndSpacePattern.test(inputValue)) {
     Swal.fire({
       icon: 'error',
       title: '입력 오류',
@@ -420,9 +416,6 @@ export default function KeywordSubscribePage() {
 
   setIsProcessing(true);
   try {
-    // 한글을 영타로 변환
-    const inko = new Inko();
-    const englishKeyword = inko.ko2en(finalInputValue);
 
     Toast.fire({
       icon: "info",
@@ -433,7 +426,6 @@ export default function KeywordSubscribePage() {
       "post",
       `${process.env.REACT_APP_BE_URL}/api/keyword/subscribe`,
       {
-        englishKeyword: englishKeyword,
         koreanKeyword: finalInputValue,
         topicName: selectedTopic.englishTopic,
       }
@@ -445,8 +437,7 @@ export default function KeywordSubscribePage() {
       text: `${finalInputValue}를 구독하셨습니다`,
     });
 
-    // 구독 성공 후, 최신 키워드 리스트를 불러옵니다.
-    await fetchUserKeywords();
+    fetchUserKeywords();
 
   } catch (error) {
     handleError(error.response);
@@ -457,7 +448,6 @@ export default function KeywordSubscribePage() {
   }
 };
 
-  // useEffect 안에 있던 fetchUserKeywords를 밖으로 빼서 다른 곳에서도 호출할 수 있도록 수정합니다.
   const fetchUserKeywords = async () => {
     try {
       const response = await requestWithAccessToken(
@@ -466,6 +456,7 @@ export default function KeywordSubscribePage() {
       );
       const userKeywords = response.data;
       setKeywords(userKeywords); 
+      setSubscribedKeywords(userKeywords);
     } catch (error) {
       console.error("Error fetching user keywords:", error);
     }
@@ -477,7 +468,6 @@ export default function KeywordSubscribePage() {
 
     setIsProcessing(true);
 
-    console.log('구독 취소하는 키워드:', keyword.englishKeyword)
 
     try {
       Toast.fire({
@@ -488,7 +478,7 @@ export default function KeywordSubscribePage() {
       await requestWithAccessToken(
         "post",
         `${process.env.REACT_APP_BE_URL}/api/keyword/unsubscribe`,
-        { englishKeyword: keyword.englishKeyword }
+        { encodedKeyword: keyword.encodedKeyword }
       );
 
       Swal.fire({
@@ -498,7 +488,7 @@ export default function KeywordSubscribePage() {
       });
 
       setKeywords(prevKeywords =>
-        prevKeywords.filter(item => item.englishKeyword !== keyword.englishKeyword)
+        prevKeywords.filter(item => item.encodedKeyword !== keyword.encodedKeyword)
       );
 
     } catch (error) {
