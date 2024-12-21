@@ -229,60 +229,57 @@ const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [content, setContent] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-  const fetchEvent = async () => {
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
-      console.log(alreadyViewClubEventNum);
-      let response;
+    const fetchEvent = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
+        console.log(alreadyViewClubEventNum);
+        let response;
 
-      if (accessToken) {
-        // accessToken이 있을 경우
-        response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
-        );
-      } else {
-        // 쿠키가 있을 경우 또는 기본 요청
-        const config = alreadyViewClubEventNum
-          ? {
-              headers: {
-                Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
-              },
-              withCredentials: true,
-            }
-          : { withCredentials: true };
+        if (accessToken) {
+          response = await requestWithAccessToken(
+            "get",
+            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
+          );
+        } else {
+          const config = alreadyViewClubEventNum
+            ? {
+                headers: {
+                  Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
+                },
+                withCredentials: true,
+              }
+            : { withCredentials: true };
 
-        response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          config
-        );
+          response = await axios.get(
+            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+            config
+          );
+        }
+
+        if (response.data.content) {
+          setContent(response.data.content.split("\\n"));
+        }
+        setEvent(response.data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        if (error.response && error.response.status === 401) {
+          Swal.fire({
+            icon: "error",
+            title: "세션 만료",
+            text: "다시 로그인 해주세요.",
+          });
+        }
       }
+    };
 
-      // 응답 처리
-      if (response.data.content) {
-        setContent(response.data.content.split("\\n"));
-      }
-      setEvent(response.data);
-
-    } catch (error) {
-      console.error("Error fetching event:", error);
-      if (error.response && error.response.status === 401) {
-        Swal.fire({
-          icon: "error",
-          title: "세션 만료",
-          text: "다시 로그인 해주세요.",
-        });
-      }
-    }
-  };
-
-  fetchEvent();
-}, [id]);
+    fetchEvent();
+  }, [id]);
 
   const handleRedirect = () => {
     if (event && event.url) {
@@ -298,7 +295,11 @@ const EventDetail = () => {
 
   const handleImageClick = (index) => {
     setCurrentImageIndex(index);
-    setIsModalOpen(true);
+    setIsImageModalOpen(true);
+  };
+
+  const handleCalendarClick = () => {
+    setIsCalendarModalOpen(true);
   };
 
   const handleStarClick = async () => {
@@ -391,14 +392,21 @@ const EventDetail = () => {
             )}
 
             <BottomBody>
-              <Button onClick={() => setIsModalOpen(true)}>캘린더에 추가</Button>
+              <Button onClick={handleCalendarClick}>캘린더에 추가</Button>
             </BottomBody>
           </BottomContainer>
-          {isModalOpen && (
+          {isImageModalOpen && (
             <ImageModal
               images={event.imgUrl}
               currentIndex={currentImageIndex}
-              onClose={() => setIsModalOpen(false)}
+              onClose={() => setIsImageModalOpen(false)}
+            />
+          )}
+          {isCalendarModalOpen && (
+            <CalendarModal
+              setIsModalOpen={setIsCalendarModalOpen}
+              title={event.title}
+              content={content}
             />
           )}
         </EventContainer>

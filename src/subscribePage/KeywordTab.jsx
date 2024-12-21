@@ -107,6 +107,7 @@ export default function KeywordTab() {
         {events.map((event, index) => (
           <KeywordEventCard
             key={`${event.eventId}-${index}`}
+            id={event.eventId}
             {...event}
           />
         ))}
