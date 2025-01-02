@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import GetUserPermission from "../fcm/GetUserPermission";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import styled from 'styled-components';
+import GetUserPermission from '../services/fcm/GetUserPermission';
+import { useNavigate } from 'react-router-dom';
 
 const StickyContainer = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ const HelpBox = ({ setIsLoading }) => {
     GetUserPermission(setIsLoading);
   };
   const handleInstallClicked = () => {
-    navigate("/guide");
+    navigate('/guide');
   };
   return (
     <StickyContainer>

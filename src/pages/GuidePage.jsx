@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import TabBar from "../components/TabBar";
+import React from 'react';
+import styled from 'styled-components';
+import TabBar from '../components/TabBar';
 
 const AppContainer = styled.div`
   display: flex;

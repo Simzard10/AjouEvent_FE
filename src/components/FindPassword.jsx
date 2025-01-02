@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import useStore from "../store/useStore";
+import React, { useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import useStore from '../store/useStore';
 
 const Container = styled.div`
   z-index: 1;
@@ -16,7 +16,7 @@ const Container = styled.div`
   height: 100vh;
   width: 80%;
   background-color: transparent;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
 `;
 
 const Heading = styled.h1`
@@ -94,7 +94,7 @@ const Button = styled.button`
   text-align: center;
   cursor: pointer;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   &:hover {
     opacity: ${(props) => (props.disabled ? 1 : 0.8)};
   }
@@ -116,7 +116,7 @@ const RequestButton = styled.button`
   text-align: center;
   cursor: pointer;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   &:hover {
     opacity: ${(props) => (props.disabled ? 1 : 0.8)};
   }
@@ -140,7 +140,7 @@ const PasswordResetButton = styled.button`
   margin: 20px auto; // 중앙 배치
   display: block; // 중앙 배치를 위한 속성
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   &:hover {
     opacity: ${(props) => (props.disabled ? 1 : 0.8)};
   }
@@ -182,10 +182,10 @@ const CheckIcon = styled(FontAwesomeIcon)`
 `;
 
 const FindPassword = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [number, setNumber] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [number, setNumber] = useState('');
   const [emailCheck, setEmailCheck] = useState(false);
   const [emailRequested, setEmailRequested] = useState(false);
   const [emailRequestLoading, setEmailRequestLoading] = useState(false);
@@ -203,9 +203,9 @@ const FindPassword = () => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (!emailPattern.test(e.target.value)) {
-      setEmailError("* @ajou.ac.kr 이메일 형식에 맞지 않습니다.");
+      setEmailError('* @ajou.ac.kr 이메일 형식에 맞지 않습니다.');
     } else {
-      setEmailError("");
+      setEmailError('');
     }
   };
 
@@ -213,21 +213,21 @@ const FindPassword = () => {
     try {
       setEmailRequestLoading(true);
       if (!emailPattern.test(email)) {
-        setEmailError("* @ajou.ac.kr 이메일 형식을 확인해주세요.");
+        setEmailError('* @ajou.ac.kr 이메일 형식을 확인해주세요.');
         return;
       }
 
       const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/users/accountExists?email=${email}&name=${name}`
+        `${process.env.REACT_APP_BE_URL}/api/users/accountExists?email=${email}&name=${name}`,
       );
 
       const isEmailExists = response.data;
 
       if (!isEmailExists) {
         Swal.fire({
-          icon: "error",
-          title: "회원 정보가 \n일치하지 않습니다.",
-          text: "입력하신 정보를 다시 확인해주세요.",
+          icon: 'error',
+          title: '회원 정보가 \n일치하지 않습니다.',
+          text: '입력하신 정보를 다시 확인해주세요.',
         });
         setEmailRequestLoading(false);
       } else {
@@ -235,20 +235,20 @@ const FindPassword = () => {
 
         try {
           await axios.post(
-            `${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`
+            `${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`,
           );
 
           Swal.fire({
-            icon: "success",
-            title: "인증코드 전송 완료",
-            text: "이메일로 인증코드가 전송되었습니다.",
+            icon: 'success',
+            title: '인증코드 전송 완료',
+            text: '이메일로 인증코드가 전송되었습니다.',
           });
         } catch (error) {
-          console.error("Error fetching events:", error);
+          console.error('Error fetching events:', error);
           Swal.fire({
-            icon: "error",
-            title: "인증번호 전송",
-            text: "인증번호 전송 실패",
+            icon: 'error',
+            title: '인증번호 전송',
+            text: '인증번호 전송 실패',
           });
 
           setEmailRequestLoading(false);
@@ -257,11 +257,11 @@ const FindPassword = () => {
         }
       }
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error('Error fetching events:', error);
       Swal.fire({
-        icon: "error",
-        title: "이메일 중복 확인 실패",
-        text: "요청 설정 에러",
+        icon: 'error',
+        title: '이메일 중복 확인 실패',
+        text: '요청 설정 에러',
       });
     }
   };
@@ -269,7 +269,7 @@ const FindPassword = () => {
   const handleNumberChange = (e) => {
     setNumber(e.target.value);
     console.log(
-      "emailRequested:" + emailRequested + "number.length" + number.length
+      'emailRequested:' + emailRequested + 'number.length' + number.length,
     );
   };
 
@@ -277,27 +277,27 @@ const FindPassword = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`
+        `${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`,
       );
 
       Swal.fire({
-        icon: "success",
-        title: "이메일 인증 완료",
-        text: "이메일 인증이 완료되었습니다.",
+        icon: 'success',
+        title: '이메일 인증 완료',
+        text: '이메일 인증이 완료되었습니다.',
       });
       setEmailCheck(true);
       setIsAuthorized();
     } catch (e) {
       Swal.fire({
-        icon: "error",
-        title: "이메일 인증 실패",
-        text: "이메일 인증 실패",
+        icon: 'error',
+        title: '이메일 인증 실패',
+        text: '이메일 인증 실패',
       });
     }
   };
 
   const handleResetPasswordPage = () => {
-    navigate("/change-password", {
+    navigate('/change-password', {
       state: {
         email,
       },
@@ -349,7 +349,7 @@ const FindPassword = () => {
               onClick={() => emailRequest(email)}
               disabled={!emailPattern.test(email) || emailCheck}
             >
-              {emailRequested ? "재요청" : "인증\n요청"}
+              {emailRequested ? '재요청' : '인증\n요청'}
             </RequestButton>
           )}
         </EmailInputWrapper>
