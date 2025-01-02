@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import SearchIcon from "../icons/SearchIcon";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import SearchIcon from './icons/SearchIcon';
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const InputBox = styled.input`
   background-color: #fff;
   border: none;
   outline: none;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -67,7 +67,7 @@ const SearchBar = ({
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleSearchClick();
     }
   };

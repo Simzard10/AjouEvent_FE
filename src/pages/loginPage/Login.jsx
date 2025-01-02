@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
-import GetUserPermission from '../services/fcm/GetUserPermission';
+import GetUserPermission from '../../services/fcm/GetUserPermission';
 import Swal from 'sweetalert2';
 
 const Container = styled.div`
@@ -47,6 +46,20 @@ const HeadingWrapper = styled.div`
   align-items: start;
   justify-content: baseline;
   padding-left: 1rem;
+`;
+
+// 새로 추가된 스타일
+const StyledParagraph = styled.p`
+  color: #000;
+  font-size: 15px;
+  font-family: 'Pretendard Variable';
+  margin-top: 10px; /* 상단 여백 추가 */
+  margin-bottom: 10px; /* 하단 여백 추가 */
+`;
+
+const HighlightedText = styled.span`
+  color: red;
+  font-weight: bold;
 `;
 
 const Form = styled.form`
@@ -159,17 +172,27 @@ const Description = styled.p`
   line-height: 1.8;
 `;
 
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  z-index: 1000;
+`;
+
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     GetUserPermission(setIsLoading);
   }, []);
-
-  const handelSignUpButtonClicked = () => {
-    navigate('/signUp');
-  };
 
   const handleGoogleButtonClicked = () => {
     const fcmToken = localStorage.getItem('fcmToken');
@@ -187,32 +210,34 @@ const Login = () => {
 
   return (
     <Container>
+      {isLoading && <LoadingOverlay>알림 서비스 등록 중 ...</LoadingOverlay>}
+
       <Form>
         <HeadingWrapper>
-          <Heading>회원가입</Heading>
+          <Heading>로그인</Heading>
+        </HeadingWrapper>
+        <HeadingWrapper>
+          <StyledParagraph>
+            기본 로그인이 <HighlightedText>구글 로그인</HighlightedText>으로
+            통합되었습니다.
+          </StyledParagraph>
         </HeadingWrapper>
       </Form>
-
-      {/* <SingUpButton onClick= {handelSignUpButtonClicked} type="submit" className="signin__btn">
-         @ajou.ac.kr 이메일로 회원가입
-      </SingUpButton> */}
       <GoogleLoginButton onClick={handleGoogleButtonClicked}>
         <FcGoogle className="icon" />
-        <span>Google 계정으로 가입</span>
+        <span>Google 계정으로 로그인</span>
       </GoogleLoginButton>
       <Separator></Separator>
       <BottomLinks>
-        <span>이미 회원이신가요?</span>
-        <Link to="/login">로그인</Link>
-        {/* <span>|</span>
-          <Link to="/findPassword">비밀번호 찾기</Link> */}
+        <span>아직 회원이 아니신가요?</span>
+        <Link to="/privacy-agreement">회원가입</Link>
       </BottomLinks>
       <Description>
         * AjouEvent는 2024-1학기 아주대학교 파란학기제에서
         <br />
         진행한 프로젝트로 아주대학교 공식 서비스가 아닙니다. <br />
         * AjouEvent 계정은 아주대학교 포탈 계정과 무관합니다. <br />
-        서비스 문의: jysim0326@ajou.ac.kr <br />
+        서비스 문의: jysim0326@ajou.ac.kr
       </Description>
       <LogoWrapper>
         <Logo />

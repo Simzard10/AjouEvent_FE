@@ -1,84 +1,84 @@
-import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from "./loginPage/LoginPage";
-import SearchEventPage from "./searchPage/SearchEventPage";
-import SubscribePage from "./subscribePage/SubscribePage";
-import KeywordSubscribePage from "./subscribePage/KeywordSubscribePage";
-import EventDetailPage from "./pages/EventDetailPage";
-import LoginSuccess from "./loginPage/LoginSuccess";
-import MyPage from "./pages/MyPage";
-import LikedEventPage from "./likedPage/LikedEventPage";
-import HomePage from "./homePage/HomePage";
-import GuidePage from "./pages/GuidePage";
-import RouteChangeTracker from "./RouteChangeTracker";
-import PrivacyAgreementPage from "./pages/PrivacyAgreementPage";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import RouteChangeTracker from './RouteChangeTracker';
 import { Analytics } from '@vercel/analytics/react';
-import ProfileModificationPage from "./pages/ProfileModificationPage";
-import DeleteAccountPage from "./pages/DeleteAccountPage";
-import RegisterMebmerInfoPage from "./pages/RegisterMebmerInfoPage";
-import SignUpSelectPage from "./pages/SignUpSelectPage";
+import HomePage from './pages/homePage/HomePage';
+import SearchEventPage from './pages/searchPage/SearchEventPage';
+import EventDetailPage from './pages/eventPage/EventDetailPage';
+import LoginPage from './pages/loginPage/LoginPage';
+import MyPage from './pages/myPage/MyPage';
+import LikedEventPage from './pages/likedPage/LikedEventPage';
+import SubscribePage from './pages/subscribePage/SubscribePage';
+import KeywordSubscribePage from './pages/subscribePage/KeywordSubscribePage';
+import LoginSuccess from './pages/loginPage/LoginSuccess';
+import GuidePage from './pages/GuidePage';
+import ProfileModificationPage from './pages/myPage/ProfileModificationPage';
+import DeleteAccountPage from './pages/myPage/DeleteAccountPage';
+import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
+import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
+import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
 
 const ROUTER = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <HomePage />,
   },
   {
-    path: "/event",
+    path: '/event',
     element: <SearchEventPage />,
   },
   {
-    path: "/event/:id",
+    path: '/event/:id',
     element: <EventDetailPage />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
   },
   {
-    path: "/privacy-agreement",
+    path: '/privacy-agreement',
     element: <PrivacyAgreementPage />,
   },
   {
-    path: "/mypage",
+    path: '/mypage',
     element: <MyPage />,
   },
   {
-    path: "/liked",
+    path: '/liked',
     element: <LikedEventPage />,
   },
   {
-    path: "/subscribe",
+    path: '/subscribe',
     element: <SubscribePage />,
   },
   {
-    path: "/subscribe/keywordSubscribe",
+    path: '/subscribe/keywordSubscribe',
     element: <KeywordSubscribePage />,
   },
   {
-    path: "/loginSuccess",
+    path: '/loginSuccess',
     element: <LoginSuccess />,
   },
   {
-    path: "/guide",
+    path: '/guide',
     element: <GuidePage />,
   },
   {
-    path: "/profile-modification",
+    path: '/profile-modification',
     element: <ProfileModificationPage />,
   },
   {
-    path: "/delete-account",
+    path: '/delete-account',
     element: <DeleteAccountPage />,
   },
   {
-    path: "/register-info",
-    element: <RegisterMebmerInfoPage />,
+    path: '/register-info',
+    element: <RegisterMemberInfoPage />,
   },
   {
-    path: "/signUp/select",
+    path: '/signUp/select',
     element: <SignUpSelectPage />,
-  }
+  },
 ]);
 
 function App() {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { useNavigate, useLocation } from 'react-router-dom';
-import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import requestWithAccessToken from '../services/jwt/requestWithAccessToken';
 
 const Container = styled.div`
   display: flex;
@@ -60,7 +60,7 @@ const Input = styled.input`
 `;
 
 const SelectButton = styled.button`
-  background-color: #0072CE;
+  background-color: #0072ce;
   color: white;
   border: none;
   border-radius: 4px;
@@ -168,14 +168,46 @@ const RegisterMajor = () => {
   const navigate = useNavigate();
 
   const departmentList = [
-    "AI모빌리티공학과", "간호학과", "건설시스템공학과", "건축학과", "경영인텔리전스학과", "경영학과",
-    "경제학과", "교통시스템공학과", "국방디지털융합학과", "국어국문학과", "글로벌경영학과",
-    "금융공학과", "기계공학과", "디지털미디어학과", "문화콘텐츠학과", "물리학과",
-    "불어불문학과", "사이버보안학과", "사학과", "사회학과", "산업공학과",
-    "생명과학과", "소프트웨어학과", "수학과", "스포츠레저학과", "심리학과", "약학과",
-    "영어영문학과", "융합시스템공학과", "응용화학생명공학과", "의학과", "인공지능융합학과", "전자공학과",
-    "정치외교학과", "지능형반도체공학과", "첨단신소재공학과", "행정학과", "화학공학과",
-    "화학과", "환경안전공학과"
+    'AI모빌리티공학과',
+    '간호학과',
+    '건설시스템공학과',
+    '건축학과',
+    '경영인텔리전스학과',
+    '경영학과',
+    '경제학과',
+    '교통시스템공학과',
+    '국방디지털융합학과',
+    '국어국문학과',
+    '글로벌경영학과',
+    '금융공학과',
+    '기계공학과',
+    '디지털미디어학과',
+    '문화콘텐츠학과',
+    '물리학과',
+    '불어불문학과',
+    '사이버보안학과',
+    '사학과',
+    '사회학과',
+    '산업공학과',
+    '생명과학과',
+    '소프트웨어학과',
+    '수학과',
+    '스포츠레저학과',
+    '심리학과',
+    '약학과',
+    '영어영문학과',
+    '융합시스템공학과',
+    '응용화학생명공학과',
+    '의학과',
+    '인공지능융합학과',
+    '전자공학과',
+    '정치외교학과',
+    '지능형반도체공학과',
+    '첨단신소재공학과',
+    '행정학과',
+    '화학공학과',
+    '화학과',
+    '환경안전공학과',
   ];
 
   const handleMajorSubmit = async (e) => {
@@ -187,18 +219,18 @@ const RegisterMajor = () => {
     }
 
     try {
-      console.log("email", email);
+      console.log('email', email);
       await requestWithAccessToken(
-        "post",
-        `${process.env.REACT_APP_BE_URL}/api/users/register-info`, 
-        { major }
+        'post',
+        `${process.env.REACT_APP_BE_URL}/api/users/register-info`,
+        { major },
       );
       Swal.fire({
         icon: 'success',
         title: '학과 등록 성공',
         text: '구독 페이지로 이동합니다.',
       });
-      navigate("/subscribe");
+      navigate('/subscribe');
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -229,7 +261,7 @@ const RegisterMajor = () => {
             required
           />
         </InputContainer>
-        
+
         <Label>이름</Label>
         <InputContainer>
           <Input
@@ -240,7 +272,7 @@ const RegisterMajor = () => {
             required
           />
         </InputContainer>
-        
+
         <LabelWrapper>
           <Label>소속</Label>
           {hasError && <Error>* 학과를 선택해주세요.</Error>}
@@ -251,7 +283,7 @@ const RegisterMajor = () => {
             선택하기
           </SelectButton>
         </InputContainer>
-        
+
         <SubmitButton type="submit" disabled={!major}>
           등록
         </SubmitButton>
@@ -263,7 +295,10 @@ const RegisterMajor = () => {
           <ModalContent>
             <ModalHeaderTitle>학과 선택</ModalHeaderTitle>
             {departmentList.map((dept) => (
-              <MenuItemInModal key={dept} onClick={() => handleDepartmentSelect(dept)}>
+              <MenuItemInModal
+                key={dept}
+                onClick={() => handleDepartmentSelect(dept)}
+              >
                 {dept}
               </MenuItemInModal>
             ))}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
-import requestWithAccessToken from '../JWTToken/requestWithAccessToken';
+import requestWithAccessToken from '../services/jwt/requestWithAccessToken';
 
 const Container = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ const DeleteAccountPage = () => {
     try {
       await requestWithAccessToken(
         'delete',
-        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions/reset`
+        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions/reset`,
       );
       setIsTopicReset(true);
       Swal.fire('성공', '구독한 토픽이 초기화되었습니다.', 'success');
@@ -67,7 +67,7 @@ const DeleteAccountPage = () => {
     try {
       await requestWithAccessToken(
         'delete',
-        `${process.env.REACT_APP_BE_URL}/api/keyword/subscriptions/reset`
+        `${process.env.REACT_APP_BE_URL}/api/keyword/subscriptions/reset`,
       );
       setIsKeywordReset(true);
       Swal.fire('성공', '구독한 키워드가 초기화되었습니다.', 'success');
@@ -87,12 +87,12 @@ const DeleteAccountPage = () => {
       try {
         await requestWithAccessToken(
           'delete',
-          `${process.env.REACT_APP_BE_URL}/api/users`
+          `${process.env.REACT_APP_BE_URL}/api/users`,
         );
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("id");
-        localStorage.removeItem("name");
-        localStorage.removeItem("major");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('id');
+        localStorage.removeItem('name');
+        localStorage.removeItem('major');
         Swal.fire('탈퇴 완료', '정상적으로 탈퇴되었습니다.', 'success');
         navigate('/login'); // 탈퇴 후 로그인 페이지로 이동
       } catch (error) {
@@ -108,16 +108,33 @@ const DeleteAccountPage = () => {
       {!nextStep ? (
         <>
           <Message>정말 떠나시는 건가요?</Message>
-          <Message>알림이 자주 온다면 필요없는 토픽, 키워드 구독을 해지해보시는 게 어떤가요?</Message>
+          <Message>
+            알림이 자주 온다면 필요없는 토픽, 키워드 구독을 해지해보시는 게
+            어떤가요?
+          </Message>
           <Button onClick={handleNextStep}>다음</Button>
         </>
       ) : (
         <>
-          <Button onClick={handleTopicReset} disabled={isTopicReset || isLoadingTopic}>
-            {isLoadingTopic ? '토픽 초기화 중...' : isTopicReset ? '토픽 초기화 완료' : '구독한 토픽 초기화'}
+          <Button
+            onClick={handleTopicReset}
+            disabled={isTopicReset || isLoadingTopic}
+          >
+            {isLoadingTopic
+              ? '토픽 초기화 중...'
+              : isTopicReset
+                ? '토픽 초기화 완료'
+                : '구독한 토픽 초기화'}
           </Button>
-          <Button onClick={handleKeywordReset} disabled={isKeywordReset || isLoadingKeyword}>
-            {isLoadingKeyword ? '키워드 초기화 중...' : isKeywordReset ? '키워드 초기화 완료' : '구독한 키워드 초기화'}
+          <Button
+            onClick={handleKeywordReset}
+            disabled={isKeywordReset || isLoadingKeyword}
+          >
+            {isLoadingKeyword
+              ? '키워드 초기화 중...'
+              : isKeywordReset
+                ? '키워드 초기화 완료'
+                : '구독한 키워드 초기화'}
           </Button>
 
           <Select value={reason} onChange={(e) => setReason(e.target.value)}>
