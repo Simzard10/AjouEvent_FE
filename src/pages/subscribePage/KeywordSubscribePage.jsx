@@ -543,7 +543,6 @@ export default function KeywordSubscribePage() {
       공지사항: [],
       기숙사: [],
       대학원: [],
-      테스트: [], // 실제 배포할 때는 빼기
     };
 
     items.forEach((item) => {
