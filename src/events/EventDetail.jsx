@@ -7,6 +7,20 @@ import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 import Swal from "sweetalert2";
 import EventBanner from "./EventBanner";
 import axios from "axios";
+import ImageModal from "./ImageModal"; 
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -215,59 +229,57 @@ const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [content, setContent] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-  const fetchEvent = async () => {
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
-      console.log(alreadyViewClubEventNum);
-      let response;
+    const fetchEvent = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const alreadyViewClubEventNum = getCookie("AlreadyViewClubEventNum");
+        console.log(alreadyViewClubEventNum);
+        let response;
 
-      if (accessToken) {
-        // accessToken이 있을 경우
-        response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
-        );
-      } else {
-        // 쿠키가 있을 경우 또는 기본 요청
-        const config = alreadyViewClubEventNum
-          ? {
-              headers: {
-                Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
-              },
-              withCredentials: true,
-            }
-          : { withCredentials: true };
+        if (accessToken) {
+          response = await requestWithAccessToken(
+            "get",
+            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`
+          );
+        } else {
+          const config = alreadyViewClubEventNum
+            ? {
+                headers: {
+                  Cookie: `AlreadyViewClubEventNum=${alreadyViewClubEventNum}`,
+                },
+                withCredentials: true,
+              }
+            : { withCredentials: true };
 
-        response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          config
-        );
+          response = await axios.get(
+            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
+            config
+          );
+        }
+
+        if (response.data.content) {
+          setContent(response.data.content.split("\\n"));
+        }
+        setEvent(response.data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        if (error.response && error.response.status === 401) {
+          Swal.fire({
+            icon: "error",
+            title: "세션 만료",
+            text: "다시 로그인 해주세요.",
+          });
+        }
       }
+    };
 
-      // 응답 처리
-      if (response.data.content) {
-        setContent(response.data.content.split("\\n"));
-      }
-      setEvent(response.data);
-
-    } catch (error) {
-      console.error("Error fetching event:", error);
-      if (error.response && error.response.status === 401) {
-        Swal.fire({
-          icon: "error",
-          title: "세션 만료",
-          text: "다시 로그인 해주세요.",
-        });
-      }
-    }
-  };
-
-  fetchEvent();
-}, [id]);
+    fetchEvent();
+  }, [id]);
 
   const handleRedirect = () => {
     if (event && event.url) {
@@ -279,6 +291,15 @@ const EventDetail = () => {
         text: "바로가기 가능한 url이 없습니다.",
       });
     }
+  };
+
+  const handleImageClick = (index) => {
+    setCurrentImageIndex(index);
+    setIsImageModalOpen(true);
+  };
+
+  const handleCalendarClick = () => {
+    setIsCalendarModalOpen(true);
   };
 
   const handleStarClick = async () => {
@@ -319,7 +340,10 @@ const EventDetail = () => {
       {event ? (
         <EventContainer>
           <TabBar Title={"공지사항"} />
-          <EventBanner images={event.imgUrl} />
+          <EventBanner
+            images={event.imgUrl}
+            onImageClick={handleImageClick}
+          />
           <ContentContaioner>
             <TitleContainer>
               <Subject>{event.subject}</Subject>
@@ -368,14 +392,19 @@ const EventDetail = () => {
             )}
 
             <BottomBody>
-              <Button onClick={() => setIsModalOpen(true)}>
-                캘린더에 추가
-              </Button>
+              <Button onClick={handleCalendarClick}>캘린더에 추가</Button>
             </BottomBody>
           </BottomContainer>
-          {isModalOpen && (
+          {isImageModalOpen && (
+            <ImageModal
+              images={event.imgUrl}
+              currentIndex={currentImageIndex}
+              onClose={() => setIsImageModalOpen(false)}
+            />
+          )}
+          {isCalendarModalOpen && (
             <CalendarModal
-              setIsModalOpen={setIsModalOpen}
+              setIsModalOpen={setIsCalendarModalOpen}
               title={event.title}
               content={content}
             />

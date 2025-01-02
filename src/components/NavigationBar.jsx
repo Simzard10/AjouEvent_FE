@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
+import PWAPrompt from 'react-ios-pwa-prompt';
 import useStore from "../store/useStore";
 import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
 
@@ -102,8 +103,6 @@ const items = [
   },
 ];
 
-
-
 function NavigationBar() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -111,67 +110,70 @@ function NavigationBar() {
 
   // 전역 상태에서 읽음 상태 관리 (서버 변수명 그대로 사용)
   const {
-    // isSubscribedTabRead,
     isTopicTabRead,
     isKeywordTabRead,
-    setIsSubscribedTabRead,
-    setIsTopicTabRead,
-    setIsKeywordTabRead,
+    fetchMemberStatus
   } = useStore();
+
+  const [isIOS, setIsIOS] = useState(false);
+  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+
+  useEffect(() => {
+    fetchMemberStatus(); // 페이지 로드 시 사용자 구독 상태 가져오기
+    // iOS 장치인지 확인
+    const isDeviceIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
+    setIsIOS(isDeviceIOS);
+
+    if (isDeviceIOS) {
+      setShouldShowPWAPrompt(true); // iOS 장치일 때 프롬프트 표시
+    }
+  }, []);
 
   const handleNavItemClick = (link) => {
     navigate(link);
     fetchMemberStatus();
   };
 
-  const fetchMemberStatus = async () => {
-    try {
-      const response = await requestWithAccessToken(
-        "get",
-        `${process.env.REACT_APP_BE_URL}/api/event/readStatus`
-      );
-
-      console.log("readStatus 서버 응답:", response.data);
-      setIsTopicTabRead(response.data.isTopicTabRead);
-      setIsKeywordTabRead(response.data.isKeywordTabRead);
-
-      // 구독 탭의 뱃지는 토픽과 키워드 알림이 모두 읽혔을 때만 제거
-      if (!response.data.isTopicTabRead || !response.data.isKeywordTabRead) {
-        setIsSubscribedTabRead(false); // 둘 중 하나라도 읽지 않음 상태라면 구독 탭 뱃지 표시
-      } else {
-        setIsSubscribedTabRead(true); // 둘 다 읽음 상태면 구독 탭 뱃지 제거
-      }
-    } catch (error) {
-      console.error("사용자 읽음 상태 불러오기 오류:", error);
-    }
-  };
-
-return (
-    <NavWrapper>
-      <NavItems>
-        {items.map((item, index) => {
-          const isActive = currentPath === item.link;
-          return (
-            <NavItem
-              key={index}
-              active={isActive}
-              onClick={() => handleNavItemClick(item.link)}
-            >
-              <NavIcon
-                src={isActive ? item.srcFilled : item.srcEmpty}
-                alt={item.alt}
+  return (
+    <>
+      <NavWrapper>
+        <NavItems>
+          {items.map((item, index) => {
+            const isActive = currentPath === item.link;
+            return (
+              <NavItem
+                key={index}
                 active={isActive}
-              />
-              <NavLabel>{item.label}</NavLabel>
-              {/* 구독 탭에 뱃지 표시 */}
-              {console.log("상태 isTopicTabRead: ", isTopicTabRead)}
-              {console.log("상태 isKeywordTabRead: ", isKeywordTabRead)}
-              {item.label === "구독" && (!isTopicTabRead || !isKeywordTabRead)  && <Badge />}
-            </NavItem>
-          );
-        })}
-      </NavItems>
-    </NavWrapper>
+                onClick={() => handleNavItemClick(item.link)}
+              >
+                <NavIcon
+                  src={isActive ? item.srcFilled : item.srcEmpty}
+                  alt={item.alt}
+                  active={isActive}
+                />
+                <NavLabel>{item.label}</NavLabel>
+                {/* 구독 탭에 뱃지 표시 */}
+                {item.label === "구독" && (!isTopicTabRead || !isKeywordTabRead)  && <Badge />}
+              </NavItem>
+            );
+          })}
+        </NavItems>
+      </NavWrapper>
+      
+      {isIOS && (
+        <PWAPrompt
+          promptOnVisit={1}
+          timesToShow={1}
+          copyTitle="AjouEvent 앱 설치하기 - 아이폰"
+          copySubtitle="홈 화면에 앱을 추가하고 각종 공지사항, 키워드 알림을 받아보세요."
+          copyDescription="AjouEvent는 앱설치 없이 홈화면에 추가를 통해 사용할 수 있습니다."
+          copyShareStep="하단 메뉴에서 '공유' 아이콘을 눌러주세요."
+          copyAddToHomeScreenStep="아래의 '홈 화면에 추가' 버튼을 눌러주세요."
+          appIconPath="https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png"
+          isShown={shouldShowPWAPrompt}
+        />
+      )}
+    </>
   );
 }
 

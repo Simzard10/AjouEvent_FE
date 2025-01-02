@@ -8,7 +8,6 @@ import HomeBanner from "./HomeBanner";
 import HomeHotEvent from "./HomeHotEvent";
 import DailyModal from "../components/DailyModal";
 import HelpBox from "../components/HelpBox";
-import PWAPrompt from 'react-ios-pwa-prompt';
 
 const AppContainer = styled.div`
   display: flex;
@@ -174,8 +173,6 @@ export default function HomePage() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false); // 설치 프롬프트 표시 여부
   const [isLoading, setIsLoading] = useState(false);
   const [bannerImages, setBannerImages] = useState([]);
-  const [isIOS, setIsIOS] = useState(false); // iOS 장치 여부 상태 추가
-  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
   const [showPushNotificationPrompt, setShowPushNotificationPrompt] = useState(false);
   
   const navigate = useNavigate(); // useNavigate 훅 사용
@@ -201,11 +198,6 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    // iOS 장치 여부 확인
-    const isDeviceIOS =
-      /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
-    setIsIOS(isDeviceIOS);
-
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsPWAInstalled(true);
       const isFirstTimeOpen = localStorage.getItem('isFirstTimeOpen');
@@ -240,12 +232,6 @@ export default function HomePage() {
     };
   }, [isPWAInstalled]);
 
-  useEffect(() => {
-    // iOS 장치인 경우에만 PWA 프롬프트를 표시
-    if (isIOS) {
-      setShouldShowPWAPrompt(true);
-    }
-  }, [isIOS]);
 
   const handleInstallClick = () => {
     if (deferredPrompt) {
@@ -321,19 +307,6 @@ export default function HomePage() {
       </MainContentContainer>
       <NavigationBar />
       {showModal && <DailyModal onClose={handleCloseModal} />}
-      {isIOS && (
-        <PWAPrompt 
-          promptOnVisit={1}
-          timesToShow={1}
-          copyTitle="AjouEvent 앱 설치하기 - 아이폰"
-          copySubtitle="홈 화면에 앱을 추가하고 각종 공지사항, 키워드 알림을 받아보세요."
-          copyDescription="AjouEvent는 앱설치 없이 홈화면에 추가를 통해 사용할 수 있습니다."
-          copyShareStep="하단 메뉴에서 '공유' 아이콘을 눌러주세요."
-          copyAddToHomeScreenStep="아래의 '홈 화면에 추가' 버튼을 눌러주세요."
-          appIconPath="https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png"
-          isShown={shouldShowPWAPrompt}
-        />
-      )}
     </AppContainer>
   );
 }

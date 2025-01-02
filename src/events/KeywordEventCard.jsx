@@ -167,6 +167,14 @@ const KeywordEventCard = ({
   const [likes, setLikes] = useState(likesCount);
   const navigate = useNavigate();
 
+  // HTTP 이미지 URL을 HTTPS로 변환
+  const getSafeImageUrl = (url) => {
+    if (url.startsWith("http://")) {
+      return `https://images.weserv.nl/?url=${encodeURIComponent(url)}`;
+    }
+    return url; // HTTPS URL은 그대로 반환
+  };
+
   const handleStarClick = async (e) => {
     e.stopPropagation();
 
@@ -203,7 +211,7 @@ const KeywordEventCard = ({
   return (
     <CardContainer onClick={handleCardClick}>
       <CardImageWapper>
-        <Image src={imgUrl} alt={title} loading="lazy" />
+        <Image src={getSafeImageUrl(imgUrl)} alt={title} loading="lazy" />
       </CardImageWapper>
       <DetailsContainer>
         <TitleContainer>

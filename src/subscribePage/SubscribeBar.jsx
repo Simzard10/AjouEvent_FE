@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-import useStore from "../store/useStore";
-import { EtoKCodes } from "../departmentCodes";
-import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
+import useStore from '../store/useStore';
+import requestWithAccessToken from '../JWTToken/requestWithAccessToken';
+import Swal from 'sweetalert2';
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +19,7 @@ const MenuBarContainer = styled.div`
   white-space: nowrap;
   background: #ffffff;
   padding: 12px 10px 0px 16px;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-weight: 600;
 `;
 
@@ -37,8 +36,8 @@ const MenuItemContainer = styled.div`
 `;
 
 const MenuItem = styled.div`
-  background-color: ${(props) => (props.isSelected ? "#0A5CA8" : "#ffffff")};
-  color: ${(props) => (props.isSelected ? "#ffffff" : "#000000")};
+  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : '#ffffff')};
+  color: ${(props) => (props.isSelected ? '#ffffff' : '#000000')};
   display: flex;
   height: fit-content;
   padding: 8px 12px;
@@ -63,7 +62,7 @@ const ViewAllButton = styled.div`
   background-color: #ffffff;
   cursor: pointer;
   background-color: ${(props) =>
-    props.isSelected ? "#e0e0e0" : "#ffffff"}; /* 항상 회색 유지 */
+    props.isSelected ? '#e0e0e0' : '#ffffff'}; /* 항상 회색 유지 */
   p {
     margin: 0;
   }
@@ -112,32 +111,32 @@ const BellIcon = styled.button`
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  background-color: ${(props) => (props.isProcessing ? "#e0e0e0" : "#f5f5f5")};
+  background-color: ${(props) => (props.isProcessing ? '#e0e0e0' : '#f5f5f5')};
   color: #000000;
-  font-family: "Pretendard Variable", sans-serif;
+  font-family: 'Pretendard Variable', sans-serif;
   font-size: 16px;
   font-weight: 600;
   border-radius: 50px;
   border: none;
-  cursor: ${(props) => (props.isProcessing ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.isProcessing ? 'not-allowed' : 'pointer')};
   gap: 8px;
   white-space: nowrap;
   transition: background-color 0.3s ease;
 
   &:hover {
     background-color: ${(props) =>
-      props.isProcessing ? "#e0e0e0" : "#e6e6e6"};
+      props.isProcessing ? '#e0e0e0' : '#e6e6e6'};
   }
 
-  animation: ${(props) => (props.ringing ? gradientChange : "none")} 2s
+  animation: ${(props) => (props.ringing ? gradientChange : 'none')} 2s
     ease-in-out;
 
   img {
-    animation: ${(props) => (props.ringing ? ring : "none")} 1s ease-in-out;
+    animation: ${(props) => (props.ringing ? ring : 'none')} 1s ease-in-out;
   }
 
   span {
-    animation: ${(props) => (props.ringing ? ringText : "none")} 1s ease-in-out;
+    animation: ${(props) => (props.ringing ? ringText : 'none')} 1s ease-in-out;
   }
 `;
 
@@ -186,7 +185,7 @@ const SubscribeButton = styled.button`
   padding: 10px 20px;
   background-color: #0072ce;
   color: #ffffff;
-  font-family: "Pretendard Variable", sans-serif;
+  font-family: 'Pretendard Variable', sans-serif;
   font-size: 16px;
   font-weight: 600;
   border-radius: 50px;
@@ -202,7 +201,7 @@ const SubscribeButton = styled.button`
 
 const ModalHeaderTitle = styled.h1`
   color: #000;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
@@ -224,12 +223,12 @@ const MenuItemInModal = styled.div`
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-weight: 600;
 `;
 
 const CategoryTitle = styled.h2`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-size: 30px;
   font-weight: 700;
   margin-top: 40px;
@@ -247,25 +246,31 @@ const NotificationBadge = styled.div`
   background-color: red;
   border-radius: 50%;
   display: ${({ isRead }) => {
-    return isRead === false ? "inline-block" : "none";
+    return isRead === false ? 'inline-block' : 'none';
   }};
 `;
 
 const Toast = Swal.mixin({
   toast: true,
-  position: "center-center",
+  position: 'center-center',
   showConfirmButton: false,
   timer: 2000,
   timerProgressBar: true,
   didOpen: (toast) => {
-    toast.addEventListener("mouseenter", Swal.stopTimer);
-    toast.addEventListener("mouseleave", Swal.resumeTimer);
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
   },
 });
 
 const SubscribeBar = ({ onTopicSelect }) => {
+  const {
+    isTopicTabRead,
+    setIsTopicTabRead,
+    markTopicAsRead,
+    subscribeItems,
+    fetchSubscribeItems,
+  } = useStore();
   const [menuItems, setMenuItems] = useState([]);
-  const [subscribeItems, setSubscribeItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
@@ -281,12 +286,8 @@ const SubscribeBar = ({ onTopicSelect }) => {
       onTopicSelect(topic);
     }
 
-    // 클릭한 토픽의 읽음 상태를 반영
-    setSubscribeItems((prevItems) =>
-      prevItems.map((item) =>
-        item.englishTopic === topic ? { ...item, isRead: true } : item
-      )
-    );
+    // 클릭한 토픽의 읽음 상태를 업데이트
+    markTopicAsRead(topic);
   };
 
   const handleCategoryClick = (category) => {
@@ -297,13 +298,13 @@ const SubscribeBar = ({ onTopicSelect }) => {
   const fetchMenuItems = async () => {
     try {
       const response = await requestWithAccessToken(
-        "get",
-        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`
+        'get',
+        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`,
       );
       const datas = response.data;
       setMenuItems(datas);
     } catch (error) {
-      console.error("Error fetching menu items:", error);
+      console.error('Error fetching menu items:', error);
     }
   };
 
@@ -316,21 +317,22 @@ const SubscribeBar = ({ onTopicSelect }) => {
   };
 
   useEffect(() => {
-    const fetchSubscribeItems = async () => {
-      try {
-        const response = await requestWithAccessToken(
-          "get",
-          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptions`
-        );
-        const topics = response.data;
-        setSubscribeItems(topics);
-      } catch (error) {
-        console.error("Error fetching subscribe items:", error);
-      }
-    };
-
     fetchSubscribeItems();
   }, [menuItems]);
+
+  useEffect(() => {
+    const allTopicsRead =
+      subscribeItems.length > 0 &&
+      subscribeItems.every((item) => item.isRead === true);
+
+    // 모든 항목이 읽음 상태가 되었을 때만 isTopicTabRead를 업데이트
+    if (allTopicsRead && !isTopicTabRead) {
+      setIsTopicTabRead(true);
+    } else if (!allTopicsRead && !isTopicTabRead) {
+      // 읽지 않은 항목이 있는 경우, isTopicTabRead를 false로 설정
+      setIsTopicTabRead(false);
+    }
+  }, [subscribeItems, isTopicTabRead]);
 
   const handleSubscribe = async (topic) => {
     if (isProcessing) return;
@@ -339,15 +341,21 @@ const SubscribeBar = ({ onTopicSelect }) => {
 
     try {
       Toast.fire({
-        icon: "info",
+        icon: 'info',
         title: `${topic.koreanTopic} 구독 중`,
       });
 
       await requestWithAccessToken(
-        "post",
+        'post',
         `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-        { topic: topic.englishTopic }
+        { topic: topic.englishTopic },
       );
+
+      // 구독에 성공한 후 subscribeItems를 새로 불러오기
+      await fetchSubscribeItems();
+
+      // 구독에 성공하면 isTopicTabRead를 false로 설정하여 읽지 않은 항목이 있음을 표시
+      setIsTopicTabRead(false);
 
       // Swal.fire({
       //   icon: "success",
@@ -372,16 +380,16 @@ const SubscribeBar = ({ onTopicSelect }) => {
         prevMenuItems.map((item) =>
           item.koreanTopic === topic.koreanTopic
             ? { ...item, subscribed: true }
-            : item
-        )
+            : item,
+        ),
       );
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "구독 실패",
-        text: "서버 에러",
+        icon: 'error',
+        title: '구독 실패',
+        text: '서버 에러',
       });
-      console.error("Error subscribing to topic:", error);
+      console.error('Error subscribing to topic:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -394,19 +402,19 @@ const SubscribeBar = ({ onTopicSelect }) => {
 
     try {
       Toast.fire({
-        icon: "info",
+        icon: 'info',
         title: `${topic.koreanTopic} 구독 취소 중`,
       });
 
       await requestWithAccessToken(
-        "post",
+        'post',
         `${process.env.REACT_APP_BE_URL}/api/topic/unsubscribe`,
-        { topic: topic.englishTopic }
+        { topic: topic.englishTopic },
       );
 
       Swal.fire({
-        icon: "success",
-        title: "구독 취소 성공",
+        icon: 'success',
+        title: '구독 취소 성공',
         text: `${topic.koreanTopic}를 구독 취소하셨습니다`,
       });
 
@@ -414,16 +422,16 @@ const SubscribeBar = ({ onTopicSelect }) => {
         prevMenuItems.map((item) =>
           item.koreanTopic === topic.koreanTopic
             ? { ...item, subscribed: false }
-            : item
-        )
+            : item,
+        ),
       );
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "구독 실패",
-        text: "서버 에러",
+        icon: 'error',
+        title: '구독 실패',
+        text: '서버 에러',
       });
-      console.error("Error unsubscribing from topic:", error);
+      console.error('Error unsubscribing from topic:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -499,7 +507,7 @@ const SubscribeBar = ({ onTopicSelect }) => {
                         : `${process.env.PUBLIC_URL}/icons/arrow_right.svg`
                     }
                     alt="arrow"
-                    style={{ width: "24px", height: "24px" }} // 아이콘 크기 조정
+                    style={{ width: '24px', height: '24px' }} // 아이콘 크기 조정
                   />
                 </CategoryTitle>
                 {openCategory === category &&

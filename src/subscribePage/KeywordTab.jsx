@@ -23,7 +23,10 @@ const KeywordListContainer = styled.div`
 `;
 
 export default function KeywordTab() {
-  const { isKeywordTabRead, setIsKeywordTabRead } = useStore();  
+  const { setIsKeywordTabRead } = useStore((state) => ({
+    setIsKeywordTabRead: state.setIsKeywordTabRead,
+  }));
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -33,40 +36,53 @@ export default function KeywordTab() {
   const pageSize = 10;
   const bottomRef = useRef(null);
 
-  const fetchEvents = useCallback(async (keyword) => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    setIsError(false);
+  const handleKeywordSelect = (keyword) => {
+    setSelectedKeyword(keyword); // 키워드 변경
+    setHasMore(true); // 로드 가능 상태 초기화
+    setEvents([]); // 기존 이벤트 초기화
+    setPage(0); // 페이지 초기화
+  };
 
-    try {
-      const url = keyword
-        ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${keyword.encodedKeyword}?page=${page}&size=${pageSize}`
-        : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword?page=${page}&size=${pageSize}`;
+  // Infinite Scroll 및 키워드 변경 시 데이터 로드
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!hasMore || loading || page < 0) return;
 
-      const response = await requestWithAccessToken("get", url);
-      const newEvents = response.data.result;
+      setLoading(true);
+      setIsError(false);
 
-      setEvents((prevEvents) => [...prevEvents, ...newEvents]);
+      try {
+        const url = selectedKeyword
+          ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${selectedKeyword.encodedKeyword}?page=${page}&size=${pageSize}`
+          : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword?page=${page}&size=${pageSize}`;
+          
+        const response = await requestWithAccessToken("get", url);
+        const newEvents = response.data.result;
 
-      if (newEvents.length < pageSize) {
-        setHasMore(false);
-      } else {
-        setPage((prevPage) => prevPage + 1);
+        setEvents((prevEvents) =>
+          page === 0 ? newEvents : [...prevEvents, ...newEvents]
+        );
+
+        if (newEvents.length < pageSize) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        setIsError(true);
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setIsError(true);
-      console.error("Error fetching events:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, hasMore, page, selectedKeyword, isKeywordTabRead, setIsKeywordTabRead]);
+    };
 
-  // Infinite Scroll
+    fetchData();
+  }, [page, selectedKeyword]);
+
+  // 무한 스크롤에서 중복 호출 방지
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          fetchEvents(selectedKeyword);
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          setPage((prevPage) => prevPage + 1);
         }
       },
       { threshold: 1 }
@@ -81,61 +97,18 @@ export default function KeywordTab() {
         observer.unobserve(bottomRef.current);
       }
     };
-  }, [hasMore, fetchEvents]);
-
-  const fetchReadStatus = async () => {
-    try {
-      const response = await requestWithAccessToken("get", `${process.env.REACT_APP_BE_URL}/api/event/readStatus`);
-      setIsKeywordTabRead(response.data.isKeywordTabRead);
-    } catch (error) {
-      console.error("Error fetching read status", error);
-    }
-  };  
-
-  const handleKeywordSelect = async (keyword) => {
-    if (selectedKeyword && selectedKeyword.encodedKeyword === keyword.encodedKeyword) {
-      setSelectedKeyword(null);
-    } else {
-      setSelectedKeyword(keyword);
-
-      // 토픽 선택 시 읽음 상태 갱신
-      requestWithAccessToken("post", `${process.env.REACT_APP_BE_URL}/api/event/updateKeywordTabRead`)
-        .then(() => {
-          fetchReadStatus();
-        })
-        .catch((error) => {
-          console.error("Error updating keyword read status:", error);
-        });
-    }
-    setEvents([]);
-    setPage(0);
-    setHasMore(true);
-  };
-
-  useEffect(() => {
-    fetchEvents(selectedKeyword); // selectedKeyword나 페이지 변경 시 데이터 로드
-  }, [selectedKeyword]);
+  }, [hasMore, loading]);
 
   return (
     <AppContainer>
-      <KeywordBar onKeywordSelect={handleKeywordSelect} selectedKeyword={selectedKeyword} />
+      <KeywordBar onKeywordSelect={handleKeywordSelect} />
       <SearchBar setKeyword={setSelectedKeyword} />
       <KeywordListContainer>
         {events.map((event, index) => (
           <KeywordEventCard
             key={`${event.eventId}-${index}`}
             id={event.eventId}
-            title={event.title}
-            subject={event.subject}
-            content={event.content}
-            imgUrl={event.imgUrl}
-            likesCount={event.likesCount}
-            viewCount={event.viewCount}
-            star={event.star}
-            url={event.url}
-            writer={event.writer}
-            createdAt={event.createdAt}
-            keyword={event.keyword}
+            {...event}
           />
         ))}
       </KeywordListContainer>
