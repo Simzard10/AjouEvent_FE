@@ -464,7 +464,7 @@ const SubscribeBar = ({ onTopicSelect }) => {
   return (
     <Container>
       <MenuBarContainer>
-        <ViewAllButton isSelected={true} onClick={() => setShowModal(true)}>
+        <ViewAllButton isSelected={true} onClick={handleShowModal}>
           <ViewAllIcon src={`${process.env.PUBLIC_URL}/icons/gear.svg`} />
           <p>구독 설정</p>
         </ViewAllButton>
@@ -474,9 +474,10 @@ const SubscribeBar = ({ onTopicSelect }) => {
               <MenuItem
                 key={item.id}
                 onClick={() => handleTopicClick(item.englishTopic)}
-                isSelected={selectedTopic === item.englishTopic} // 선택된 토픽인지 확인
+                isSelected={selectedTopic === item.englishTopic}
               >
-                {item.koreanTopic}
+                <span>{item.koreanTopic}</span>
+                <NotificationBadge isRead={item.isRead} />
               </MenuItem>
             ))
           ) : (
@@ -507,7 +508,7 @@ const SubscribeBar = ({ onTopicSelect }) => {
                         : `${process.env.PUBLIC_URL}/icons/arrow_right.svg`
                     }
                     alt="arrow"
-                    style={{ width: '24px', height: '24px' }} // 아이콘 크기 조정
+                    style={{ width: '24px', height: '24px' }}
                   />
                 </CategoryTitle>
                 {openCategory === category &&
@@ -516,17 +517,24 @@ const SubscribeBar = ({ onTopicSelect }) => {
                       <div>{item.koreanTopic}</div>
                       <div>
                         {item.subscribed ? (
-                          <ModalHeaderIcon
+                          <BellIcon
                             onClick={() => handleUnsubscribe(item)}
                             loading="lazy"
-                            src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
-                          />
+                            ringing={ringingTopics[item.id]}
+                          >
+                            <IconImage
+                              src={`${process.env.PUBLIC_URL}/icons/alarm_filled.svg`}
+                              alt="구독중 아이콘"
+                            />
+                            <span>구독중</span>
+                          </BellIcon>
                         ) : (
-                          <ModalHeaderIcon
+                          <SubscribeButton
                             onClick={() => handleSubscribe(item)}
                             loading="lazy"
-                            src={`${process.env.PUBLIC_URL}/icons/alarm_empty.svg`}
-                          />
+                          >
+                            구독
+                          </SubscribeButton>
                         )}
                       </div>
                     </MenuItemInModal>
