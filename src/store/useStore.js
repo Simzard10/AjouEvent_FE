@@ -9,10 +9,8 @@ const useStore = create((set) => ({
   isAuthorized: false,
   isTopicTabRead: true,
   isKeywordTabRead: true,
-  isSubscribedTabRead: true,
   topics: [], // 사용자가 구독한 topics
   subscribeItems: [], // 구독된 항목들을 저장하는 상태 추가
-
   keywords: [], // 사용자가 구독한 keywords
   subscribedKeywords: [], // 구독된 키워드들을 저장하는 상태 추가
 
