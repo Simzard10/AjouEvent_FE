@@ -95,6 +95,12 @@ export default function SubscribePage() {
     setActiveTab(tabName);
   };
 
+  if (navigator.clearAppBadge) {
+    navigator.clearAppBadge()
+      .then(() => console.log("Badge cleared"))
+      .catch((err) => console.error("Failed to clear badge:", err));
+  }
+
   return (
     <AppContainer>
       {accessToken ? (

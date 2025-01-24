@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./loginPage/LoginPage";
 import SearchEventPage from "./searchPage/SearchEventPage";
@@ -82,6 +82,18 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data.type === "updateBadge" && navigator.setAppBadge) {
+          navigator.setAppBadge(event.data.count)
+            .then(() => console.log(`Badge updated to ${event.data.count}`))
+            .catch((err) => console.error("Failed to update badge:", err));
+        }
+      });
+    }
+  }, []);
+  
   return (
     <div className="App">
       <RouterProvider router={ROUTER}>
