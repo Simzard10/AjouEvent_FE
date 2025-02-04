@@ -27,7 +27,7 @@ const TapIcon = styled.img`
 const HelpBox = ({ setIsLoading }) => {
   const navigate = useNavigate();
   const handleBellClick = () => {
-    GetUserPermission(setIsLoading);
+    navigate('/notification');
   };
   const handleInstallClicked = () => {
     navigate('/guide');

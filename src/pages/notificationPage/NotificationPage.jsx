@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import TabBar from '../../components/TabBar';
 import NotificationCard from './NotificationCard';
+import { useNavigate } from 'react-router-dom';
 
 const AppContainer = styled.div`
   display: flex;
@@ -61,17 +62,17 @@ const KeywordRegistrationBanner = styled.div`
 `;
 
 const BellIcon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
 `;
 
 const StyledButton = styled.button`
   background-color: #0a5ca8;
   color: #fff;
-  padding: 6px 16px;
+  padding: 4px 14px;
   font-size: 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   font-family: 'Pretendard Variable';
   font-weight: 500;
@@ -90,6 +91,7 @@ const NotificationPage = () => {
   const [error, setError] = useState(null);
   const [keywordCount, setKeywordCount] = useState(0);
   const observerRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchNotifications = useCallback(async () => {
     if (!hasNext) return;
@@ -122,7 +124,7 @@ const NotificationPage = () => {
           read: true,
         },
         {
-          id: 725,
+          id: 625,
           title:
             '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
           body: '테스트 공지입니다',
@@ -148,7 +150,7 @@ const NotificationPage = () => {
           read: false,
         },
         {
-          id: 725,
+          id: 600,
           title: '[테스트]',
           body: '테스트 공지입니다',
           imageUrl:
@@ -222,6 +224,10 @@ const NotificationPage = () => {
     return () => observer.disconnect();
   }, [hasNext]);
 
+  const KeywordSettingButtonClick = () => {
+    navigate('/subscribe/keywordSubscribe');
+  };
+
   return (
     <AppContainer>
       <TabBar Title="알림" />
@@ -243,13 +249,11 @@ const NotificationPage = () => {
       {activeTab === 'keyword' ? (
         <KeywordRegistrationBanner>
           <KeywordCountContainer>
-            <BellIcon
-              alt="알람"
-              src={`${process.env.PUBLIC_URL}/icons/notiOn.svg`}
-            />
             <div>알림 등록한 키워드 {keywordCount}개</div>
           </KeywordCountContainer>
-          <StyledButton>키워드 설정</StyledButton>
+          <StyledButton onClick={KeywordSettingButtonClick}>
+            키워드 설정
+          </StyledButton>
         </KeywordRegistrationBanner>
       ) : null}
       <TabContentContainer>

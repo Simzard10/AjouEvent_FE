@@ -7,7 +7,6 @@ const CardContainer = styled.div`
   gap: 16px;
   align-self: stretch;
   width: 100%;
-  height: 139px;
   text-decoration: none;
   padding: 24px 20px 10px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
@@ -25,8 +24,8 @@ const Image = styled.img`
 
 const DetailsContainer = styled.div`
   display: flex;
-  width: calc(100vw - 176px);
-  height: 120px;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;

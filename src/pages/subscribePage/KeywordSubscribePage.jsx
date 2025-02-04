@@ -360,7 +360,8 @@ export default function KeywordSubscribePage() {
   const [selectedTopic, setSelectedTopic] = useState(null);
 
   const arrowBackClicked = () => {
-    navigate('/subscribe', { state: { activeTab: 'keyword' } });
+    // navigate('/subscribe', { state: { activeTab: 'keyword' } });
+    navigate(-1);
   };
 
   // 입력값 변화 처리
