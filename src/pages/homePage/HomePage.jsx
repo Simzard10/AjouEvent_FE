@@ -9,6 +9,7 @@ import HomeHotEvent from './HomeHotEvent';
 import DailyModal from '../../components/DailyModal';
 import HelpBox from '../../components/HelpBox';
 import axios from 'axios';
+import NotifyModal from '../notificationPage/NotificationPage';
 
 const AppContainer = styled.div`
   display: flex;

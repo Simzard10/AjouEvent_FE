@@ -17,11 +17,16 @@ import DeleteAccountPage from './pages/myPage/DeleteAccountPage';
 import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
 import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
 import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
+import NotificationPage from './pages/notificationPage/NotificationPage';
 
 const ROUTER = createBrowserRouter([
   {
     path: '/',
     element: <HomePage />,
+  },
+  {
+    path: '/notification',
+    element: <NotificationPage />,
   },
   {
     path: '/event',
