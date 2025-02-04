@@ -40,11 +40,55 @@ const TabContentContainer = styled.div`
   overflow: hidden;
 `;
 
+const KeywordCountContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
+
+const KeywordRegistrationBanner = styled.div`
+  display: flex;
+  padding: 16px;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.05);
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const BellIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const StyledButton = styled.button`
+  background-color: #0a5ca8;
+  color: #fff;
+  padding: 6px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Pretendard Variable';
+  font-weight: 500;
+  transition: background-color 0.3s ease-in-out;
+  &:hover {
+    background-color: #1a4f8b;
+  }
+`;
+
 const NotificationPage = () => {
   const [activeTab, setActiveTab] = useState('topic');
   const [notifications, setNotifications] = useState([]);
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [keywordCount, setKeywordCount] = useState(0);
   const observerRef = useRef(null);
 
   const fetchNotifications = useCallback(async () => {
@@ -80,7 +124,7 @@ const NotificationPage = () => {
         {
           id: 725,
           title:
-            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
+            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
           body: '테스트 공지입니다',
           imageUrl:
             'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
@@ -196,7 +240,18 @@ const NotificationPage = () => {
           키워드
         </TabButton>
       </TabContainer>
-
+      {activeTab === 'keyword' ? (
+        <KeywordRegistrationBanner>
+          <KeywordCountContainer>
+            <BellIcon
+              alt="알람"
+              src={`${process.env.PUBLIC_URL}/icons/notiOn.svg`}
+            />
+            <div>알림 등록한 키워드 {keywordCount}개</div>
+          </KeywordCountContainer>
+          <StyledButton>키워드 설정</StyledButton>
+        </KeywordRegistrationBanner>
+      ) : null}
       <TabContentContainer>
         {notifications
           .filter(
