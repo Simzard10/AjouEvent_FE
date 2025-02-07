@@ -4,6 +4,8 @@ import axios from 'axios';
 import TabBar from '../../components/TabBar';
 import NotificationCard from './NotificationCard';
 import { useNavigate } from 'react-router-dom';
+import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import { use } from 'react';
 
 const AppContainer = styled.div`
   display: flex;
@@ -61,11 +63,6 @@ const KeywordRegistrationBanner = styled.div`
   font-weight: 600;
 `;
 
-const BellIcon = styled.img`
-  width: 26px;
-  height: 26px;
-`;
-
 const StyledButton = styled.button`
   background-color: #0a5ca8;
   color: #fff;
@@ -82,6 +79,24 @@ const StyledButton = styled.button`
   }
 `;
 
+const BellIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+const MessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  font-family: 'Pretendard Variable';
+  font-size: 16px;
+  font-weight: 600;
+  color: gray;
+  padding: 16px;
+`;
+
 const NotificationPage = () => {
   const [activeTab, setActiveTab] = useState('topic');
   const [notifications, setNotifications] = useState([]);
@@ -96,117 +111,46 @@ const NotificationPage = () => {
   const fetchNotifications = useCallback(async () => {
     if (!hasNext) return;
     try {
-      setNotifications([
-        {
-          id: 727,
-          title:
-            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:27.440163',
-          notificationType: 'KEYWORD',
-          topicName: '테스트',
-          read: false,
-        },
-        {
-          id: 724,
-          title:
-            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:27.440163',
-          notificationType: 'KEYWORD',
-          topicName: '테스트',
-          read: true,
-        },
-        {
-          id: 625,
-          title:
-            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:27.440163',
-          notificationType: 'KEYWORD',
-          topicName: '테스트',
-          read: true,
-        },
-        {
-          id: 726,
-          title:
-            '엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청엄청긴제목',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:27.440163',
-          notificationType: 'KEYWORD',
-          topicName: '테스트',
-          read: false,
-        },
-        {
-          id: 600,
-          title: '[테스트]',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:26.896515',
-          notificationType: 'TOPIC',
-          topicName: '테스트',
-          read: false,
-        },
-        {
-          id: 725,
-          title:
-            '[테스트]-긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목긴제목',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73868',
-          notifiedAt: '2025-01-21T16:07:26.896515',
-          notificationType: 'TOPIC',
-          topicName: '테스트',
-          read: false,
-        },
-        {
-          id: 722,
-          title: '테스트-[테스트]',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73867',
-          notifiedAt: '2025-01-21T16:06:56.193068',
-          notificationType: 'KEYWORD',
-          topicName: '테스트',
-          read: false,
-        },
-        {
-          id: 720,
-          title: '[테스트]',
-          body: '테스트 공지입니다',
-          imageUrl:
-            'https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.png',
-          clickUrl: 'https://www.ajouevent.com/event/73867',
-          notifiedAt: '2025-01-21T16:06:55.385147',
-          notificationType: 'TOPIC',
-          topicName: '테스트',
-          read: true,
-        },
+      setLoading(true);
+      const response = await requestWithAccessToken(
+        'get',
+        `${process.env.REACT_APP_BE_URL}/api/notification?page=${page}&size=10`,
+      );
+      console.log('Notification response:', response);
+      setNotifications((prevNotifications) => [
+        ...prevNotifications,
+        ...response.data.result,
       ]);
+      setHasNext(response.data.hasNext);
     } catch (error) {
+      setError(error);
       console.error('Error fetching notifications:', error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   }, [page, hasNext]);
 
+  const fetchUserKeywords = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        'get',
+        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`,
+      );
+      const userKeywords = response.data;
+      setKeywordCount(userKeywords.length);
+    } catch (error) {
+      console.error('Error fetching user keywords:', error);
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
-  }, [page]);
+  }, [page, activeTab]);
+
+  useEffect(() => {
+    fetchUserKeywords();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -249,6 +193,10 @@ const NotificationPage = () => {
       {activeTab === 'keyword' ? (
         <KeywordRegistrationBanner>
           <KeywordCountContainer>
+            <BellIcon
+              src={`${process.env.PUBLIC_URL}/icons/notification.svg`}
+              alt="notification"
+            />
             <div>알림 등록한 키워드 {keywordCount}개</div>
           </KeywordCountContainer>
           <StyledButton onClick={KeywordSettingButtonClick}>
@@ -257,26 +205,32 @@ const NotificationPage = () => {
         </KeywordRegistrationBanner>
       ) : null}
       <TabContentContainer>
-        {notifications
-          .filter(
-            (notification) =>
-              notification.notificationType ===
-              (activeTab === 'topic' ? 'TOPIC' : 'KEYWORD'),
-          )
-          .map((notification) => (
-            <NotificationCard
-              key={notification.id}
-              id={notification.id}
-              title={notification.title}
-              body={notification.body}
-              imageUrl={notification.imageUrl}
-              clickUrl={notification.clickUrl}
-              notifiedAt={notification.notifiedAt}
-              topicName={notification.topicName}
-              read={notification.read}
-            />
-          ))}
+        {!loading &&
+          !error &&
+          notifications
+            .filter(
+              (notification) =>
+                notification.notificationType ===
+                (activeTab === 'topic' ? 'TOPIC' : 'KEYWORD'),
+            )
+            .map((notification) => (
+              <NotificationCard
+                key={notification.id}
+                id={notification.id}
+                title={notification.title}
+                imageUrl={notification.imageUrl}
+                clickUrl={notification.clickUrl}
+                notifiedAt={notification.notifiedAt}
+                topicName={notification.topicName}
+                keywordName={notification.keywordName}
+                read={notification.read}
+              />
+            ))}
         <div ref={observerRef} style={{ height: 10 }}></div>
+        {loading && <MessageContainer>Loading...</MessageContainer>}
+        {!loading && error && (
+          <MessageContainer>Error fetching notifications</MessageContainer>
+        )}
       </TabContentContainer>
     </AppContainer>
   );

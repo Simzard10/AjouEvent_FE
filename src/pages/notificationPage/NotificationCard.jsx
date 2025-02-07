@@ -80,6 +80,7 @@ const Subject = styled.div`
   padding: 3px 4px;
   height: 20px;
   display: flex;
+  gap: 4px;
   justify-content: center;
   align-items: center;
   border-radius: 4px;
@@ -89,12 +90,25 @@ const Subject = styled.div`
   font-weight: bold;
 `;
 
+const Keyword = styled.span`
+  font-family: 'Pretendard Variable';
+  font-size: 14px;
+  color: #0a5ca8;
+  font-weight: bold;
+`;
+
+const BellIcon = styled.img`
+  width: 14px;
+  height: 14px;
+`;
+
 const NotificationCard = ({
   title,
   imageUrl,
   clickUrl,
   notifiedAt,
   topicName,
+  keywordName,
   read,
 }) => {
   const navigate = useNavigate();
@@ -134,7 +148,15 @@ const NotificationCard = ({
       </CardImageWrapper>
       <DetailsContainer>
         <TitleContainer>
-          <Subject>{topicName}</Subject>
+          <Subject>
+            <BellIcon
+              src={`${process.env.PUBLIC_URL}/icons/notification.svg`}
+              alt="notification"
+            />
+            {topicName}
+            {keywordName && <Keyword>: {keywordName}</Keyword>}
+          </Subject>
+
           <TitleText>{title}</TitleText>
           <TimeContainer>{getTimeAgo(notifiedAt)}</TimeContainer>
         </TitleContainer>
