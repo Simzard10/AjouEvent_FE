@@ -22,6 +22,19 @@ const KeywordListContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
+const MessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  font-family: 'Pretendard Variable';
+  font-size: 16px;
+  font-weight: 600;
+  color: gray;
+  padding: 16px;
+`;
+
 export default function KeywordTab() {
   const { setIsKeywordTabRead } = useStore((state) => ({
     setIsKeywordTabRead: state.setIsKeywordTabRead,
@@ -112,8 +125,8 @@ export default function KeywordTab() {
           />
         ))}
       </KeywordListContainer>
-      {loading && <p>로딩중...</p>}
-      {isError && <p>서버 에러</p>}
+      {loading && <MessageContainer>로딩중...</MessageContainer>}
+      {isError && <MessageContainer>서버 에러</MessageContainer>}
       <div ref={bottomRef} style={{ height: '1px' }}></div>
     </AppContainer>
   );

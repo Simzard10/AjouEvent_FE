@@ -21,6 +21,7 @@ const MainContentContaioner = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 0 20px 80px 20px;
+  font-family: 'Pretendard Variable';
 `;
 
 const TapWrapper = styled.div`

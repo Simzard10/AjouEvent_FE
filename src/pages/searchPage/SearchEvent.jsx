@@ -9,6 +9,19 @@ const FlexContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
+const MessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  font-family: 'Pretendard Variable';
+  font-size: 16px;
+  font-weight: 600;
+  color: gray;
+  padding: 16px;
+`;
+
 const SearchEvent = ({ events, bottomRef, loading, hasMore, isError }) => {
   return (
     <>
@@ -28,9 +41,11 @@ const SearchEvent = ({ events, bottomRef, loading, hasMore, isError }) => {
         ))}
       </FlexContainer>
       <div ref={bottomRef} style={{ height: '1px' }}></div>
-      {loading && <p>이벤트 불러 오는 중...</p>}
-      {!hasMore && <p>더 이상 불러올 이벤트가 없습니다.</p>}
-      {isError && <p>서버 에러</p>}
+      {loading && <MessageContainer>이벤트 불러 오는 중...</MessageContainer>}
+      {!hasMore && (
+        <MessageContainer>더 이상 불러올 이벤트가 없습니다.</MessageContainer>
+      )}
+      {isError && <MessageContainer>서버 에러</MessageContainer>}
     </>
   );
 };
