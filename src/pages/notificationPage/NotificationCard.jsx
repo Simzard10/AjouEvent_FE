@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 
 const CardContainer = styled.div`
   display: flex;
@@ -103,6 +104,7 @@ const BellIcon = styled.img`
 `;
 
 const NotificationCard = ({
+  id,
   title,
   imageUrl,
   clickUrl,
@@ -112,6 +114,20 @@ const NotificationCard = ({
   read,
 }) => {
   const navigate = useNavigate();
+
+  const postNotificationClick = async () => {
+    try {
+      const response = await requestWithAccessToken(
+        'post',
+        `${process.env.REACT_APP_BE_URL}/api/notification/click`,
+        {
+          pushNotificationId: id,
+        },
+      );
+    } catch (error) {
+      console.error('Error fetching user keywords:', error);
+    }
+  };
 
   const getSafeImageUrl = (url) => {
     if (url.startsWith('http://')) {
@@ -125,6 +141,7 @@ const NotificationCard = ({
     const trimmedUrl = clickUrl.startsWith(baseUrl)
       ? clickUrl.replace(baseUrl, '')
       : clickUrl;
+    postNotificationClick();
     navigate(`/${trimmedUrl}`);
   };
 
