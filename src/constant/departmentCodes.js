@@ -1,5 +1,5 @@
 const KtoECodes = {
-  AI모빌리티공학과: 'AIMobilityEngineering',
+  미래모빌리티공학과: 'AIMobilityEngineering',
   간호대학: 'Nursing',
   건설시스템공학과: 'CivilSystemsEngineering',
   건축학과: 'Architecture',
@@ -53,10 +53,13 @@ const KtoECodes = {
   화학과: 'Chemistry',
   환경안전공학과: 'EnvironmentalSafetyEngineering',
   테스트: 'Test',
+  응용화학과: 'AppliedChemistry',
+  경제정치사회융합학부: 'EconomicPoliticalAndSocialStudies',
+  프런티어과학학부: 'FrontierSciences',
+  자유전공학부: 'LiberalStudies'
 };
 
 const EtoKCodes = {
-  AIMobilityEngineering: 'AI모빌리티공학과',
   Nursing: '간호대학',
   CivilSystemsEngineering: '건설시스템공학과',
   Architecture: '건축학과',
@@ -78,6 +81,7 @@ const EtoKCodes = {
   DigitalMedia: '디지털미디어학과',
   CultureContents: '문화콘텐츠학과',
   Physics: '물리학과',
+  AIMobilityEngineering: '미래모빌리티공학과',
   FrenchLanguageLiterature: '불어불문학과',
   CyberSecurity: '사이버보안학과',
   History: '사학과',
@@ -110,6 +114,10 @@ const EtoKCodes = {
   Chemistry: '화학과',
   EnvironmentalSafetyEngineering: '환경안전공학과',
   Test: '테스트',
+  AppliedChemistry: '응용화학과',
+  EconomicPoliticalAndSocialStudies: '경제정치사회융합학부',
+  FrontierSciences: '프런티어과학학부',
+  LiberalStudies: '자유전공학부'
 };
 
 const priorityOrder = [
@@ -167,6 +175,10 @@ const priorityOrder = [
   'Chemistry',
   'EnvironmentalSafetyEngineering',
   'Test',
+  'AppliedChemistry',
+  'EconomicPoliticalAndSocialStudies',
+  'FrontierSciences',
+  'LiberalStudies',
 ];
 
 export { KtoECodes, EtoKCodes, priorityOrder };
