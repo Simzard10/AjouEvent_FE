@@ -6,6 +6,7 @@ import NotificationCard from './NotificationCard';
 import { useNavigate } from 'react-router-dom';
 import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import { use } from 'react';
+import useStore from '../../store/useStore';
 
 const AppContainer = styled.div`
   display: flex;
@@ -98,6 +99,7 @@ const MessageContainer = styled.div`
 `;
 
 const NotificationPage = () => {
+  const { fetchUnreadNotificationCount } = useStore();
   const [activeTab, setActiveTab] = useState('topic');
   const [notifications, setNotifications] = useState([]);
   const [page, setPage] = useState(0);
@@ -109,27 +111,32 @@ const NotificationPage = () => {
   const navigate = useNavigate();
 
   const fetchNotifications = useCallback(async () => {
-    if (!hasNext) return;
+    if (!hasNext && page !== 0) return; // page === 0일 때는 무조건 실행
     try {
       setLoading(true);
-      const response = await requestWithAccessToken(
-        'get',
-        `${process.env.REACT_APP_BE_URL}/api/notification?page=${page}&size=10`,
+      let apiUrl =
+        activeTab === "topic"
+          ? `${process.env.REACT_APP_BE_URL}/api/notification/topic?page=${page}&size=10`
+          : `${process.env.REACT_APP_BE_URL}/api/notification/keyword?page=${page}&size=10`;
+
+      const response = await requestWithAccessToken("get", apiUrl);
+      console.log("Notification response:", response);
+
+      setNotifications((prevNotifications) =>
+        page === 0 ? response.data.result : [...prevNotifications, ...response.data.result]
       );
-      console.log('Notification response:', response);
-      setNotifications((prevNotifications) => [
-        ...prevNotifications,
-        ...response.data.result,
-      ]);
+
       setHasNext(response.data.hasNext);
+
+      fetchUnreadNotificationCount();
+      
     } catch (error) {
       setError(error);
-      console.error('Error fetching notifications:', error);
-      setError(error);
+      console.error("Error fetching notifications:", error);
     } finally {
       setLoading(false);
     }
-  }, [page, hasNext]);
+  }, [page, hasNext, activeTab]);
 
   const fetchUserKeywords = async () => {
     try {
@@ -172,6 +179,12 @@ const NotificationPage = () => {
     navigate('/subscribe/keywordSubscribe');
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setPage(0); // 탭 변경 시 페이지 초기화
+    setNotifications([]); // 탭 변경 시 기존 알림 목록 초기화
+  };
+
   return (
     <AppContainer>
       <TabBar Title="알림" />
@@ -179,13 +192,13 @@ const NotificationPage = () => {
       <TabContainer>
         <TabButton
           $active={activeTab === 'topic'}
-          onClick={() => setActiveTab('topic')}
+          onClick={() => handleTabChange('topic')} 
         >
           구독
         </TabButton>
         <TabButton
           $active={activeTab === 'keyword'}
-          onClick={() => setActiveTab('keyword')}
+          onClick={() => handleTabChange('keyword')} 
         >
           키워드
         </TabButton>
@@ -208,24 +221,22 @@ const NotificationPage = () => {
         {!loading &&
           !error &&
           notifications
-            .filter(
-              (notification) =>
-                notification.notificationType ===
-                (activeTab === 'topic' ? 'TOPIC' : 'KEYWORD'),
-            )
-            .map((notification) => (
-              <NotificationCard
-                key={notification.id}
-                id={notification.id}
-                title={notification.title}
-                imageUrl={notification.imageUrl}
-                clickUrl={notification.clickUrl}
-                notifiedAt={notification.notifiedAt}
-                topicName={notification.topicName}
-                keywordName={notification.keywordName}
-                read={notification.read}
-              />
-            ))}
+          .filter(notification => 
+            activeTab === "keyword" ? notification.keywordName : notification.topicName
+          )
+          .map((notification) => (
+            <NotificationCard
+              key={notification.id}
+              id={notification.id}
+              title={notification.title}
+              imageUrl={notification.imageUrl}
+              clickUrl={notification.clickUrl}
+              notifiedAt={notification.notifiedAt}
+              topicName={notification.topicName} 
+              keywordName={activeTab === "keyword" ? notification.keywordName : null} // Keyword 탭에서만 keyword 표시
+              read={notification.read}
+            />
+        ))}
         <div ref={observerRef} style={{ height: 10 }}></div>
         {loading && <MessageContainer>Loading...</MessageContainer>}
         {!loading && error && (
