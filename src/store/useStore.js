@@ -9,6 +9,7 @@ const useStore = create((set) => ({
   isAuthorized: false,
   isTopicTabRead: true,
   isKeywordTabRead: true,
+  unreadNotificationCount: 0, // 푸시 알림 배지 개수 상태
   topics: [], // 사용자가 구독한 topics
   subscribeItems: [], // 구독된 항목들을 저장하는 상태 추가
   keywords: [], // 사용자가 구독한 keywords
@@ -29,6 +30,23 @@ const useStore = create((set) => ({
   },
   setIsAuthorized: () => {
     set({ isAuthorized: true });
+  },
+
+  // 안 읽은 푸시 알림 배지 개수 가져오는 함수
+  fetchUnreadNotificationCount: async () => {
+    try {
+      const response = await requestWithAccessToken(
+        'get',
+        `${process.env.REACT_APP_BE_URL}/api/notification/unread-count`
+      );
+      set({ unreadNotificationCount: response.data.unreadNotificationCount });
+
+      if (navigator.setAppBadge) {
+        navigator.setAppBadge(response.data.unreadNotificationCount).catch(console.error);
+      }
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
   },
 
   // 특정 토픽을 읽음 상태로 변경하고 전체 읽음 상태를 갱신하는 함수

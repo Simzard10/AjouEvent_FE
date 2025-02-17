@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RouteChangeTracker from './RouteChangeTracker';
 import { Analytics } from '@vercel/analytics/react';
+import useStore from './store/useStore';
 import HomePage from './pages/homePage/HomePage';
 import SearchEventPage from './pages/searchPage/SearchEventPage';
 import EventDetailPage from './pages/eventPage/EventDetailPage';
@@ -18,6 +19,7 @@ import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
 import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
 import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
 import NotificationPage from './pages/notificationPage/NotificationPage';
+import requestWithAccessToken from '../src/services/jwt/requestWithAccessToken';
 
 const ROUTER = createBrowserRouter([
   {
@@ -87,6 +89,23 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
+  const { unreadNotificationCount, fetchUnreadNotificationCount } = useStore();
+
+  // 최초 렌더링 시 안읽은 푸시 알림 개수 가져오기
+  useEffect(() => {
+    fetchUnreadNotificationCount();
+  }, []);
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data.type === "updateBadge") {
+          fetchUnreadNotificationCount(); // 서비스워커 이벤트가 발생하면, 알림 개수 다시 불러오기
+        }
+      });
+    }
+  }, []);
+  
   return (
     <div className="App">
       <RouterProvider router={ROUTER}>
