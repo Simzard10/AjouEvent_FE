@@ -89,25 +89,38 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
-  const { unreadNotificationCount, fetchUnreadNotificationCount, isAuthorized } = useStore();
+  const { fetchUnreadNotificationCount, unreadNotificationCount } = useStore();
 
-  // 최초 렌더링 시 로그인 상태 확인 후 푸시 알림 개수 가져오기
-  useEffect(() => {
-    if (isAuthorized) {
-      fetchUnreadNotificationCount();
-    }
-  }, [isAuthorized, fetchUnreadNotificationCount]);
-  
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("message", (event) => {
+      navigator.serviceWorker.addEventListener("message", async (event) => {
         if (event.data.type === "updateBadge") {
-          fetchUnreadNotificationCount(); // 서비스워커 이벤트가 발생하면, 알림 개수 다시 불러오기
+          await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
+
+          if ("setAppBadge" in navigator) {
+            navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+          }
         }
       });
     }
-  }, [fetchUnreadNotificationCount]);
-  
+  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
+
+  // 백그라운드 -> 포그라운드 시 배지 업데이트
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchUnreadNotificationCount().then(() => {
+          if ("setAppBadge" in navigator) {
+            navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+          }
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
+
   return (
     <div className="App">
       <RouterProvider router={ROUTER}>
