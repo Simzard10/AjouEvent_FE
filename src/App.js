@@ -95,15 +95,23 @@ function App() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", async (event) => {
         if (event.data.type === "updateBadge") {
-          await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
+          const latestUnreadCount = await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
 
           if ("setAppBadge" in navigator) {
-            navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+            navigator.setAppBadge(latestUnreadCount).catch(console.error);
+          }
+
+          // 🔹 서비스워커의 unreadCount도 초기화
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: "resetUnreadCount",
+              count: latestUnreadCount,
+            });
           }
         }
       });
     }
-  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
+  }, [fetchUnreadNotificationCount]);
 
   // 백그라운드 -> 포그라운드 시 배지 업데이트
   useEffect(() => {
