@@ -16,6 +16,7 @@ const NavWrapper = styled.nav`
   background-color: #ffffff;
   flex-direction: column;
   font-size: 12px;
+  font-family: 'Pretendard Variable';
   color: #b8bfc6;
   font-weight: 700;
   text-align: center;

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import GetUserPermission from '../services/fcm/GetUserPermission';
 import { useNavigate } from 'react-router-dom';
+import useStore from '../store/useStore';
 
 const StickyContainer = styled.div`
   display: flex;
@@ -15,31 +15,63 @@ const StickyContainer = styled.div`
   padding: 10px;
 `;
 
+const TapIconContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
 const TapIcon = styled.img`
   aspect-ratio: 1;
   width: 40px;
   object-fit: cover;
   object-position: center;
   opacity: 0.75;
-  cursor: pointer; /* 클릭 가능한 아이콘 표시 */
+  cursor: pointer;
 `;
 
-const HelpBox = ({ setIsLoading }) => {
+const Badge = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  font-size: 8px;
+  font-weight: bold;
+  padding: 4px 6px;
+  border-radius: 50%;
+  min-width: 15px;
+  min-height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const HelpBox = () => {
   const navigate = useNavigate();
+  const { unreadNotificationCount, fetchUnreadNotificationCount } = useStore();
+
+  useEffect(() => {
+    fetchUnreadNotificationCount(); // 처음 마운트될 때 최신 알림 개수 가져오기
+  }, []);
+
   const handleBellClick = () => {
-    GetUserPermission(setIsLoading);
+    navigate('/notification');
   };
+
   const handleInstallClicked = () => {
     navigate('/guide');
   };
+
   return (
     <StickyContainer>
-      <TapIcon
-        onClick={handleBellClick}
-        loading="lazy"
-        src={`${process.env.PUBLIC_URL}/icons/notiOn.svg`}
-        alt="bellIcon"
-      />
+      <TapIconContainer onClick={handleBellClick}>
+        <TapIcon
+          loading="lazy"
+          src={`${process.env.PUBLIC_URL}/icons/notiOn.svg`}
+          alt="bellIcon"
+        />
+        {unreadNotificationCount > 0 && <Badge>{unreadNotificationCount}</Badge>}
+      </TapIconContainer>
 
       <TapIcon
         onClick={handleInstallClicked}
