@@ -95,33 +95,33 @@ function App() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", async (event) => {
         if (event.data.type === "updateBadge") {
-          const latestUnreadCount = await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
+          console.log("🔔 Updating badge count from SW:", event.data.count);
+          await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
 
-          if ("setAppBadge" in navigator) {
-            navigator.setAppBadge(latestUnreadCount).catch(console.error);
-          }
-
-          // 🔹 서비스워커의 unreadCount도 초기화
-          if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-              type: "resetUnreadCount",
-              count: latestUnreadCount,
-            });
-          }
+          // 🔹 fetchUnreadNotificationCount()가 완료된 후 배지 업데이트
+          setTimeout(() => {
+            if ("setAppBadge" in navigator) {
+              console.log("🔔 Setting app badge:", unreadNotificationCount);
+              navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+            }
+          }, 100);
         }
       });
     }
-  }, [fetchUnreadNotificationCount]);
+  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
 
-  // 백그라운드 -> 포그라운드 시 배지 업데이트
+  // 🔹 백그라운드 -> 포그라운드 시 배지 업데이트 개선
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
-        fetchUnreadNotificationCount().then(() => {
+        await fetchUnreadNotificationCount();
+        
+        setTimeout(() => {
           if ("setAppBadge" in navigator) {
+            console.log("🔔 Foreground setting app badge:", unreadNotificationCount);
             navigator.setAppBadge(unreadNotificationCount).catch(console.error);
           }
-        });
+        }, 100);
       }
     };
 
