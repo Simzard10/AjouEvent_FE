@@ -89,13 +89,15 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
-  const { unreadNotificationCount, fetchUnreadNotificationCount } = useStore();
+  const { unreadNotificationCount, fetchUnreadNotificationCount, isAuthorized } = useStore();
 
-  // 최초 렌더링 시 안읽은 푸시 알림 개수 가져오기
+  // 최초 렌더링 시 로그인 상태 확인 후 푸시 알림 개수 가져오기
   useEffect(() => {
-    fetchUnreadNotificationCount();
-  }, []);
-
+    if (isAuthorized) {
+      fetchUnreadNotificationCount();
+    }
+  }, [isAuthorized, fetchUnreadNotificationCount]);
+  
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (event) => {
