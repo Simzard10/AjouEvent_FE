@@ -17,7 +17,7 @@ self.addEventListener("push", function (event) {
   console.log("Received push notification:", data);
 
   // 🔹 `unread_count`가 문자열일 경우 숫자로 변환
-  const unreadCount = data.unread_count ? Number(data.unread_count) : 0;
+  const unreadCount = data.data?.unread_count ? Number(data.data.unread_count) : 0;
   console.log("Parsed unread count:", unreadCount);
   
 
