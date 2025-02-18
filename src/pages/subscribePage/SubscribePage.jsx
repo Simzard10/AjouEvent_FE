@@ -12,6 +12,7 @@ const AppContainer = styled.div`
   align-items: center;
   flex-direction: column;
   background-color: #ffffff;
+  font-family: 'Pretendard Variable';
 `;
 
 const MainContentContaioner = styled.div`

@@ -9,6 +9,19 @@ const FlexContainer = styled.div`
   padding: 0 20px 0 20px;
 `;
 
+const MessageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  font-family: 'Pretendard Variable';
+  font-size: 16px;
+  font-weight: 600;
+  color: gray;
+  padding: 16px;
+`;
+
 const LikedEvent = ({ events, bottomRef, loading, hasMore }) => {
   return (
     <>
@@ -28,8 +41,10 @@ const LikedEvent = ({ events, bottomRef, loading, hasMore }) => {
         ))}
       </FlexContainer>
       <div ref={bottomRef} style={{ height: '1px' }}></div>
-      {loading && <p>로딩중...</p>}
-      {!hasMore && <p>불러올 이벤트가 없습니다.</p>}
+      {loading && <MessageContainer>로딩중...</MessageContainer>}
+      {!hasMore && (
+        <MessageContainer>불러올 이벤트가 없습니다.</MessageContainer>
+      )}
     </>
   );
 };

@@ -16,6 +16,8 @@ self.addEventListener("push", function (e) {
   const resultData = e.data.json().notification;
   const resultURL = e.data.json().data.click_action;
 
+  const pushClusterId = e.data.json().data.push_cluster_id;
+
   if (!resultData || !resultData.title || !resultData.body) {
     const notificationTitle = "Notification data is incomplete.";
     const notificationOptions = {
@@ -30,10 +32,25 @@ self.addEventListener("push", function (e) {
     body: resultData.body.split("\\n").join("\n"),
     icon: resultData.image,
     tag: resultData.tag,
-    data: { click_action: resultURL },
+    data: { 
+      click_action: resultURL,
+      push_cluster_id: pushClusterId,
+    },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+
+  let badgeCount = 0; // 초기 뱃지 카운트
+
+  //app.js에 뱃지 업데이트 메시지 전달
+  self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: "updateBadge",
+        count: badgeCount,
+      });
+    });
+  });
 });
 
 self.addEventListener("notificationclick", function (event) {
