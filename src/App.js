@@ -106,7 +106,7 @@ function App() {
         }
       });
     }
-  }, []);
+  }, [fetchUnreadNotificationCount]);
   
   return (
     <div className="App">
