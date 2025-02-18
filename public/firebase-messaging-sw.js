@@ -14,18 +14,10 @@ self.addEventListener("push", function (event) {
   }
 
   const data = event.data.json();
-  const unreadCount = parseInt(data.unreadCount, 10) || 20; // 🔹 서버에서 받은 unreadCount
-  console.log(unreadCount)
 
   let promises = [];
 
-  // 🔹 iOS 및 지원되는 기기에서 배지 업데이트
-  if ("setAppBadge" in self.navigator) {
-    const badgePromise = self.navigator.setAppBadge(unreadCount).catch(console.error);
-    promises.push(badgePromise);
-  }
-
-  // 🔹 iOS에서는 showNotification() 필수 실행
+  // 🔹 iOS에서는 showNotification() 필수 실행 (백그라운드 푸시 활성화 조건)
   const notificationPromise = self.registration.showNotification(data.notification.title, {
     body: data.notification.body,
     icon: data.notification.icon,
@@ -33,12 +25,11 @@ self.addEventListener("push", function (event) {
   });
   promises.push(notificationPromise);
 
-  // 🔹 PWA 실행 중일 경우 UI 동기화
+  // 🔹 PWA 실행 중이면 배지 업데이트를 요청
   self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
     clients.forEach((client) => {
       client.postMessage({
-        type: "updateBadge",
-        count: unreadCount, // 🟢 안 읽은 알림 개수 전달
+        type: "updateBadge", // 🔹 PWA에서 배지를 업데이트하도록 요청
       });
     });
   });
