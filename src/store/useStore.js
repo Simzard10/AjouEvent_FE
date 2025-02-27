@@ -32,6 +32,9 @@ const useStore = create((set) => ({
     set({ isAuthorized: true });
   },
 
+  // ✅ 🔹 `setUnreadNotificationCount` 추가
+  setUnreadNotificationCount: (count) => set({ unreadNotificationCount: count }),
+
   // 안 읽은 푸시 알림 배지 개수 가져오는 함수
   fetchUnreadNotificationCount: async () => {
     try {
