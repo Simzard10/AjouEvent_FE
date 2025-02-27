@@ -19,7 +19,6 @@ import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
 import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
 import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
 import NotificationPage from './pages/notificationPage/NotificationPage';
-import requestWithAccessToken from '../src/services/jwt/requestWithAccessToken';
 
 const ROUTER = createBrowserRouter([
   {
@@ -89,45 +88,41 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
-  const { fetchUnreadNotificationCount, unreadNotificationCount } = useStore();
+  const { unreadNotificationCount, setUnreadNotificationCount } = useStore();
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", async (event) => {
         if (event.data.type === "updateBadge") {
           console.log("🔔 Updating badge count from SW:", event.data.count);
-          await fetchUnreadNotificationCount(); // 🔹 서버에서 최신 unreadCount 가져오기
 
-          // 🔹 fetchUnreadNotificationCount()가 완료된 후 배지 업데이트
+          setUnreadNotificationCount(event.data.count); // 🟢 상태 업데이트
+
           setTimeout(() => {
             if ("setAppBadge" in navigator) {
-              console.log("🔔 Setting app badge:", unreadNotificationCount);
-              navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+              console.log("🔔 Setting app badge:", event.data.count);
+              navigator.setAppBadge(event.data.count).catch(console.error);
             }
           }, 100);
         }
       });
     }
-  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
+  }, [setUnreadNotificationCount]);
 
   // 🔹 백그라운드 -> 포그라운드 시 배지 업데이트 개선
   useEffect(() => {
-    const handleVisibilityChange = async () => {
+    const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        await fetchUnreadNotificationCount();
-        
-        setTimeout(() => {
-          if ("setAppBadge" in navigator) {
-            console.log("🔔 Foreground setting app badge:", unreadNotificationCount);
-            navigator.setAppBadge(unreadNotificationCount).catch(console.error);
-          }
-        }, 100);
+        console.log("🔔 Foreground setting app badge:", unreadNotificationCount);
+        if ("setAppBadge" in navigator) {
+          navigator.setAppBadge(unreadNotificationCount).catch(console.error);
+        }
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [fetchUnreadNotificationCount, unreadNotificationCount]);
+  }, [unreadNotificationCount]);
 
   return (
     <div className="App">
