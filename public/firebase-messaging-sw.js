@@ -7,50 +7,48 @@ self.addEventListener("activate", function (e) {
   console.log("fcm sw activate..");
 });
 
-self.addEventListener("push", function (e) {
-  if (!e.data || !e.data.json()) {
+self.addEventListener("push", function (event) {
+  if (!event.data || !event.data.json()) {
     console.error("Push event does not contain valid JSON data.");
     return;
   }
 
-  const resultData = e.data.json().notification;
-  const resultURL = e.data.json().data.click_action;
+  const data = event.data.json();
+  console.log("Received push notification:", data);
 
-  const pushClusterId = e.data.json().data.push_cluster_id;
+  // 🔹 `unread_count`가 문자열일 경우 숫자로 변환
+  const unreadCount = data.data?.unread_count ? Number(data.data.unread_count) : 0;
+  console.log("Parsed unread count:", unreadCount);
+  
 
-  if (!resultData || !resultData.title || !resultData.body) {
-    const notificationTitle = "Notification data is incomplete.";
-    const notificationOptions = {
-      body: "Notification data is incomplete.",
-    };
-    self.registration.showNotification(notificationTitle, notificationOptions);
-    return;
+  let promises = [];
+
+  // 🔹 iOS 및 지원되는 기기에서 배지 업데이트
+  if ("setAppBadge" in self.navigator) {
+    console.log(unreadCount)
+    const badgePromise = self.navigator.setAppBadge(unreadCount).catch(console.error);
+    promises.push(badgePromise);
   }
 
-  const notificationTitle = resultData.title;
-  const notificationOptions = {
-    body: resultData.body.split("\\n").join("\n"),
-    icon: resultData.image,
-    tag: resultData.tag,
-    data: { 
-      click_action: resultURL,
-      push_cluster_id: pushClusterId,
-    },
-  };
+  // 🔹 iOS에서는 showNotification() 필수 실행
+  const notificationPromise = self.registration.showNotification(data.notification.title, {
+    body: data.notification.body,
+    icon: data.notification.icon,
+    data: { click_action: data.data.click_action },
+  });
+  promises.push(notificationPromise);
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
-
-  let badgeCount = 0; // 초기 뱃지 카운트
-
-  //app.js에 뱃지 업데이트 메시지 전달
+  // 🔹 PWA 실행 중일 경우 UI 동기화
   self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
     clients.forEach((client) => {
       client.postMessage({
         type: "updateBadge",
-        count: badgeCount,
+        count: unreadCount, // 🟢 안 읽은 알림 개수 전달
       });
     });
   });
+
+  event.waitUntil(Promise.all(promises));
 });
 
 self.addEventListener("notificationclick", function (event) {
