@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import Swal from "sweetalert2";
-import useStore from "../store/useStore";
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
+import useStore from '../store/useStore';
 
 const Title = styled.h2`
   padding-top: 5%;
@@ -35,7 +35,7 @@ const Container = styled.div`
   height: 100vh;
   width: 80%;
   background-color: transparent;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
 `;
 
 const Form = styled.form`
@@ -92,7 +92,7 @@ const Button = styled.button`
   text-align: center;
   cursor: pointer;
   opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   margin-top: 0.5rem;
   &:hover {
     opacity: ${(props) => (props.disabled ? 1 : 0.8)};
@@ -149,10 +149,10 @@ const ChangePasswordPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordValidityError, setPasswordValidityError] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordValidityError, setPasswordValidityError] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const { isAuthorized } = useStore((state) => ({
     isAuthorized: state.isAuthorized,
@@ -161,11 +161,11 @@ const ChangePasswordPage = () => {
   useEffect(() => {
     if (!isAuthorized) {
       Swal.fire({
-        icon: "warning",
-        title: "이메일 인증을 먼저 진행해 주세요",
-        text: "이메일 인증 창으로 이동합니다.",
+        icon: 'warning',
+        title: '이메일 인증을 먼저 진행해 주세요',
+        text: '이메일 인증 창으로 이동합니다.',
       });
-      navigate("/findPassword");
+      navigate('/findPassword');
     }
   }, [isAuthorized, navigate]);
 
@@ -185,19 +185,19 @@ const ChangePasswordPage = () => {
   const validateForm = (password, confirmPassword) => {
     const errors = {};
     if (!password) {
-      errors.password = "* 비밀번호를 입력해주세요.";
+      errors.password = '* 비밀번호를 입력해주세요.';
     } else if (!passwordRegEx.test(password)) {
       setPasswordValidityError(
-        "* 비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다."
+        '* 비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~24자로 입력해야 합니다.',
       );
     } else {
-      setPasswordValidityError("");
+      setPasswordValidityError('');
     }
 
     if (password !== confirmPassword) {
-      setPasswordError("* 비밀번호가 일치하지 않습니다.");
+      setPasswordError('* 비밀번호가 일치하지 않습니다.');
     } else {
-      setPasswordError("");
+      setPasswordError('');
     }
 
     if (
@@ -228,11 +228,11 @@ const ChangePasswordPage = () => {
     e.preventDefault();
     if (!isAuthorized) {
       Swal.fire({
-        icon: "warning",
-        title: "이메일 인증을 먼저 진행해 주세요",
-        text: "이메일 인증 창으로 이동합니다.",
+        icon: 'warning',
+        title: '이메일 인증을 먼저 진행해 주세요',
+        text: '이메일 인증 창으로 이동합니다.',
       });
-      navigate("/findPassword");
+      navigate('/findPassword');
       return;
     }
     const errors = validateForm(newPassword, confirmPassword);
@@ -247,19 +247,19 @@ const ChangePasswordPage = () => {
         {
           email,
           newPassword,
-        }
+        },
       );
       Swal.fire({
-        icon: "success",
-        title: "비밀번호 재설정 성공",
-        text: "비밀번호가 성공적으로 변경되었습니다.",
+        icon: 'success',
+        title: '비밀번호 재설정 성공',
+        text: '비밀번호가 성공적으로 변경되었습니다.',
       });
-      navigate("/login");
+      navigate('/login');
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "비밀번호 재설정 실패",
-        text: "비밀번호 재설정에 실패했습니다.",
+        icon: 'error',
+        title: '비밀번호 재설정 실패',
+        text: '비밀번호 재설정에 실패했습니다.',
       });
     }
   };
@@ -282,7 +282,7 @@ const ChangePasswordPage = () => {
           </LabelWrapper>
           <InputField>
             <input
-              type={isPasswordVisible ? "text" : "password"}
+              type={isPasswordVisible ? 'text' : 'password'}
               name="newPassword"
               placeholder="8~24자 / 영문, 숫자, 특수문자 혼합"
               id="newPassword"
@@ -293,7 +293,7 @@ const ChangePasswordPage = () => {
               <FontAwesomeIcon
                 icon={isPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  opacity: "0.5",
+                  opacity: '0.5',
                 }}
               />
             </span>
@@ -307,7 +307,7 @@ const ChangePasswordPage = () => {
           </LabelWrapper>
           <InputField>
             <input
-              type={isConfirmPasswordVisible ? "text" : "password"}
+              type={isConfirmPasswordVisible ? 'text' : 'password'}
               placeholder="비밀번호 확인"
               className="input"
               id="confirmPassword"
@@ -319,7 +319,7 @@ const ChangePasswordPage = () => {
               <FontAwesomeIcon
                 icon={isConfirmPasswordVisible ? faEye : faEyeSlash}
                 style={{
-                  opacity: "0.5",
+                  opacity: '0.5',
                 }}
               />
             </span>

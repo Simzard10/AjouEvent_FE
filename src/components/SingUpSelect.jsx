@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
-import GetUserPermission from "../fcm/GetUserPermission";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
+import GetUserPermission from '../services/fcm/GetUserPermission';
+import Swal from 'sweetalert2';
 
 const Container = styled.div`
   z-index: 1;
@@ -15,7 +14,7 @@ const Container = styled.div`
   height: 100vh;
   background-color: transparent;
   margin: 0;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
 `;
 
 const LogoWrapper = styled.div`
@@ -28,7 +27,7 @@ const LogoWrapper = styled.div`
 const Logo = styled.div`
   width: 100px;
   height: 100px;
-  background: url("../image/AjouUniversity-logo.png") no-repeat center center;
+  background: url('../image/AjouUniversity-logo.png') no-repeat center center;
   background-size: contain;
 `;
 
@@ -38,7 +37,7 @@ const Heading = styled.h1`
   font-weight: 700;
   margin: 0;
   text-align: left;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
 `;
 
 const HeadingWrapper = styled.div`
@@ -72,7 +71,7 @@ const Separator = styled.div`
   max-width: 680px;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     left: 0;
@@ -82,7 +81,7 @@ const Separator = styled.div`
   }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     right: 0;
@@ -123,7 +122,7 @@ const GoogleLoginButton = styled.button`
     color: #000000;
     color: rgba(0, 0, 0, 0.54); // 폰트 컬러 54% 투명도
     font-size: 14px;
-    font-family: "Roboto", system-ui;
+    font-family: 'Roboto', system-ui;
     font-weight: 500;
     font-style: normal;
   }
@@ -169,15 +168,15 @@ const Login = () => {
   }, []);
 
   const handelSignUpButtonClicked = () => {
-    navigate("/signUp");
+    navigate('/signUp');
   };
 
   const handleGoogleButtonClicked = () => {
-    const fcmToken = localStorage.getItem("fcmToken");
+    const fcmToken = localStorage.getItem('fcmToken');
     if (!fcmToken) {
       Swal.fire({
-        icon: "error",
-        title: "알림토큰 미등록",
+        icon: 'error',
+        title: '알림토큰 미등록',
         text: "브라우저 메뉴에서 '홈 화면에 추가'를 통해 설치 / 모바일 ios 최신 버전으로 업데이트해주세요",
       });
       return;

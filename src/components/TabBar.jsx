@@ -1,16 +1,19 @@
-import React from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const TapWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 16px 0px 16px 0px;
   gap: 8px;
 `;
 
 const TapIcon = styled.img`
+  position: absolute;
+  left: 0;
   margin-left: 24px;
   aspect-ratio: 1;
   width: 20px;
@@ -21,7 +24,7 @@ const TapIcon = styled.img`
 
 const TapTitle = styled.div`
   color: #000;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
@@ -34,7 +37,7 @@ const TabBar = ({ Title }) => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      navigate("/event");
+      navigate('/event');
     }
   };
 
