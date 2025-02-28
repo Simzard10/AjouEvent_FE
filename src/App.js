@@ -96,7 +96,7 @@ function App() {
         if (event.data.type === "updateBadge") {
           console.log("🔔 Updating badge count from SW:", event.data.count);
 
-          setUnreadNotificationCount(event.data.count); 
+          setUnreadNotificationCount(event.data.count); // 🟢 상태 업데이트
 
           setTimeout(() => {
             if ("setAppBadge" in navigator) {
@@ -109,6 +109,7 @@ function App() {
     }
   }, [setUnreadNotificationCount]);
 
+  // 🔹 백그라운드 -> 포그라운드 시 배지 업데이트 개선
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
