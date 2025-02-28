@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
-import Swal from "sweetalert2";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import requestWithAccessToken from '../services/jwt/requestWithAccessToken';
+import Swal from 'sweetalert2';
 
 const ModalBackgroundContainer = styled.div`
   position: fixed;
@@ -30,7 +30,7 @@ const ModalContainer = styled.div`
 `;
 
 const Input = styled.input`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   width: auto;
   padding: 10px;
   margin-bottom: 10px;
@@ -39,7 +39,7 @@ const Input = styled.input`
 `;
 
 const TextArea = styled.textarea`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   width: auto;
   padding: 10px;
   margin-bottom: 10px;
@@ -72,7 +72,7 @@ const ContentContainer = styled.div`
 
 const Button = styled.button`
   width: 50%;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -97,7 +97,7 @@ const ResetButton = styled(Button)`
 `;
 
 const InputLabel = styled.p`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-weight: 600;
   margin-bottom: 4px;
 `;
@@ -108,14 +108,14 @@ function CalendarModal({ setIsModalOpen, title, content }) {
   const formattedCurrentTime = currentTime.toISOString().slice(0, 16);
 
   const [summary, setSummary] = useState(title);
-  const [description, setDescription] = useState(content.join("\n"));
+  const [description, setDescription] = useState(content.join('\n'));
   const [startDate, setStartDate] = useState(formattedCurrentTime);
   const [endDate, setEndDate] = useState(formattedCurrentTime);
 
-  const [summaryError, setSummaryError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
-  const [startDateError, setStartDateError] = useState("");
-  const [endDateError, setEndDateError] = useState("");
+  const [summaryError, setSummaryError] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
+  const [startDateError, setStartDateError] = useState('');
+  const [endDateError, setEndDateError] = useState('');
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -124,31 +124,31 @@ function CalendarModal({ setIsModalOpen, title, content }) {
   const handleSubmit = async () => {
     let hasError = false;
     if (!summary.trim()) {
-      setSummaryError("제목을 입력해 주세요");
+      setSummaryError('제목을 입력해 주세요');
       hasError = true;
     } else {
-      setSummaryError("");
+      setSummaryError('');
     }
 
     if (!description.trim()) {
-      setDescriptionError("내용을 입력해 주세요");
+      setDescriptionError('내용을 입력해 주세요');
       hasError = true;
     } else {
-      setDescriptionError("");
+      setDescriptionError('');
     }
 
     if (!startDate) {
-      setStartDateError("시작 날짜를 선택해 주세요");
+      setStartDateError('시작 날짜를 선택해 주세요');
       hasError = true;
     } else {
-      setStartDateError("");
+      setStartDateError('');
     }
 
     if (!endDate) {
-      setEndDateError("종료 날짜를 선택해 주세요");
+      setEndDateError('종료 날짜를 선택해 주세요');
       hasError = true;
     } else {
-      setEndDateError("");
+      setEndDateError('');
     }
 
     if (hasError) {
@@ -156,9 +156,9 @@ function CalendarModal({ setIsModalOpen, title, content }) {
     }
 
     const formatDateTime = (datetime) => {
-      if (datetime.includes(":")) {
-        const [date, time] = datetime.split("T");
-        const [hour, minute] = time.split(":");
+      if (datetime.includes(':')) {
+        const [date, time] = datetime.split('T');
+        const [hour, minute] = time.split(':');
         return `${date}T${hour}:${minute}:00`;
       }
       return `${datetime}:00`;
@@ -167,29 +167,29 @@ function CalendarModal({ setIsModalOpen, title, content }) {
     const eventData = {
       summary,
       description,
-      startDate: formatDateTime(startDate) + "+09:00",
-      endDate: formatDateTime(endDate) + "+09:00",
+      startDate: formatDateTime(startDate) + '+09:00',
+      endDate: formatDateTime(endDate) + '+09:00',
     };
 
     try {
       await requestWithAccessToken(
-        "post",
+        'post',
         `${process.env.REACT_APP_BE_URL}/api/event/calendar`,
-        eventData
+        eventData,
       );
       Swal.fire({
-        icon: "success",
-        title: "구글 캘린더 등록 성공",
-        text: "구글캘린더에 이벤트가 등록되었습니다.",
+        icon: 'success',
+        title: '구글 캘린더 등록 성공',
+        text: '구글캘린더에 이벤트가 등록되었습니다.',
       });
       setIsModalOpen(false);
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "구글 캘린더 등록 실패",
-        text: "소셜로그인으로 로그인한 사용자만 이용가능한 서비스 입니다.",
+        icon: 'error',
+        title: '구글 캘린더 등록 실패',
+        text: '소셜로그인으로 로그인한 사용자만 이용가능한 서비스 입니다.',
       });
-      console.error("There was an error submitting the event!", error);
+      console.error('There was an error submitting the event!', error);
     }
   };
 
@@ -210,11 +210,11 @@ function CalendarModal({ setIsModalOpen, title, content }) {
   };
 
   const handleResetSummary = () => {
-    setSummary("");
+    setSummary('');
   };
 
   const handleResetDescription = () => {
-    setDescription("");
+    setDescription('');
   };
 
   return (

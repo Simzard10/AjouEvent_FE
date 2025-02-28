@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import GetUserPermission from "../fcm/GetUserPermission";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const TopBarContainer = styled.div`
   z-index: 5;
@@ -41,7 +40,7 @@ const BtnContainer = styled.div`
 `;
 
 const LogoText = styled.span`
-  font-family: "Spoqa Han Sans Neo";
+  font-family: 'Spoqa Han Sans Neo';
   align-items: center;
   width: 12rem;
   height: 1.5rem;
@@ -80,7 +79,7 @@ export default function TopBar() {
   const [isSignIn, setIsSignIn] = useState(false);
 
   useEffect(() => {
-    const id = localStorage.getItem("id");
+    const id = localStorage.getItem('id');
     if (id) {
       setIsSignIn(true);
     } else {
@@ -90,17 +89,17 @@ export default function TopBar() {
 
   const handleLogoutBtnClick = () => {
     Swal.fire({
-      icon: "seccess",
-      title: "로그아웃 성공",
-      text: "로그아웃 했습니다.",
+      icon: 'seccess',
+      title: '로그아웃 성공',
+      text: '로그아웃 했습니다.',
     });
     setIsSignIn(false);
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("email");
-    localStorage.removeItem("id");
-    localStorage.removeItem("name");
-    localStorage.removeItem("major");
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('email');
+    localStorage.removeItem('id');
+    localStorage.removeItem('name');
+    localStorage.removeItem('major');
   };
 
   return (
@@ -117,14 +116,14 @@ export default function TopBar() {
         {isSignIn ? (
           <StyledLink
             onClick={handleLogoutBtnClick}
-            bgcolor={"white"}
-            color={"black"}
+            bgcolor={'white'}
+            color={'black'}
             to="/login"
           >
             로그아웃
           </StyledLink>
         ) : (
-          <StyledLink bgcolor={"white"} color={"black"} to="/login">
+          <StyledLink bgcolor={'white'} color={'black'} to="/login">
             로그인
           </StyledLink>
         )}

@@ -1,6 +1,7 @@
 {
   "short_name": "Ajou-Event",
   "name": "Ajou-Event Web App",
+  "description": "아주대학교 공지사항을 실시간으로 받아보세요!",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PWAPrompt from 'react-ios-pwa-prompt';
-import useStore from "../store/useStore";
-import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
+import useStore from '../store/useStore';
 
 const NavWrapper = styled.nav`
   z-index: 5;
@@ -17,6 +16,7 @@ const NavWrapper = styled.nav`
   background-color: #ffffff;
   flex-direction: column;
   font-size: 12px;
+  font-family: 'Pretendard Variable';
   color: #b8bfc6;
   font-weight: 700;
   text-align: center;
@@ -38,7 +38,7 @@ const NavItem = styled.li`
   flex: 1;
   padding: 0 14px;
   align-items: center;
-  color: ${(props) => (props.active ? "#2366af" : "#b8bfc6")};
+  color: ${(props) => (props.active ? '#2366af' : '#b8bfc6')};
   cursor: pointer;
   position: relative;
 `;
@@ -47,7 +47,7 @@ const NavIcon = styled.img`
   width: 24px;
   aspect-ratio: 1;
   object-fit: cover;
-  filter: ${(props) => (props.active ? "none" : "grayscale(100%)")};
+  filter: ${(props) => (props.active ? 'none' : 'grayscale(100%)')};
 `;
 
 const NavLabel = styled.span`
@@ -69,37 +69,37 @@ const items = [
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/home.svg`,
     srcEmpty: `${process.env.PUBLIC_URL}/icons/home_border.svg`,
-    label: "홈",
-    alt: "Home",
-    link: "/",
+    label: '홈',
+    alt: 'Home',
+    link: '/',
   },
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/search.svg`,
     srcEmpty: `${process.env.PUBLIC_URL}/icons/search_border.svg`,
-    label: "검색",
-    alt: "Search",
-    link: "/event",
+    label: '검색',
+    alt: 'Search',
+    link: '/event',
   },
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/favorite.svg`,
     srcEmpty: `${process.env.PUBLIC_URL}/icons/favorite_border.svg`,
-    label: "찜",
-    alt: "Favorites",
-    link: "/liked",
+    label: '찜',
+    alt: 'Favorites',
+    link: '/liked',
   },
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/subscriptions.svg`,
     srcEmpty: `${process.env.PUBLIC_URL}/icons/subscriptions_border.svg`,
-    label: "구독",
-    alt: "Subscription",
-    link: "/subscribe",
+    label: '구독',
+    alt: 'Subscription',
+    link: '/subscribe',
   },
   {
     srcFilled: `${process.env.PUBLIC_URL}/icons/identity.svg`,
     srcEmpty: `${process.env.PUBLIC_URL}/icons/identity_border.svg`,
-    label: "프로필",
-    alt: "Profile",
-    link: "/mypage",
+    label: '프로필',
+    alt: 'Profile',
+    link: '/mypage',
   },
 ];
 
@@ -109,11 +109,7 @@ function NavigationBar() {
   const currentPath = location.pathname;
 
   // 전역 상태에서 읽음 상태 관리 (서버 변수명 그대로 사용)
-  const {
-    isTopicTabRead,
-    isKeywordTabRead,
-    fetchMemberStatus
-  } = useStore();
+  const { isTopicTabRead, isKeywordTabRead, fetchMemberStatus } = useStore();
 
   const [isIOS, setIsIOS] = useState(false);
   const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
@@ -121,7 +117,8 @@ function NavigationBar() {
   useEffect(() => {
     fetchMemberStatus(); // 페이지 로드 시 사용자 구독 상태 가져오기
     // iOS 장치인지 확인
-    const isDeviceIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
+    const isDeviceIOS =
+      /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
     setIsIOS(isDeviceIOS);
 
     if (isDeviceIOS) {
@@ -153,13 +150,14 @@ function NavigationBar() {
                 />
                 <NavLabel>{item.label}</NavLabel>
                 {/* 구독 탭에 뱃지 표시 */}
-                {item.label === "구독" && (!isTopicTabRead || !isKeywordTabRead)  && <Badge />}
+                {item.label === '구독' &&
+                  (!isTopicTabRead || !isKeywordTabRead) && <Badge />}
               </NavItem>
             );
           })}
         </NavItems>
       </NavWrapper>
-      
+
       {isIOS && (
         <PWAPrompt
           promptOnVisit={1}

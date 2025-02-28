@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import requestWithAccessToken from "../JWTToken/requestWithAccessToken";
-
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -30,14 +28,14 @@ const TapIcon = styled.img`
 
 const TapTitle = styled.div`
   color: #000;
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
 `;
 
 const Title = styled.h2`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
 `;
 
 const InputContainer = styled.div`
@@ -67,7 +65,7 @@ const Separator = styled.div`
   max-width: 680px;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     left: 0;
@@ -77,7 +75,7 @@ const Separator = styled.div`
   }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     right: 0;
@@ -100,12 +98,12 @@ const InputLabel = styled.p`
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  flex-grow: 1; 
+  flex-grow: 1;
   white-space: nowrap;
 `;
 
 const DeleteAccountLink = styled.span`
-  font-family: "Pretendard Variable";
+  font-family: 'Pretendard Variable';
   color: #0066b3;
   text-decoration: underline;
   cursor: pointer;
@@ -119,29 +117,28 @@ const DeleteAccountLink = styled.span`
 const ProfileModification = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const accessToken = localStorage.getItem("accessToken");
-
+  const accessToken = localStorage.getItem('accessToken');
 
   const user = state?.user;
-    console.log("user", user);
+  console.log('user', user);
   const email = user?.email;
 
   // 뒤로가기 클릭 시 마이페이지 페이지로 이동
   const arrowBackClicked = () => {
-    navigate("/mypage");
+    navigate('/mypage');
   };
 
   const handleDeleteAccount = () => {
-    navigate("/delete-account");  // "회원 탈퇴하기" 클릭 시 DeleteAccountPage로 이동
+    navigate('/delete-account'); // "회원 탈퇴하기" 클릭 시 DeleteAccountPage로 이동
   };
 
   return (
     <ProfileContainer>
       <TapWrapper>
         <TapIcon
-            onClick={arrowBackClicked}
-            loading="lazy"
-            src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
+          onClick={arrowBackClicked}
+          loading="lazy"
+          src={`${process.env.PUBLIC_URL}/icons/arrow_back.svg`}
         />
         <TapTitle>마이페이지</TapTitle>
       </TapWrapper>
@@ -152,7 +149,9 @@ const ProfileModification = () => {
         <InputLabel>아이디 (이메일)</InputLabel>
         <Input type="text" value={email} readOnly />
       </InputContainer>
-      <DeleteAccountLink onClick={handleDeleteAccount}>회원 탈퇴하기</DeleteAccountLink>
+      <DeleteAccountLink onClick={handleDeleteAccount}>
+        회원 탈퇴하기
+      </DeleteAccountLink>
     </ProfileContainer>
   );
 };
