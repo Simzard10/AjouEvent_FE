@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RouteChangeTracker from './RouteChangeTracker';
 import { Analytics } from '@vercel/analytics/react';
 import useStore from './store/useStore';
 import HomePage from './pages/homePage/HomePage';
 import SearchEventPage from './pages/searchPage/SearchEventPage';
-import EventDetailPage from './pages/eventPage/EventDetailPage';
 import LoginPage from './pages/loginPage/LoginPage';
 import MyPage from './pages/myPage/MyPage';
 import LikedEventPage from './pages/likedPage/LikedEventPage';
@@ -19,6 +18,7 @@ import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
 import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
 import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
 import NotificationPage from './pages/notificationPage/NotificationPage';
+import EventDetailPage from "./pages/eventPage/EventDetailPage";
 
 const ROUTER = createBrowserRouter([
   {
@@ -88,7 +88,11 @@ const ROUTER = createBrowserRouter([
 ]);
 
 function App() {
-  const { unreadNotificationCount, setUnreadNotificationCount } = useStore();
+  const { fetchMemberStatus, unreadNotificationCount, setUnreadNotificationCount } = useStore();
+
+  useEffect(() => {
+    fetchMemberStatus();
+  }, []);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -96,7 +100,7 @@ function App() {
         if (event.data.type === "updateBadge") {
           console.log("🔔 Updating badge count from SW:", event.data.count);
 
-          setUnreadNotificationCount(event.data.count); // 🟢 상태 업데이트
+          setUnreadNotificationCount(event.data.count); // 상태 업데이트
 
           setTimeout(() => {
             if ("setAppBadge" in navigator) {
@@ -109,7 +113,7 @@ function App() {
     }
   }, [setUnreadNotificationCount]);
 
-  // 🔹 백그라운드 -> 포그라운드 시 배지 업데이트 개선
+  // 백그라운드 -> 포그라운드 시 배지 업데이트 개선
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {

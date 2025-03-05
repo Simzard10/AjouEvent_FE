@@ -18,8 +18,8 @@ const KeywordListContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
-  height: 100%;
-  padding: 0 20px 0 20px;
+  padding: 0.25rem 1.5rem;
+  gap: 0.5rem;
 `;
 
 const MessageContainer = styled.div`
@@ -35,7 +35,7 @@ const MessageContainer = styled.div`
   padding: 16px;
 `;
 
-export default function KeywordTab() {
+export default function KeywordTab({ showGuide }) {
   const { setIsKeywordTabRead } = useStore((state) => ({
     setIsKeywordTabRead: state.setIsKeywordTabRead,
   }));
@@ -114,7 +114,7 @@ export default function KeywordTab() {
 
   return (
     <AppContainer>
-      <KeywordBar onKeywordSelect={handleKeywordSelect} />
+      <KeywordBar onKeywordSelect={handleKeywordSelect} showGuide={showGuide} />
       <SearchBar setKeyword={setSelectedKeyword} />
       <KeywordListContainer>
         {events.map((event, index) => (
