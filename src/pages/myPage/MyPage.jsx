@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavigationBar from '../../components/NavigationBar';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import LocationBar from '../../components/LocationBar';
+import { clearAuth } from '../../utils/auth';
+import { getUserInfo } from '../../services/api/user';
 import Swal from 'sweetalert2';
+import { STORAGE_KEYS, COLORS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
   height: 100vh;
   overflow-y: hidden;
   width: 100vw;
@@ -81,7 +83,7 @@ const MenuItem = styled.li`
   cursor: pointer;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: ${COLORS.OFF_WHITE};
   }
 `;
 
@@ -93,7 +95,7 @@ const ArrowIcon = styled.span`
 const MyPage = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
 
   useEffect(() => {
     if (!accessToken) {
@@ -103,10 +105,7 @@ const MyPage = () => {
 
     const fetchUserInfo = async () => {
       try {
-        const response = await requestWithAccessToken(
-          'get',
-          `${process.env.REACT_APP_BE_URL}/api/users`,
-        );
+        const response = await getUserInfo();
         setUser(response.data);
       } catch (error) {
         console.error(error);
@@ -124,8 +123,6 @@ const MyPage = () => {
     });
   };
 
-  const handleFrequentlyAskedQuestionsClick = () => {};
-
   const handleFeedBackClick = () => {
     window.open(
       'https://docs.google.com/forms/d/e/1FAIpQLSfSyN05EK3L9N7DMfQlpAnrebcuIGzadeANgELlGqrdlKeeqg/viewform',
@@ -133,22 +130,13 @@ const MyPage = () => {
     );
   };
 
-  const handleNofificationClick = () => {};
-
-  const handleVersionClick = () => {};
-
   const handleLogoutBtnClick = () => {
     Swal.fire({
       icon: 'success',
       title: '로그아웃 성공',
       text: '로그아웃 했습니다.',
     });
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('email');
-    localStorage.removeItem('id');
-    localStorage.removeItem('name');
-    localStorage.removeItem('major');
+    clearAuth();
   };
 
   return (

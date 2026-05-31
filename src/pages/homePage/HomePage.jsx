@@ -8,14 +8,14 @@ import HomeBanner from './HomeBanner';
 import HomeHotEvent from './HomeHotEvent';
 import DailyModal from '../../components/DailyModal';
 import HelpBox from '../../components/HelpBox';
-import axios from 'axios';
-import NotifyModal from '../notificationPage/NotificationPage';
+import { Z_INDEX, STORAGE_KEYS, COLORS } from '../../constants/appConstants';
+import { getBannerImages } from '../../services/api/event';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 const MainContentContainer = styled.div`
@@ -27,24 +27,9 @@ const MainContentContainer = styled.div`
   padding: 0 0 80px 0;
 `;
 
-const LoadingOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  z-index: 1000;
-`;
-
 const InstallPromptContainer = styled.div`
   position: fixed;
-  z-index: 1000;
+  z-index: ${Z_INDEX.MODAL};
   left: 0;
   top: 0;
   width: 100%;
@@ -52,7 +37,7 @@ const InstallPromptContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${COLORS.OVERLAY_BLACK};
 `;
 
 const ModalContent = styled.div`
@@ -78,8 +63,8 @@ const ModalBody = styled.div`
 `;
 
 const InstallButton = styled.button`
-  background-color: #0a5ca8;
-  color: #fff;
+  background-color: ${COLORS.BLUE_MEDIUM};
+  color: ${COLORS.WHITE};
   padding: 15px 50px;
   font-size: 20px;
   border: none;
@@ -90,7 +75,7 @@ const InstallButton = styled.button`
   max-width: 300px;
   display: block;
   padding: 10px 20px;
-  background-color: #2366af;
+  background-color: ${COLORS.BLUE_SECONDARY};
   color: white;
   text-decoration: none;
   border-radius: 50px;
@@ -98,7 +83,7 @@ const InstallButton = styled.button`
   text-align: center;
 
   &:hover {
-    background-color: #1a4f8b;
+    background-color: ${COLORS.BLUE_DARK};
   }
 `;
 
@@ -113,16 +98,16 @@ const PushNotificationPromptContainer = styled.div`
   position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
-  background-color: #ffffff; /* 흰색 배경 */
-  color: #000; /* 검은색 텍스트 (흰색 배경에 잘 보이도록) */
-  z-index: 1000; /* 가장 위에 표시되도록 설정 */
+  background-color: ${COLORS.WHITE}; /* 흰색 배경 */
+  color: ${COLORS.BLACK}; /* 검은색 텍스트 (흰색 배경에 잘 보이도록) */
+  z-index: ${Z_INDEX.MODAL}; /* 가장 위에 표시되도록 설정 */
   padding: 20px;
   text-align: center;
 `;
 
 const PushNotificationPromptButton = styled.button`
-  background-color: #0a5ca8;
-  color: #fff;
+  background-color: ${COLORS.BLUE_MEDIUM};
+  color: ${COLORS.WHITE};
   padding: 15px 50px;
   font-size: 18px;
   border: none;
@@ -141,7 +126,7 @@ const LaterOption = styled.div`
   display: block;
   margin: 10px auto;
   text-align: center;
-  color: rgba(0, 0, 0, 0.5);
+  color: ${COLORS.OVERLAY_BLACK};
 `;
 
 const BellIcon = styled.img`
@@ -173,7 +158,7 @@ export default function HomePage() {
   const [isPWAInstalled, setIsPWAInstalled] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null); // PWA 설치 프롬프트 저장
   const [showInstallPrompt, setShowInstallPrompt] = useState(false); // 설치 프롬프트 표시 여부
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [bannerImages, setBannerImages] = useState([]);
   const [showPushNotificationPrompt, setShowPushNotificationPrompt] =
     useState(false);
@@ -200,9 +185,7 @@ export default function HomePage() {
     const fetchBannerImages = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BE_URL}/api/event/banner`,
-        );
+        const response = await getBannerImages();
         setBannerImages(response.data);
       } catch (error) {
         console.error('Error fetching banner images:', error);
@@ -217,15 +200,15 @@ export default function HomePage() {
   useEffect(() => {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsPWAInstalled(true);
-      const isFirstTimeOpen = localStorage.getItem('isFirstTimeOpen');
+      const isFirstTimeOpen = localStorage.getItem(STORAGE_KEYS.IS_FIRST_TIME);
       if (!isFirstTimeOpen) {
         setShowPushNotificationPrompt(true);
-        localStorage.setItem('isFirstTimeOpen', 'false');
+        localStorage.setItem(STORAGE_KEYS.IS_FIRST_TIME, 'false');
       }
       return;
     }
 
-    const dismissedUntil = localStorage.getItem('modalDismissedUntil');
+    const dismissedUntil = localStorage.getItem(STORAGE_KEYS.MODAL_DISMISSED_UNTIL);
     if (dismissedUntil) {
       const now = new Date();
       if (new Date(dismissedUntil) > now) {

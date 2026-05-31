@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import NavigationBar from '../../components/NavigationBar';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import Swal from 'sweetalert2';
-import useStore from '../../store/useStore';
+import { getTopicSubscriptionsStatus, getUserKeywords, subscribeKeyword, unsubscribeKeyword } from '../../services/api/subscription';
+import useSubscriptionStore from '../../store/useSubscriptionStore';
+import { COLORS, LIMITS, Z_INDEX, STORAGE_KEYS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 const MainContentContaioner = styled.div`
@@ -41,7 +42,7 @@ const TapIcon = styled.img`
 `;
 
 const TapTitle = styled.div`
-  color: #000;
+  color: ${COLORS.BLACK};
   font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
@@ -53,7 +54,7 @@ const TemporaryContaioner = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
   height: 100vh;
 `;
 
@@ -84,7 +85,7 @@ const SubscribeInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #ddd;
+  border: 1px solid ${COLORS.BORDER_GARY};
   border-radius: 4px;
   padding: 10px;
   margin-bottom: 20px;
@@ -121,14 +122,14 @@ const KeywordHeader = styled.div`
   font-weight: bold;
   margin-bottom: 10px;
   padding: 5px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid ${COLORS.BORDER_GARY};
 `;
 
 const KeywordItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${COLORS.OFF_WHITE};
   padding: 10px 0;
 `;
 
@@ -165,10 +166,10 @@ const ViewAllButton = styled.div`
   align-items: center;
   gap: 4px;
   border-radius: 600px;
-  border: 2px solid #f7f7f7;
-  background-color: #ffffff;
+  border: 2px solid ${COLORS.OFF_WHITE};
+  background-color: ${COLORS.WHITE};
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? '#e0e0e0' : '#ffffff')};
+  background-color: ${(props) => (props.isSelected ? COLORS.LIGHT_GARY : COLORS.WHITE)};
   p {
     margin: 0;
     font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
@@ -189,7 +190,7 @@ const ModalOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: ${Z_INDEX.MODAL};
 `;
 
 const ModalContent = styled.div`
@@ -201,7 +202,7 @@ const ModalContent = styled.div`
   border-radius: 10px;
   overflow-y: auto;
   padding: 24px;
-  z-index: 1001;
+  z-index: ${Z_INDEX.MODAL_TOP};
   width: 90%;
   height: 80%;
 `;
@@ -214,7 +215,7 @@ const ModalHeaderIcon = styled.img`
 `;
 
 const ModalHeaderTitle = styled.h1`
-  color: #000;
+  color: ${COLORS.BLACK};
   font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
@@ -236,7 +237,7 @@ const MenuItemInModal = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${COLORS.LIGHT_GARY};
   font-family: 'Pretendard Variable';
   font-weight: 600;
 `;
@@ -247,7 +248,7 @@ const CategoryTitle = styled.h2`
   font-weight: 700;
   margin-top: 40px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${COLORS.LIGHT_GARY};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -255,25 +256,13 @@ const CategoryTitle = styled.h2`
 `;
 
 const TopicButton = styled.button`
-  background-color: ${(props) => (props.isSelected ? '#d3d3d3' : '#ffffff')};
-  border: 1px solid #ccc;
+  background-color: ${(props) => (props.isSelected ? '#d3d3d3' : COLORS.WHITE)};
+  border: 1px solid ${COLORS.BORDER_GARY};
   border-radius: 4px;
   padding: 8px 16px;
   margin: 4px;
   cursor: pointer;
   font-size: clamp(0.7rem, 2vw, 1rem); /* 글자 크기 조절 */
-`;
-
-const TopicDisplay = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #f1f1f1;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: clamp(0.8rem, 2.5vw, 1rem); /* 글자 크기 조절 */
-  color: #333;
 `;
 
 const KeywordError = styled.div`
@@ -335,7 +324,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: 'center-center',
   showConfirmButton: false,
-  timer: 2000,
+  timer: LIMITS.TOAST_TIMER.MEDIUM,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -344,10 +333,10 @@ const Toast = Swal.mixin({
 });
 
 export default function KeywordSubscribePage() {
-  const { setSubscribedKeywords } = useStore((state) => ({
+  const { setSubscribedKeywords } = useSubscriptionStore((state) => ({
     setSubscribedKeywords: state.setSubscribedKeywords,
   }));
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   const navigate = useNavigate();
   const [keywords, setKeywords] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -380,7 +369,7 @@ export default function KeywordSubscribePage() {
       );
     } else if (value.length === 0) {
       setErrorMessage('');
-    } else if (value.length < 2) {
+    } else if (value.length < LIMITS.MIN_KEYWORD_LENGTH) {
       setErrorMessage('두 글자 이상 입력해 주세요.');
     } else {
       setErrorMessage('');
@@ -407,7 +396,7 @@ export default function KeywordSubscribePage() {
     }
 
     if (
-      finalInputValue.length <= 1 ||
+      finalInputValue.length < LIMITS.MIN_KEYWORD_LENGTH ||
       !koreanEnglishAndSpacePattern.test(inputValue)
     ) {
       Swal.fire({
@@ -426,14 +415,7 @@ export default function KeywordSubscribePage() {
         title: `키워드 '${finalInputValue}' 구독 중`,
       });
 
-      await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/keyword/subscribe`,
-        {
-          koreanKeyword: finalInputValue,
-          topicName: selectedTopic.englishTopic,
-        },
-      );
+      await subscribeKeyword(finalInputValue, selectedTopic.englishTopic);
 
       Swal.fire({
         icon: 'success',
@@ -453,10 +435,7 @@ export default function KeywordSubscribePage() {
 
   const fetchUserKeywords = async () => {
     try {
-      const response = await requestWithAccessToken(
-        'get',
-        `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`,
-      );
+      const response = await getUserKeywords();
       const userKeywords = response.data;
       setKeywords(userKeywords);
       setSubscribedKeywords(userKeywords);
@@ -477,11 +456,7 @@ export default function KeywordSubscribePage() {
         title: `${keyword.koreanKeyword} 구독 취소 중`,
       });
 
-      await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/keyword/unsubscribe`,
-        { encodedKeyword: keyword.encodedKeyword },
-      );
+      await unsubscribeKeyword(keyword.encodedKeyword);
 
       Swal.fire({
         icon: 'success',
@@ -519,10 +494,7 @@ export default function KeywordSubscribePage() {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await requestWithAccessToken(
-          'get',
-          `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`,
-        );
+        const response = await getTopicSubscriptionsStatus();
         const datas = response.data;
         setMenuItems(datas);
       } catch (error) {
@@ -532,6 +504,7 @@ export default function KeywordSubscribePage() {
 
     fetchMenuItems();
     fetchUserKeywords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategoryClick = (category) => {
@@ -597,7 +570,7 @@ export default function KeywordSubscribePage() {
             </SubscribeInputContainer>
             {errorMessage && <KeywordError>{errorMessage}</KeywordError>}
             <KeywordHeader>
-              알림 설정한 키워드 {keywords.length} / 10
+              알림 설정한 키워드 {keywords.length} / {LIMITS.MAX_KEYWORDS}
             </KeywordHeader>
             <KeywordListContainer>
               {keywords.map((item, index) => (

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
-import axios from "axios";
+import { login } from '../services/api/user';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { STORAGE_KEYS, COLORS } from '../constants/appConstants';
 
 const PasswordConfirmContainer = styled.div`
   display: flex;
@@ -31,7 +32,7 @@ const TapIcon = styled.img`
 `;
 
 const TapTitle = styled.div`
-  color: #000;
+  color: ${COLORS.BLACK};
   font-family: "Pretendard Variable";
   font-size: 18px;
   font-style: normal;
@@ -60,7 +61,7 @@ const InputLabel = styled.p`
 
 const Input = styled.input`
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid ${COLORS.BORDER_GARY};
   border-radius: 4px;
   font-size: 1rem;
   flex-grow: 1;
@@ -95,7 +96,7 @@ const Button = styled.button`
   margin-top: 20px;
 
   &:hover {
-    background-color: #333;
+    background-color: ${COLORS.DARK_GRAY_TEXT};
   }
 `;
 
@@ -138,7 +139,7 @@ const PasswordConfirmation = ({ onConfirm }) => {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    const fcmToken = localStorage.getItem("fcmToken");
+    const fcmToken = localStorage.getItem(STORAGE_KEYS.FCM_TOKEN);
     if (!fcmToken) {
       Swal.fire({
         icon: "error",
@@ -155,18 +156,15 @@ const PasswordConfirmation = ({ onConfirm }) => {
     };
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BE_URL}/api/users/login`,
-        userData
-      );
+      const response = await login(userData);
 
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.data.accessToken);
+      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken);
 
       // 응답 로그
-      localStorage.setItem("id", response.data.id);
-      localStorage.setItem("name", response.data.name);
-      localStorage.setItem("major", response.data.major);
+      localStorage.setItem(STORAGE_KEYS.USER_ID, response.data.id);
+      localStorage.setItem(STORAGE_KEYS.NAME, response.data.name);
+      localStorage.setItem(STORAGE_KEYS.MAJOR, response.data.major);
 
       navigate("/profile-modification", {
         state: { user: response.data } // 사용자 정보 전달

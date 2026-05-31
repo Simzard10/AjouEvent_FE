@@ -3,24 +3,11 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import CalendarModal from '../CalendarModal';
 import TabBar from '../TabBar';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import Swal from 'sweetalert2';
 import EventBanner from './EventBanner';
-import axios from 'axios';
 import ImageModal from './ImageModal';
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
+import { Z_INDEX, STORAGE_KEYS, COLORS } from '../../constants/appConstants';
+import { getEventDetail, getAuthEventDetail, likeEvent, unlikeEvent } from '../../services/api/event';
 
 const Container = styled.div`
   width: 100%;
@@ -75,22 +62,11 @@ const TitleContainer = styled.div`
   align-items: flex-start;
   gap: 12px;
   align-self: stretch;
-  color: #000;
+  color: ${COLORS.BLACK};
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: 130%; /* 26px */
-`;
-
-const LinkButton = styled.div`
-  text-align: center;
-  width: 100%;
-  padding: 10px 20px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  margin: 24px 0 16px 0;
-  cursor: pointer;
-  display: inline-block;
 `;
 
 const ContentContaioner = styled.div`
@@ -150,12 +126,12 @@ const HorizontalLine = styled.hr`
 
 const BottomContainer = styled.div`
   width: 100%;
-  z-index: 5;
+  z-index: ${Z_INDEX.NAV};
   position: fixed;
   bottom: 0;
   display: flex;
   align-items: center;
-  background-color: #fff;
+  background-color: ${COLORS.WHITE};
   border-top: 1px solid rgba(35, 102, 175, 0.08);
   padding: 8px 12px; /* 양쪽에 여백 추가 */
   gap: 4px; /* <<< 여기 추가 (북마크와 버튼 사이 거리) */
@@ -186,7 +162,7 @@ const BottomButton = styled.button`
   height: 50px; /* 버튼 높이도 조금 줄여서 여유 느낌 */
   font-family: 'Pretendard Variable';
   font-size: 14px;
-  color: #2366af;
+  color: ${COLORS.BLUE_SECONDARY};
   font-weight: 600;
   background-color: rgba(35, 102, 175, 0.08);
   border: none;
@@ -241,16 +217,13 @@ const EventDetail = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
         const alreadyViewClubEventNum = getCookie('AlreadyViewClubEventNum');
         console.log(alreadyViewClubEventNum);
         let response;
 
         if (accessToken) {
-          response = await requestWithAccessToken(
-            'get',
-            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-          );
+          response = await getAuthEventDetail(id);
         } else {
           const config = alreadyViewClubEventNum
             ? {
@@ -261,10 +234,7 @@ const EventDetail = () => {
               }
             : { withCredentials: true };
 
-          response = await axios.get(
-            `${process.env.REACT_APP_BE_URL}/api/event/detail/${id}`,
-            config,
-          );
+          response = await getEventDetail(id, config);
         }
 
         if (response.data.content) {
@@ -310,20 +280,14 @@ const EventDetail = () => {
   const handleStarClick = async () => {
     try {
       if (event.star) {
-        await requestWithAccessToken(
-          'delete',
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        );
+        await unlikeEvent(id);
         setEvent((prevEvent) => ({
           ...prevEvent,
           star: false,
           likesCount: prevEvent.likesCount - 1,
         }));
       } else {
-        await requestWithAccessToken(
-          'post',
-          `${process.env.REACT_APP_BE_URL}/api/event/like/${id}`,
-        );
+        await likeEvent(id);
         setEvent((prevEvent) => ({
           ...prevEvent,
           star: true,

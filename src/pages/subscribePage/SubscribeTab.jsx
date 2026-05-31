@@ -1,24 +1,25 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import useStore from '../../store/useStore';
+import useUIStore from '../../store/useUIStore';
 import styled from 'styled-components';
 import SubscribeBar from './SubscribeBar';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import SubscribeEvent from './SubscribeEvent';
+import { getEventsByCategory, getSubscribedEvents } from '../../services/api/event';
 import SearchBar from '../../components/SearchBar';
+import { COLORS, LIMITS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 export default function SubscribeTab({ showGuide }) {
-  const { savedKeyword, setSavedKeyword } = useStore((state) => ({
+  const { savedKeyword, setSavedKeyword } = useUIStore((state) => ({
     savedKeyword: state.savedKeyword,
     setSavedKeyword: state.setSavedKeyword,
-    isTopicTabRead: state.isTopicTabRead,
-    setIsTopicTabRead: state.setIsTopicTabRead,
+    // isTopicTabRead: state.isTopicTabRead,
+    // setIsTopicTabRead: state.setIsTopicTabRead,
   }));
 
   const [keyword, setKeyword] = useState(savedKeyword);
@@ -28,10 +29,8 @@ export default function SubscribeTab({ showGuide }) {
   const [hasMore, setHasMore] = useState(true);
   const [isError, setIsError] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
-  const pageSize = 10;
+  const pageSize = LIMITS.PAGE_SIZE;
   const bottomRef = useRef(null);
-
-  const accessToken = localStorage.getItem('accessToken');
 
   const fetchData = useCallback(async () => {
     if (loading || !hasMore || isError) return;
@@ -39,11 +38,9 @@ export default function SubscribeTab({ showGuide }) {
     setLoading(true);
 
     try {
-      const url = selectedTopic
-        ? `${process.env.REACT_APP_BE_URL}/api/event/${encodeURIComponent(selectedTopic)}?page=${page}&size=${pageSize}&keyword=${keyword}`
-        : `${process.env.REACT_APP_BE_URL}/api/event/subscribed?page=${page}&size=${pageSize}&keyword=${keyword}`;
-
-      const response = await requestWithAccessToken('get', url);
+      const response = selectedTopic
+        ? await getEventsByCategory(selectedTopic, page, pageSize, keyword)
+        : await getSubscribedEvents(page, pageSize, keyword);
       const newEvents = response.data.result;
 
       setEvents((prevEvents) => {
@@ -65,7 +62,7 @@ export default function SubscribeTab({ showGuide }) {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, isError, page, keyword, selectedTopic]);
+  }, [loading, hasMore, isError, page, pageSize, keyword, selectedTopic]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -78,13 +75,14 @@ export default function SubscribeTab({ showGuide }) {
       { threshold: 1 },
     );
 
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
+    const currentRef = bottomRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (bottomRef.current) {
-        observer.unobserve(bottomRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [loading, hasMore, fetchData]);
@@ -102,6 +100,7 @@ export default function SubscribeTab({ showGuide }) {
 
   useEffect(() => {
     fetchData(selectedTopic); // Topic이나 페이지 변경 시 데이터 재로드
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTopic]);
 
   return (

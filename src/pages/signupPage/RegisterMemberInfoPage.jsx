@@ -1,24 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-import FindPassword from '../../components/FindPassword';
 import NavigationBar from '../../components/NavigationBar';
+import RegisterMemberInfo from '../../components/RegisterMemberInfo';
+import { COLORS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  height: 100vh;
-  overflow-y: hidden;
+  background-color: ${COLORS.WHITE};
   width: 100vw;
   overflow-x: hidden;
 `;
 
-export default function FindPasswordPage() {
+export default function RegisterMemberInfoPage() {
   return (
     <AppContainer>
-      <FindPassword></FindPassword>
+      <RegisterMemberInfo></RegisterMemberInfo>
       <NavigationBar></NavigationBar>
     </AppContainer>
   );

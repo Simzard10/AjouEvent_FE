@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../../components/TabBar';
 import NotificationList from './NotificationList';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import { COLORS } from '../../constants/appConstants';
+import { getUserKeywords } from '../../services/api/subscription';
+import { readAllNotifications } from '../../services/api/notification';
+import dialog from '../../utils/dialog';
 
 const AppContainer = styled.div`
   display: flex;
@@ -50,8 +53,8 @@ const KeywordRegistrationBanner = styled.div`
 `;
 
 const StyledButton = styled.button`
-  background-color: #0a5ca8;
-  color: #fff;
+  background-color: ${COLORS.BLUE_MEDIUM};
+  color: ${COLORS.WHITE};
   padding: 4px 14px;
   font-size: 16px;
   border: none;
@@ -61,13 +64,13 @@ const StyledButton = styled.button`
   font-weight: 500;
   transition: background-color 0.3s ease-in-out;
   &:hover {
-    background-color: #1a4f8b;
+    background-color: ${COLORS.BLUE_DARK};
   }
 `;
 
 const MarkAllAsReadButton = styled.button`
-  background-color: #0a5ca8;
-  color: #fff;
+  background-color: ${COLORS.BLUE_MEDIUM};
+  color: ${COLORS.WHITE};
   padding: 4px 14px;
   font-size: 16px;
   border: none;
@@ -77,7 +80,7 @@ const MarkAllAsReadButton = styled.button`
   font-weight: 500;
   transition: background-color 0.3s ease-in-out;
   &:hover {
-    background-color: #1a4f8b;
+    background-color: ${COLORS.BLUE_DARK};
   }
 `;
 
@@ -85,15 +88,13 @@ const NotificationPage = () => {
   const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState('topic');
   const [keywordCount, setKeywordCount] = useState(0);
+  const [notifications, setNotifications] = useState(0);
 
   // 키워드 개수 가져오기
   useEffect(() => {
     const fetchUserKeywords = async () => {
       try {
-        const response = await requestWithAccessToken(
-          'get',
-          `${process.env.REACT_APP_BE_URL}/api/keyword/userKeywords`,
-        );
+        const response = await getUserKeywords();
         setKeywordCount(response.data.length);
       } catch (error) {
         console.error('Error fetching user keywords:', error);
@@ -104,20 +105,17 @@ const NotificationPage = () => {
   }, []);
 
   // 알림 모두 읽음 처리 함수 (백엔드 readAll API 호출)
-  const readAllNotifications = async () => {
-    if (!window.confirm('정말 모든 알림을 읽음 처리할까요?')) {
-      return;
-    }
+  const handleReadAllNotifications = async () => {
+    const confirmed = await dialog.confirm('알림 읽음 처리', '정말 모든 알림을 읽음 처리할까요?');
+    if (!confirmed) return;
+
     try {
-      await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/notification/readAll`
-      );
-      alert('모든 알림을 읽음 처리했습니다.');
-      window.location.reload(); // 새로고침으로 리스트 상태 동기화
+      await readAllNotifications();
+      dialog.success('읽음 처리 완료', '모든 알림을 읽음 처리했습니다.');
+      setNotifications((prev) => prev + 1);
     } catch (error) {
       console.error('Error reading all notifications:', error);
-      alert('알림 읽음 처리 중 오류가 발생했습니다.');
+      dialog.error('오류', '알림 읽음 처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -136,7 +134,7 @@ const NotificationPage = () => {
       <TabBar
         Title="알림"
         RightComponent={
-          <MarkAllAsReadButton onClick={readAllNotifications}>
+          <MarkAllAsReadButton onClick={handleReadAllNotifications}>
             모두 읽음
           </MarkAllAsReadButton>
         }
@@ -167,12 +165,12 @@ const NotificationPage = () => {
 
       {currentTab === 'topic' ? (
         <NotificationList
-          key="topic"
+          key={`topic-${notifications}`}
           apiUrl={`${process.env.REACT_APP_BE_URL}/api/notification/topic`}
         />
       ) : (
         <NotificationList
-          key="keyword"
+          key={`keyword-${notifications}`}
           apiUrl={`${process.env.REACT_APP_BE_URL}/api/notification/keyword`}
         />
       )}

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import { COLORS } from '../../constants/appConstants';
+import { clickNotification } from '../../services/api/notification';
 
 const CardContainer = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const TitleText = styled.div`
   word-break: break-word;
   width: 100%;
   height: 45px;
-  color: #000;
+  color: ${COLORS.BLACK};
   font-family: 'Pretendard Variable';
   font-size: 16px;
   font-style: normal;
@@ -94,7 +95,7 @@ const Subject = styled.div`
 const Keyword = styled.span`
   font-family: 'Pretendard Variable';
   font-size: 14px;
-  color: #0a5ca8;
+  color: ${COLORS.BLUE_MEDIUM};
   font-weight: bold;
 `;
 
@@ -117,13 +118,7 @@ const NotificationCard = ({
 
   const postNotificationClick = async () => {
     try {
-      const response = await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/notification/click`,
-        {
-          pushNotificationId: id,
-        },
-      );
+      await clickNotification(id);
     } catch (error) {
       console.error('Error fetching user keywords:', error);
     }

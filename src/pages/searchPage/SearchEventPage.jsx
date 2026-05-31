@@ -3,17 +3,18 @@ import styled from 'styled-components';
 import NavigationBar from '../../components/NavigationBar';
 import SearchDropBox from './SearchDropBox';
 import SearchBar from '../../components/SearchBar';
-import useStore from '../../store/useStore';
-import { KtoECodes } from '../../constant/departmentCodes';
+import useUIStore from '../../store/useUIStore';
+import { KtoECodes } from '../../constants/departmentCodes';
 import LocationBar from '../../components/LocationBar';
 import SearchEvent from './SearchEvent';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import { LIMITS, COLORS } from '../../constants/appConstants';
+import { getEventsByCategory } from '../../services/api/event';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 const MainContentContaioner = styled.div`
@@ -33,7 +34,7 @@ export default function SearchEventPage() {
     setSavedOption1,
     savedOption2,
     setSavedOption2,
-  } = useStore((state) => ({
+  } = useUIStore((state) => ({
     savedKeyword: state.savedKeyword,
     setSavedKeyword: state.setSavedKeyword,
     savedOption1: state.savedOption1,
@@ -51,7 +52,7 @@ export default function SearchEventPage() {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isError, setIsError] = useState(false);
-  const pageSize = 10;
+  const pageSize = LIMITS.PAGE_SIZE;
   const bottomRef = useRef(null);
 
   const fetchData = useCallback(async () => {
@@ -59,10 +60,7 @@ export default function SearchEventPage() {
 
     setLoading(true);
     try {
-      const response = await requestWithAccessToken(
-        'get',
-        `${process.env.REACT_APP_BE_URL}/api/event/${KtoECodes[option2]}?page=${page}&size=${pageSize}&keyword=${keyword}`,
-      );
+      const response = await getEventsByCategory(KtoECodes[option2], page, pageSize, keyword);
       const newEvents = response.data.result;
 
       setEvents((prevEvents) => {
@@ -84,7 +82,7 @@ export default function SearchEventPage() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, option2, keyword]);
+  }, [loading, hasMore, isError, page, pageSize, option2, keyword]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -97,13 +95,14 @@ export default function SearchEventPage() {
       { threshold: 1 },
     );
 
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
+    const currentRef = bottomRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (bottomRef.current) {
-        observer.unobserve(bottomRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [loading, hasMore, fetchData]);

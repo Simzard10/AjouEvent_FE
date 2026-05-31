@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import requestWithAccessToken from '../services/jwt/requestWithAccessToken';
+import api from '../services/api';
+import { LIMITS } from '../constants/appConstants';
 
-const usePagination = (apiUrl, pageSize = 10) => {
+const usePagination = (apiUrl, pageSize = LIMITS.PAGE_SIZE) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -15,10 +16,8 @@ const usePagination = (apiUrl, pageSize = 10) => {
 
     setLoading(true);
     try {
-      const response = await requestWithAccessToken(
-        'get',
-        `${apiUrl}?page=${page}&size=${pageSize}`,
-      );
+      const relativeUrl = apiUrl.replace(process.env.REACT_APP_BE_URL, '');
+      const response = await api.get(`${relativeUrl}?page=${page}&size=${pageSize}`);
       const newData = response.data.result;
 
       setData((prevData) => {

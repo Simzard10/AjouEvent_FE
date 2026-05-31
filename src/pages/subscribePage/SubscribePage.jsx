@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import useStore from '../../store/useStore';
+import useSubscriptionStore from '../../store/useSubscriptionStore';
 import NavigationBar from '../../components/NavigationBar';
 import LocationBar from '../../components/LocationBar';
 import SubscribeTab from './SubscribeTab';
 import KeywordTab from './KeywordTab';
+import { COLORS, STORAGE_KEYS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
   font-family: 'Pretendard Variable';
 `;
 
@@ -29,7 +30,7 @@ const TemporaryContaioner = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
   height: 100vh;
 `;
 
@@ -60,8 +61,8 @@ const Tab = styled.div`
   cursor: pointer;
   text-align: center;
   border-bottom: ${(props) =>
-    props.active ? '2px solid #000' : '1px solid #ddd'};
-  color: ${(props) => (props.active ? '#000' : '#333')};
+    props.active ? `2px solid ${COLORS.BLACK}` : `1px solid ${COLORS.BORDER_GARY}`};
+  color: ${(props) => (props.active ? COLORS.BLACK : COLORS.DARK_GRAY_TEXT)};
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
   transition: background-color 0.3s ease;
   position: relative;
@@ -86,7 +87,7 @@ const GuideMessage = styled.div`
   padding: 12px;
   background-color: #f0f8ff;
   font-size: 13px;
-  color: #0072ce;
+  color: ${COLORS.BLUE_BRIGHT};
   text-align: center;
   font-weight: 600;
   line-height: 1.5; /* 줄 간격 확보 */
@@ -106,13 +107,13 @@ const GuideMessage = styled.div`
 
 export default function SubscribePage() {
   const location = useLocation();
-  const { subscribeItems, subscribedKeywords, fetchSubscribeItems, fetchSubscribedKeywords } = useStore();
+  const { subscribeItems, subscribedKeywords, fetchSubscribedKeywords } = useSubscriptionStore();
   const [activeTab, setActiveTab] = useState(
     location.state?.activeTab || 'subscribe',
   );
   const [showGuide, setShowGuide] = useState(false);
 
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
 
   // 구독 아이템/키워드 변화 감지해 showGuide 판단
   useEffect(() => {
@@ -124,13 +125,9 @@ export default function SubscribePage() {
   }, [subscribeItems, subscribedKeywords, activeTab]);
 
   useEffect(() => {
-    // fetchSubscribeItems();
     fetchSubscribedKeywords(); // 여기에서 가져와야 키워드 알림 탭의 뱃지를 보여줄 수 있음
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleTabClick = async (tabName) => {
-    setActiveTab(tabName);
-  };
 
   const getGuideMessage = (activeTab) => {
     if (activeTab === 'subscribe') {

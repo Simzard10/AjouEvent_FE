@@ -1,11 +1,12 @@
 import GetFCMToken from './GetFCMToken';
 import Swal from 'sweetalert2';
+import { LIMITS, STORAGE_KEYS } from '../../constants/appConstants';
 
 const Toast = Swal.mixin({
   toast: true,
   position: 'center-center',
   showConfirmButton: false,
-  timer: 1000,
+  timer: LIMITS.TOAST_TIMER.SHORT,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -41,7 +42,7 @@ const GetUserPermission = async (setIsLoading) => {
         setIsLoading(true);
         await GetFCMToken();
         setIsLoading(false);
-        let isFCMToken = localStorage.getItem('fcmToken');
+        let isFCMToken = localStorage.getItem(STORAGE_KEYS.FCM_TOKEN);
         if (!isFCMToken) {
           setIsLoading(true);
           await GetFCMToken();
@@ -54,6 +55,7 @@ const GetUserPermission = async (setIsLoading) => {
           console.log('token already saved');
         }
       } catch {
+        setIsLoading(false);
         Toast.fire({
           icon: 'error',
           title: `알림 토큰 요청 실패`,

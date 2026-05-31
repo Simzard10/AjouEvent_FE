@@ -2,15 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import KeywordBar from './KeywordBar';
 import SearchBar from '../../components/SearchBar';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
-import KeywordEventCard from '../../components/events/KeywordEventCard';
-import useStore from '../../store/useStore';
+import EventCard from '../../components/events/EventCard';
+import { getPostsByKeyword } from '../../services/api/event';
+import { COLORS, LIMITS } from '../../constants/appConstants';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 const KeywordListContainer = styled.div`
@@ -36,17 +36,13 @@ const MessageContainer = styled.div`
 `;
 
 export default function KeywordTab({ showGuide }) {
-  const { setIsKeywordTabRead } = useStore((state) => ({
-    setIsKeywordTabRead: state.setIsKeywordTabRead,
-  }));
-
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isError, setIsError] = useState(false);
   const [selectedKeyword, setSelectedKeyword] = useState(null);
-  const pageSize = 10;
+  const pageSize = LIMITS.PAGE_SIZE;
   const bottomRef = useRef(null);
 
   const handleKeywordSelect = (keyword) => {
@@ -65,11 +61,7 @@ export default function KeywordTab({ showGuide }) {
       setIsError(false);
 
       try {
-        const url = selectedKeyword
-          ? `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword/${selectedKeyword.encodedKeyword}?page=${page}&size=${pageSize}`
-          : `${process.env.REACT_APP_BE_URL}/api/event/getSubscribedPostsByKeyword?page=${page}&size=${pageSize}`;
-
-        const response = await requestWithAccessToken('get', url);
+        const response = await getPostsByKeyword(selectedKeyword?.encodedKeyword, page, pageSize);
         const newEvents = response.data.result;
 
         setEvents((prevEvents) =>
@@ -88,6 +80,7 @@ export default function KeywordTab({ showGuide }) {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, selectedKeyword]);
 
   // 무한 스크롤에서 중복 호출 방지
@@ -101,13 +94,14 @@ export default function KeywordTab({ showGuide }) {
       { threshold: 1 },
     );
 
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
+    const currentRef = bottomRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (bottomRef.current) {
-        observer.unobserve(bottomRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [hasMore, loading]);
@@ -118,7 +112,7 @@ export default function KeywordTab({ showGuide }) {
       <SearchBar setKeyword={setSelectedKeyword} />
       <KeywordListContainer>
         {events.map((event, index) => (
-          <KeywordEventCard
+          <EventCard
             key={`${event.eventId}-${index}`}
             id={event.eventId}
             {...event}

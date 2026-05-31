@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
 import EventCard from '../../components/events/EventCard';
+import { getPopularEvents } from '../../services/api/event';
 
 const FlexContainer = styled.div`
   display: flex;
@@ -22,10 +22,7 @@ export default function HomeHotEvent() {
 
       setLoading(true);
       try {
-        const response = await requestWithAccessToken(
-          'get',
-          `${process.env.REACT_APP_BE_URL}/api/event/popular`,
-        );
+        const response = await getPopularEvents();
         const newEvents = response.data;
 
         setEvents(newEvents);
@@ -37,6 +34,7 @@ export default function HomeHotEvent() {
       }
     };
     loadHotEvent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

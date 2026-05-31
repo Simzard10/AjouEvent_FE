@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import useStore from '../store/useStore';
+import useUIStore from '../store/useUIStore';
+import { Z_INDEX, COLORS } from '../constants/appConstants';
+import { resetPassword } from '../services/api/user';
 
 const Title = styled.h2`
   padding-top: 5%;
@@ -27,7 +28,7 @@ const Subtitle = styled.p`
 `;
 
 const Container = styled.div`
-  z-index: 1;
+  z-index: ${Z_INDEX.PAGE};
   display: flex;
   padding-top: 3%;
   flex-direction: column;
@@ -65,7 +66,7 @@ const InputField = styled.div`
     height: 2.5rem;
     padding-left: 10px;
     font-size: 14px;
-    border: 1px solid #cdcdcd;
+    border: 1px solid ${COLORS.BORDER_GARY};
     border-radius: 5px;
   }
 
@@ -154,7 +155,7 @@ const ChangePasswordPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const { isAuthorized } = useStore((state) => ({
+  const { isAuthorized } = useUIStore((state) => ({
     isAuthorized: state.isAuthorized,
   }));
 
@@ -242,13 +243,7 @@ const ChangePasswordPage = () => {
     }
 
     try {
-      await axios.patch(
-        `${process.env.REACT_APP_BE_URL}/api/users/reset-password`,
-        {
-          email,
-          newPassword,
-        },
-      );
+      await resetPassword(email, newPassword);
       Swal.fire({
         icon: 'success',
         title: '비밀번호 재설정 성공',

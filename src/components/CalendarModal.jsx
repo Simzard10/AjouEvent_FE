@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import requestWithAccessToken from '../services/jwt/requestWithAccessToken';
 import Swal from 'sweetalert2';
+import { addEventToCalendar } from '../services/api/event';
+import { Z_INDEX, COLORS } from '../constants/appConstants';
 
 const ModalBackgroundContainer = styled.div`
   position: fixed;
@@ -9,11 +10,11 @@ const ModalBackgroundContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${COLORS.OVERLAY_BLACK};
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20;
+  z-index: ${Z_INDEX.CALENDAR};
 `;
 
 const ModalContainer = styled.div`
@@ -34,7 +35,7 @@ const Input = styled.input`
   width: auto;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid ${COLORS.BORDER_GARY};
   border-radius: 4px;
 `;
 
@@ -43,7 +44,7 @@ const TextArea = styled.textarea`
   width: auto;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid ${COLORS.BORDER_GARY};
   border-radius: 4px;
 `;
 
@@ -172,11 +173,7 @@ function CalendarModal({ setIsModalOpen, title, content }) {
     };
 
     try {
-      await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/event/calendar`,
-        eventData,
-      );
+      await addEventToCalendar(eventData);
       Swal.fire({
         icon: 'success',
         title: '구글 캘린더 등록 성공',

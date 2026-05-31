@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import useStore from '../store/useStore';
+import useUIStore from '../store/useUIStore';
+import { Z_INDEX, COLORS } from '../constants/appConstants';
+import { checkAccountExists, requestEmailVerification, verifyEmailCode } from '../services/api/user';
 
 const Container = styled.div`
-  z-index: 1;
+  z-index: ${Z_INDEX.PAGE};
   display: flex;
   padding-top: 3%;
   flex-direction: column;
@@ -20,7 +21,7 @@ const Container = styled.div`
 `;
 
 const Heading = styled.h1`
-  color: #000000;
+  color: ${COLORS.BLACK};
   font-size: 36px;
   font-weight: 100;
   letter-spacing: -3px;
@@ -68,7 +69,7 @@ const InputField = styled.div`
     height: 2.5rem;
     padding-left: 10px;
     font-size: 14px;
-    border: 1px solid #cdcdcd;
+    border: 1px solid ${COLORS.BORDER_GARY};
     border-radius: 5px;
   }
 `;
@@ -189,7 +190,7 @@ const FindPassword = () => {
   const [emailCheck, setEmailCheck] = useState(false);
   const [emailRequested, setEmailRequested] = useState(false);
   const [emailRequestLoading, setEmailRequestLoading] = useState(false);
-  const { setIsAuthorized } = useStore((state) => ({
+  const { setIsAuthorized } = useUIStore((state) => ({
     setIsAuthorized: state.setIsAuthorized,
   }));
   const navigate = useNavigate();
@@ -217,9 +218,7 @@ const FindPassword = () => {
         return;
       }
 
-      const response = await axios.get(
-        `${process.env.REACT_APP_BE_URL}/api/users/accountExists?email=${email}&name=${name}`,
-      );
+      const response = await checkAccountExists(email, name);
 
       const isEmailExists = response.data;
 
@@ -234,9 +233,7 @@ const FindPassword = () => {
         setEmailRequested(true);
 
         try {
-          await axios.post(
-            `${process.env.REACT_APP_BE_URL}/api/users/emailCheckRequest?email=${email}`,
-          );
+          await requestEmailVerification(email);
 
           Swal.fire({
             icon: 'success',
@@ -276,9 +273,7 @@ const FindPassword = () => {
   const handleEmailCheck = async (email, e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `${process.env.REACT_APP_BE_URL}/api/users/emailCheck?email=${email}&code=${number}`,
-      );
+      await verifyEmailCode(email, number);
 
       Swal.fire({
         icon: 'success',

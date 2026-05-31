@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import useStore from '../../store/useStore';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import useSubscriptionStore from '../../store/useSubscriptionStore';
 import Swal from 'sweetalert2';
-import SubscribeStatusDropdown from './SubscribeStatusDropdown'; 
+import { getTopicSubscriptionsStatus, subscribeTopic } from '../../services/api/subscription';
+import SubscribeStatusDropdown from './SubscribeStatusDropdown';
+import { COLORS, LIMITS, Z_INDEX } from '../../constants/appConstants';
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const MenuBarContainer = styled.div`
   align-items: center;
   overflow-x: auto;
   white-space: nowrap;
-  background: #ffffff;
+  background: ${COLORS.WHITE};
   padding: ${({ highlight }) => (highlight ? '18px 10px 18px 12px' : '12px 10px 0px 16px')};
   font-family: 'Pretendard Variable';
   font-weight: 600;
@@ -39,8 +40,8 @@ const MenuItemContainer = styled.div`
 `;
 
 const MenuItem = styled.div`
-  background-color: ${(props) => (props.isSelected ? '#0A5CA8' : '#ffffff')};
-  color: ${(props) => (props.isSelected ? '#ffffff' : '#000000')};
+  background-color: ${(props) => (props.isSelected ? COLORS.BLUE_MEDIUM : COLORS.WHITE)};
+  color: ${(props) => (props.isSelected ? COLORS.WHITE : COLORS.BLACK)};
   display: flex;
   height: fit-content;
   padding: 8px 12px;
@@ -49,7 +50,7 @@ const MenuItem = styled.div`
   align-items: center;
   gap: 4px;
   border-radius: 600px;
-  border: 2px solid #f7f7f7;
+  border: 2px solid ${COLORS.OFF_WHITE};
   cursor: pointer;
 `;
 
@@ -67,8 +68,8 @@ const ViewAllButton = styled.div`
   align-items: center;
   gap: 4px;
   border-radius: 600px;
-  border: 2px solid #f7f7f7;
-  background-color: #ffffff;
+  border: 2px solid ${COLORS.OFF_WHITE};
+  background-color: ${COLORS.WHITE};
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
@@ -76,14 +77,14 @@ const ViewAllButton = styled.div`
   animation: ${({ highlight }) => highlight ? glowAnimation : 'none'} 1.5s infinite;
 
   background-color: ${(props) =>
-    props.isSelected ? '#e0e0e0' : '#ffffff'}; /* 항상 회색 유지 */
+    props.isSelected ? COLORS.LIGHT_GARY : COLORS.WHITE}; /* 항상 회색 유지 */
   p {
     margin: 0
 `;
 
 const InlineTooltip = styled.div`
-  background-color: #0072ce;
-  color: #ffffff;
+  background-color: ${COLORS.BLUE_BRIGHT};
+  color: ${COLORS.WHITE};
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 11px;
@@ -118,8 +119,8 @@ const ModalOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  background: ${COLORS.OVERLAY_BLACK};
+  z-index: ${Z_INDEX.MODAL};
 `;
 
 const ModalContent = styled.div`
@@ -131,7 +132,7 @@ const ModalContent = styled.div`
   border-radius: 10px;
   overflow-y: auto;
   padding: 24px;
-  z-index: 1001;
+  z-index: ${Z_INDEX.MODAL_TOP};
   width: 90%;
   height: 80%;
 `;
@@ -148,8 +149,8 @@ const SubscribeButton = styled.button`
   justify-content: center;
   align-items: center;
   padding: 10px 20px;
-  background-color: #0072ce;
-  color: #ffffff;
+  background-color: ${COLORS.BLUE_BRIGHT};
+  color: ${COLORS.WHITE};
   font-family: 'Pretendard Variable', sans-serif;
   font-size: 16px;
   font-weight: 600;
@@ -160,12 +161,12 @@ const SubscribeButton = styled.button`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   gap: 8px;
   &:hover {
-    background-color: #e0e0e0;
+    background-color: ${COLORS.LIGHT_GARY};
   }
 `;
 
 const ModalHeaderTitle = styled.h1`
-  color: #000;
+  color: ${COLORS.BLACK};
   font-family: 'Pretendard Variable';
   font-size: 18px;
   font-style: normal;
@@ -187,7 +188,7 @@ const MenuItemInModal = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${COLORS.LIGHT_GARY};
   font-family: 'Pretendard Variable';
   font-weight: 600;
 `;
@@ -198,7 +199,7 @@ const CategoryTitle = styled.h2`
   font-weight: 700;
   margin-top: 40px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${COLORS.LIGHT_GARY};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -219,7 +220,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: 'center-center',
   showConfirmButton: false,
-  timer: 2000,
+  timer: LIMITS.TOAST_TIMER.MEDIUM,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -240,7 +241,7 @@ const SubscribeBar = ({ onTopicSelect, showGuide }) => {
     markTopicAsRead,
     subscribeItems,
     fetchSubscribeItems,
-  } = useStore();
+  } = useSubscriptionStore();
   const [menuItems, setMenuItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -268,10 +269,7 @@ const SubscribeBar = ({ onTopicSelect, showGuide }) => {
   // 구독 설정 데이터 불러오기 함수
   const fetchMenuItems = async () => {
     try {
-      const response = await requestWithAccessToken(
-        'get',
-        `${process.env.REACT_APP_BE_URL}/api/topic/subscriptionsStatus`,
-      );
+      const response = await getTopicSubscriptionsStatus();
       const datas = response.data;
       setMenuItems(datas);
     } catch (error) {
@@ -289,6 +287,7 @@ const SubscribeBar = ({ onTopicSelect, showGuide }) => {
 
   useEffect(() => {
     fetchSubscribeItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menuItems]);
 
   useEffect(() => {
@@ -303,6 +302,7 @@ const SubscribeBar = ({ onTopicSelect, showGuide }) => {
       // 읽지 않은 항목이 있는 경우, isTopicTabRead를 false로 설정
       setIsTopicTabRead(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribeItems, isTopicTabRead]);
 
   const handleSubscribe = async (topic) => {
@@ -316,11 +316,7 @@ const SubscribeBar = ({ onTopicSelect, showGuide }) => {
         title: `${topic.koreanTopic} 구독 중`,
       });
 
-      await requestWithAccessToken(
-        'post',
-        `${process.env.REACT_APP_BE_URL}/api/topic/subscribe`,
-        { topic: topic.englishTopic },
-      );
+      await subscribeTopic(topic.englishTopic);
 
       // 구독에 성공한 후 사용자가 구독하고 있는 항목을 새로 불러오기
       await fetchMenuItems();

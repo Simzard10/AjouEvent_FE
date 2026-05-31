@@ -7,7 +7,8 @@ import {
   단과대공지사항,
   대학원,
   기숙사,
-} from '../../constant/searchDropOption';
+} from '../../constants/searchDropOption';
+import { COLORS } from '../../constants/appConstants';
 
 function FilterOption({
   label,
@@ -102,11 +103,12 @@ function SearchDropBox({
         }
         break;
       default:
-        setOption1('아주대 공지사항');
+        setOption1('아주대학교-일반');
         setOption2List(아주대공지사항);
-        setOption2('아주대학교-일반');
+        setOption2('아주대 공지사항');
         break;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [option1]);
 
   useEffect(() => {
@@ -127,6 +129,7 @@ function SearchDropBox({
     };
 
     fetchDataAndUpdateState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [option2]);
 
   return (
@@ -180,7 +183,7 @@ const FilterOptionWrapper = styled.div`
   width: 150px;
   flex-direction: column;
   justify-content: center;
-  background-color: #fff;
+  background-color: ${COLORS.WHITE};
   border: 1px solid rgba(229, 232, 235, 1);
   border-radius: 50px;
 `;

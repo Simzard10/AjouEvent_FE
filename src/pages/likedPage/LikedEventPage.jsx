@@ -4,15 +4,16 @@ import LikedEvent from './LikedEvent';
 import NavigationBar from '../../components/NavigationBar';
 import SearchBar from '../../components/SearchBar';
 import LocationBar from '../../components/LocationBar';
-import useStore from '../../store/useStore';
+import useUIStore from '../../store/useUIStore';
 import { Link } from 'react-router-dom';
-import requestWithAccessToken from '../../services/jwt/requestWithAccessToken';
+import { LIMITS, STORAGE_KEYS, COLORS } from '../../constants/appConstants';
+import { getLikedEvents } from '../../services/api/event';
 
 const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
 `;
 
 const Contaioner = styled.div`
@@ -20,7 +21,7 @@ const Contaioner = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${COLORS.WHITE};
   height: 100vh;
 `;
 
@@ -50,7 +51,7 @@ const StyledLink = styled(Link)`
 `;
 
 export default function LikedEventPage() {
-  const { savedKeyword, setSavedKeyword } = useStore((state) => ({
+  const { savedKeyword, setSavedKeyword } = useUIStore((state) => ({
     savedKeyword: state.savedKeyword,
     setSavedKeyword: state.setSavedKeyword,
   }));
@@ -60,10 +61,10 @@ export default function LikedEventPage() {
   const [isError, setIsError] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const pageSize = 10;
+  const pageSize = LIMITS.PAGE_SIZE;
   const bottomRef = useRef(null);
 
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
 
   const fetchData = useCallback(async () => {
     if (loading || !hasMore || isError) return;
@@ -71,10 +72,7 @@ export default function LikedEventPage() {
     setLoading(true);
 
     try {
-      const response = await requestWithAccessToken(
-        'get',
-        `${process.env.REACT_APP_BE_URL}/api/event/liked?AjouNormal&page=${page}&size=${pageSize}&keyword=${keyword}`,
-      );
+      const response = await getLikedEvents(page, pageSize, keyword);
       const newEvents = response.data.result;
 
       setEvents((prevEvents) => {
@@ -96,7 +94,7 @@ export default function LikedEventPage() {
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, keyword]);
+  }, [loading, hasMore, isError, page, pageSize, keyword]);
 
   // Handle infinite scroll
   useEffect(() => {
@@ -109,13 +107,14 @@ export default function LikedEventPage() {
       { threshold: 1 },
     );
 
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
+    const currentRef = bottomRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (bottomRef.current) {
-        observer.unobserve(bottomRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [loading, hasMore, fetchData]);

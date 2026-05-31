@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import { clearAuth } from '../utils/auth';
+import dialog from '../utils/dialog';
+import { Z_INDEX, STORAGE_KEYS } from '../constants/appConstants';
 
 const TopBarContainer = styled.div`
-  z-index: 5;
+  z-index: ${Z_INDEX.NAV};
   position: fixed;
   top: 0;
   left: 0;
@@ -79,7 +81,7 @@ export default function TopBar() {
   const [isSignIn, setIsSignIn] = useState(false);
 
   useEffect(() => {
-    const id = localStorage.getItem('id');
+    const id = localStorage.getItem(STORAGE_KEYS.USER_ID);
     if (id) {
       setIsSignIn(true);
     } else {
@@ -88,18 +90,9 @@ export default function TopBar() {
   }, []);
 
   const handleLogoutBtnClick = () => {
-    Swal.fire({
-      icon: 'seccess',
-      title: '로그아웃 성공',
-      text: '로그아웃 했습니다.',
-    });
+    dialog.success('로그아웃 성공', '로그아웃 했습니다.');
     setIsSignIn(false);
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('email');
-    localStorage.removeItem('id');
-    localStorage.removeItem('name');
-    localStorage.removeItem('major');
+    clearAuth();
   };
 
   return (

@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RouteChangeTracker from './RouteChangeTracker';
 import { Analytics } from '@vercel/analytics/react';
-import useStore from './store/useStore';
+import useNotificationStore from "./store/useNotificationStore";
+import useSubscriptionStore from "./store/useSubscriptionStore";
 import HomePage from './pages/homePage/HomePage';
 import SearchEventPage from './pages/searchPage/SearchEventPage';
 import LoginPage from './pages/loginPage/LoginPage';
@@ -14,8 +15,7 @@ import LoginSuccess from './pages/loginPage/LoginSuccess';
 import GuidePage from './pages/GuidePage';
 import ProfileModificationPage from './pages/myPage/ProfileModificationPage';
 import DeleteAccountPage from './pages/myPage/DeleteAccountPage';
-import SignUpSelectPage from './pages/signupPage/SignUpSelectPage';
-import RegisterMemberInfoPage from './pages/signupPage/RegisterMebmerInfoPage';
+import RegisterMemberInfoPage from './pages/signupPage/RegisterMemberInfoPage';
 import PrivacyAgreementPage from './pages/signupPage/PrivacyAgreementPage';
 import NotificationPage from './pages/notificationPage/NotificationPage';
 import EventDetailPage from "./pages/eventPage/EventDetailPage";
@@ -81,18 +81,15 @@ const ROUTER = createBrowserRouter([
     path: '/register-info',
     element: <RegisterMemberInfoPage />,
   },
-  {
-    path: '/signUp/select',
-    element: <SignUpSelectPage />,
-  },
 ]);
 
 function App() {
-  const { fetchMemberStatus, unreadNotificationCount, setUnreadNotificationCount } = useStore();
+  const { fetchMemberStatus } = useSubscriptionStore();
+  const { unreadNotificationCount, setUnreadNotificationCount } = useNotificationStore();
 
   useEffect(() => {
     fetchMemberStatus();
-  }, []);
+  }, [fetchMemberStatus]);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {

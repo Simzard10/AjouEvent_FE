@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import useStore from '../store/useStore';
+import useNotificationStore from '../store/useNotificationStore';
+import { LIMITS, Z_INDEX } from '../constants/appConstants';
 
 const StickyContainer = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ const StickyContainer = styled.div`
   right: 0;
   top: 0;
   gap: 6px;
-  z-index: 100;
+  z-index: ${Z_INDEX.DROPDOWN};
   padding: 10px;
 `;
 
@@ -64,11 +65,11 @@ const TapText = styled.span`
 
 const HelpBox = () => {
   const navigate = useNavigate();
-  const { unreadNotificationCount, fetchUnreadNotificationCount } = useStore();
+  const { unreadNotificationCount, fetchUnreadNotificationCount } = useNotificationStore();
 
   useEffect(() => {
     fetchUnreadNotificationCount(); // 처음 마운트될 때 최신 알림 개수 가져오기
-  }, []);
+  }, [fetchUnreadNotificationCount]);
 
   const handleBellClick = () => {
     navigate('/notification');
@@ -92,7 +93,7 @@ const HelpBox = () => {
           alt="bellIcon"
         />
         {unreadNotificationCount > 0 &&
-          (unreadNotificationCount < 100 ? (
+          (unreadNotificationCount < LIMITS.NOTIFICATION_BADGE_MAX ? (
             <Badge>{unreadNotificationCount}</Badge>
           ) : (
             <Badge>99+</Badge>
